@@ -34,17 +34,16 @@ dependencies {
         exclude("org.springframework.boot","spring-boot-starter-tomcat")
     }
     implementation("org.springframework.boot:spring-boot-starter-web-services") {
-        exclude("org.springframework.boot","spring-boot-starter-tomcat")
+        exclude("org.springframework.boot", "spring-boot-starter-tomcat")
     }
     implementation("org.springframework.boot:spring-boot-starter-undertow:2.7.4")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.springframework.session:spring-session-core")
-    // https://mvnrepository.com/artifact/com.baomidou/mybatis-plus-boot-starter
     implementation("com.baomidou:mybatis-plus-boot-starter:3.5.2")
-    // https://mvnrepository.com/artifact/com.alibaba.fastjson2/fastjson2
-    implementation("com.alibaba.fastjson2:fastjson2:2.0.16")
+    implementation("org.springframework.boot:spring-boot-starter-thymeleaf:2.7.5")
+    implementation("com.google.code.gson:gson:2.10")
     runtimeOnly("com.mysql:mysql-connector-j")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
