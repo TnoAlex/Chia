@@ -48,6 +48,8 @@ dependencies {
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
+    implementation("com.alibaba:druid-spring-boot-starter:1.2.14")
+
 
 }
 
