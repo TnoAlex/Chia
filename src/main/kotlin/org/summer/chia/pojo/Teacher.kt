@@ -12,4 +12,4 @@ data class Teacher(
     var id: String,
     var name: String,
     var password: String,
-)
+) : User(id, name, password, null)

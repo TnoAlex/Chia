@@ -18,5 +18,4 @@ data class Student(
     var freeTimes: Int,
     var email: String,
     var enrollmentTime: java.time.LocalDateTime,
-
-    )
+) : User(id, name, password, null)
