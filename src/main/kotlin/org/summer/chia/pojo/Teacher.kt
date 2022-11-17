@@ -9,7 +9,8 @@ import org.summer.chia.annotation.NoArg
 @TableName("teacher")
 data class Teacher(
     @TableId(type = IdType.ASSIGN_ID)
-    var id: String,
-    var name: String,
-    var password: String,
+    override var id: String,
+    override var name: String,
+    override var password: String,
+    var email: String
 ) : User(id, name, password, null)

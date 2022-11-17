@@ -7,14 +7,14 @@ open class User() {
         password: String,
         role: String?,
     ) : this() {
-        this.id = id
-        this.password = password
-        this.name = name
+        id.also { this.id = it }
+        password.also { this.password = it }
+        name.also { this.name = it }
         this.role = role
     }
 
-    lateinit var id: String
-    lateinit var name: String
-    lateinit var password: String
+    open lateinit var id: String
+    open lateinit var name: String
+    open lateinit var password: String
     var role: String? = null
 }

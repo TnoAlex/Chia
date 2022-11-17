@@ -18,13 +18,13 @@ class AuthenticationFilter : Filter {
 
         if (!(request as HttpServletRequest).servletPath.equals("/") && !request.servletPath.contains("login")) {
             if (SecurityContextHolder.getContext().authentication == null) {
-                response.writer.write(Gson().toJsonTree(Result.error(ResultStatus.BAD_CREDENTIALS)).asString)
+                response.writer.write(Gson().toJsonTree(Result.error(ResultStatus.BAD_AUTHENTICATION)).asString)
                 return
             }
             if (SecurityContextHolder.getContext().authentication.isAuthenticated) {
                 chain.doFilter(request, response)
             } else {
-                response.writer.write(Gson().toJsonTree(Result.error(ResultStatus.BAD_CREDENTIALS)).asString)
+                response.writer.write(Gson().toJsonTree(Result.error(ResultStatus.BAD_AUTHENTICATION)).asString)
                 return
             }
         }

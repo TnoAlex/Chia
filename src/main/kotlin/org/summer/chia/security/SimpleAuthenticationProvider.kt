@@ -19,8 +19,10 @@ class SimpleAuthenticationProvider : AuthenticationProvider {
     private lateinit var userDetailsService: UserDetailsService
 
     override fun authenticate(authentication: Authentication): Authentication {
-        val username = authentication.name
+        var username = authentication.name
         val password = authentication.credentials as String
+        val role = (authentication.details as UsernamePasswordRoleAuthenticationToken).roleType
+        username = "$username/$role"
         var user = userDetailsService.loadUserByUsername(username)
         if (user == null) {
             SecurityContextHolder.getContext().authentication = null

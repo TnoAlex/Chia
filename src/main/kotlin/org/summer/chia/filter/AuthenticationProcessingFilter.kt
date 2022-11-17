@@ -4,11 +4,11 @@ import com.google.gson.Gson
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.AuthenticationServiceException
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.stereotype.Component
 import org.summer.chia.pojo.ao.LoginObject
+import org.summer.chia.security.UsernamePasswordRoleAuthenticationToken
 import java.io.*
 import javax.servlet.ReadListener
 import javax.servlet.ServletInputStream
@@ -28,7 +28,7 @@ class AuthenticationProcessingFilter : UsernamePasswordAuthenticationFilter() {
             throw AuthenticationServiceException("不支持的请求方式")
         } else {
             val entity = Gson().fromJson(RequestWrapper(request).body, LoginObject::class.java)
-            val authRequest = UsernamePasswordAuthenticationToken(entity.username, entity.password)
+            val authRequest = UsernamePasswordRoleAuthenticationToken(entity.username, entity.password, entity.type)
             authRequest.details = this.authenticationDetailsSource.buildDetails(request)
             return this.authenticationManager.authenticate(authRequest)
         }
