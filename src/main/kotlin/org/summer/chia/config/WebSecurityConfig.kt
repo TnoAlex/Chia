@@ -51,7 +51,8 @@ class WebSecurityConfig {
             .and().exceptionHandling().authenticationEntryPoint(authError).accessDeniedHandler(authError)
             .and().formLogin().disable()
             .authorizeRequests {
-                it.antMatchers("/login").permitAll().antMatchers("/logout").permitAll()
+                it.antMatchers("/login/**").permitAll()
+                    .antMatchers("/logout").permitAll()
                     .anyRequest().authenticated()
             }
             .addFilterAt(authenticationProcessingFilter, UsernamePasswordAuthenticationFilter::class.java)

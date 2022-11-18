@@ -2,7 +2,7 @@ package org.summer.chia.pojo
 
 open class User() {
     constructor(
-        id: String,
+        id: String?,
         name: String,
         password: String,
         role: String?,
@@ -10,11 +10,11 @@ open class User() {
         id.also { this.id = it }
         password.also { this.password = it }
         name.also { this.name = it }
-        this.role = role
+        role.also { this.role = it }
     }
 
-    open lateinit var id: String
+    open var id: String? = null
     open lateinit var name: String
     open lateinit var password: String
-    var role: String? = null
+    open var role: String? = null
 }

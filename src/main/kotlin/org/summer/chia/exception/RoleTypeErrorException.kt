@@ -1,3 +1,5 @@
 package org.summer.chia.exception
 
-class RoleTypeErrorException(message: String) : RuntimeException(message)
+import org.springframework.security.core.AuthenticationException
+
+class RoleTypeErrorException(message: String) : AuthenticationException(message)

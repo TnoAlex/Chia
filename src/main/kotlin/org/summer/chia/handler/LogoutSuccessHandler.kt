@@ -15,6 +15,6 @@ class LogoutSuccessHandler : LogoutSuccessHandler {
         response: HttpServletResponse,
         authentication: Authentication
     ) {
-        response.writer.write(Gson().toJsonTree(Result.success("登出成功")).asString)
+        response.writer.write(Gson().toJson(Result.success("登出成功")))
     }
 }

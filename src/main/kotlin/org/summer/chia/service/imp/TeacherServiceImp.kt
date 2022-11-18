@@ -16,9 +16,10 @@ class TeacherServiceImp : ServiceImpl<TeacherMapper, Teacher>(), TeacherService 
         val query = KtQueryWrapper(Teacher::class.java)
         query.eq(Teacher::email, username)
         val res = baseMapper.selectOne(query)
-        return if (res != null)
+        return if (res != null) {
+            res.role = "ROLE_Teacher"
             UserDetailsAdapter(res)
-        else
+        } else
             null
     }
 }

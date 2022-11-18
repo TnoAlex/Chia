@@ -15,18 +15,22 @@ import javax.servlet.http.HttpServletRequest
 class AuthenticationFilter : Filter {
 
     override fun doFilter(request: ServletRequest, response: ServletResponse, chain: FilterChain) {
-
-        if (!(request as HttpServletRequest).servletPath.equals("/") && !request.servletPath.contains("login")) {
+        if ((request as HttpServletRequest).servletPath.equals("/error")) {
+            response.writer.write(Gson().toJson(Result.error(ResultStatus.BAD_AUTHENTICATION)))
+        } else if (!request.servletPath.equals("/") && !request.servletPath.contains("login")) {
             if (SecurityContextHolder.getContext().authentication == null) {
-                response.writer.write(Gson().toJsonTree(Result.error(ResultStatus.BAD_AUTHENTICATION)).asString)
+                response.writer.write(Gson().toJson(Result.error(ResultStatus.NONE_AUTHENTICATION)))
                 return
             }
             if (SecurityContextHolder.getContext().authentication.isAuthenticated) {
                 chain.doFilter(request, response)
             } else {
-                response.writer.write(Gson().toJsonTree(Result.error(ResultStatus.BAD_AUTHENTICATION)).asString)
+                response.writer.write(Gson().toJson(Result.error(ResultStatus.BAD_AUTHENTICATION)))
                 return
             }
+        } else {
+            chain.doFilter(request, response)
+            return
         }
     }
 }

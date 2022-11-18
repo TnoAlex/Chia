@@ -17,9 +17,9 @@ class LoginSuccessHandler : AuthenticationSuccessHandler {
         authentication: Authentication
     ) {
         if (authentication.principal == null) {
-            response.writer.write(Gson().toJsonTree(Result.error(ResultStatus.BAD_AUTHENTICATION)).asString)
+            response.writer.write(Gson().toJson(Result.error(ResultStatus.BAD_AUTHENTICATION)))
         } else {
-            response.writer.write(Gson().toJsonTree(Result.success("登录成功")).asString)
+            response.writer.write(Gson().toJson(Result.success("登录成功")))
         }
     }
 }

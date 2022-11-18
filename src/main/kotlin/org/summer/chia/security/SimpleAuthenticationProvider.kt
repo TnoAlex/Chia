@@ -19,11 +19,10 @@ class SimpleAuthenticationProvider : AuthenticationProvider {
     private lateinit var userDetailsService: UserDetailsService
 
     override fun authenticate(authentication: Authentication): Authentication {
-        var username = authentication.name
+        val username = authentication.name
         val password = authentication.credentials as String
-        val role = (authentication.details as UsernamePasswordRoleAuthenticationToken).roleType
-        username = "$username/$role"
-        var user = userDetailsService.loadUserByUsername(username)
+        val role = (authentication as UsernamePasswordRoleAuthenticationToken).roleType
+        var user = userDetailsService.loadUserByUsername("$username/$role")
         if (user == null) {
             SecurityContextHolder.getContext().authentication = null
             return UsernamePasswordAuthenticationToken(null, null, null)
@@ -41,5 +40,5 @@ class SimpleAuthenticationProvider : AuthenticationProvider {
     }
 
     override fun supports(authentication: Class<*>?): Boolean =
-        authentication == UsernamePasswordAuthenticationToken::class.java
+        authentication == UsernamePasswordRoleAuthenticationToken::class.java
 }

@@ -16,9 +16,10 @@ class StudentServiceImp : ServiceImpl<StudentMapper, Student>(), StudentService 
         val query = KtQueryWrapper(Student::class.java)
         query.eq(Student::studentNumber, username)
         val res = baseMapper.selectOne(query)
-        return if (res != null)
+        return if (res != null) {
+            res.role = "ROLE_Student"
             UserDetailsAdapter(res)
-        else
+        } else
             null
     }
 }
