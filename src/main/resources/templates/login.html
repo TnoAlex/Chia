@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>登录界面</title>
+    <link rel="stylesheet" href="../static/css/login_style.css">
+</head>
+
+<body>
+<div class="container">
+    <div class="forms-container">
+        <div class="signin-signup">
+            <form action="#" class="sign-in-form">
+                <h2 class="title">学生登录</h2>
+                <div class="input-field">
+                    <i class="fas fa-user">
+                    </i>
+                    <input type="text" placeholder="用户名">
+                </div>
+                <div class="input-field">
+                    <i class="fas fa-lock">
+                    </i>
+                    <input type="password" placeholder="密码">
+                </div>
+                <a style="display: block;text-align: right" href="" type="submit" class="atag">忘记密码</a>
+                <input type="submit" value="登录" class="btn solid">
+            </form>
+            <form action="#" class="sign-up-form">
+                <h2 class="title">教师登录</h2>
+                <div class="input-field">
+                    <i class="fas fa-user"></i>
+                    <input type="text" placeholder="用户名">
+                </div>
+                <div class="input-field">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" placeholder="密码">
+                </div>
+                <a style="display: block;text-align: right" href="" type="submit" class="atag">忘记密码</a>
+                <input type="submit" class="btn" value="登录">
+            </form>
+        </div>
+    </div>
+    <div class="panels-container">
+        <div class="panel left-panel">
+            <div class="content" style="margin-right: 200px">
+                <h3>您是教师 ?</h3>
+                <p>请 点 击 此 处 进 行 登 录!</p>
+                <button class="btn transparent" id="sign-up-btn">教师登录</button>
+            </div>
+        </div>
+        <div class="panel right-panel">
+            <div class="content">
+                <h3>您是学生 ?</h3>
+                <p>请 点 击 此 处 进 行 登 录!</p>
+                <button class="btn transparent" id="sign-in-btn">学生登录</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src='../static/js/login.js'>
+</script>
+<script src="../static/js/login_script.js">
+</script>
+</body>
+
+</html>
