@@ -1,16 +1,17 @@
 package org.summer.chia.controller
 
+import org.springframework.stereotype.Controller
+import org.springframework.ui.Model
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RestController
 import org.summer.chia.pojo.ao.Result
 
-@RestController
+@Controller
 class LoginController {
 
-
-    @PostMapping("/login/page")
-    fun login(): Result {
-        return Result.success("登录页面")
+    @GetMapping("/login/page")
+    fun login(model: Model): String {
+        return "login"
     }
 
     @PostMapping("/test/login")

@@ -53,6 +53,7 @@ class WebSecurityConfig {
             .authorizeRequests {
                 it.antMatchers("/login/**").permitAll()
                     .antMatchers("/logout").permitAll()
+                    .antMatchers("/static/**").permitAll()
                     .anyRequest().authenticated()
             }
             .addFilterAt(authenticationProcessingFilter, UsernamePasswordAuthenticationFilter::class.java)

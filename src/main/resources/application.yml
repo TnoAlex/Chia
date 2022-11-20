@@ -18,7 +18,16 @@ spring:
   jackson:
     date-format: yyyy-MM-dd HH:MM:ss
     time-zone: GMT-8
-
+  thymeleaf:
+    cache: false
+    prefix: classpath:/templates/
+    encoding: UTF-8
+    suffix: .html
+    mode: HTML
+    servlet:
+      content-type: text/html
+  mvc:
+    static-path-pattern: /static/**
   datasource:
     druid:
       driver-class-name: com.mysql.cj.jdbc.Driver
@@ -30,6 +39,9 @@ spring:
       max-wait: 60000
       time-between-eviction-runs-millis: 60000
       min-evictable-idle-time-millis: 30000
+  web:
+    resources:
+      static-locations: classpath:/static/
 
 mybatis-plus:
   configuration:
