@@ -1,43 +1,45 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
 
 <head>
     <meta charset="UTF-8">
     <title>登录界面</title>
-    <link rel="stylesheet" href="../static/css/login_style.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/login_style.css"
+          th:href="@{/static/css/login_style.css}"/>
 </head>
 
 <body>
+<p style="visibility: hidden" id="type_selector">0</p>
 <div class="container">
     <div class="forms-container">
         <div class="signin-signup">
-            <form action="#" class="sign-in-form">
+            <form class="sign-in-form">
                 <h2 class="title">学生登录</h2>
                 <div class="input-field">
                     <i class="fas fa-user">
                     </i>
-                    <input type="text" placeholder="用户名">
+                    <input type="text" placeholder="用户名" id="student_name">
                 </div>
                 <div class="input-field">
                     <i class="fas fa-lock">
                     </i>
-                    <input type="password" placeholder="密码">
+                    <input type="password" placeholder="密码" id="student_passwd">
                 </div>
-                <a style="display: block;text-align: right" href="" type="submit" class="atag">忘记密码</a>
-                <input type="submit" value="登录" class="btn solid">
+                <a style="display: block;text-align: right" type="button" class="atag">忘记密码</a>
+                <input type="button" value="登录" onclick="return submitForm()" class="btn solid">
             </form>
-            <form action="#" class="sign-up-form">
+            <form class="sign-up-form">
                 <h2 class="title">教师登录</h2>
                 <div class="input-field">
                     <i class="fas fa-user"></i>
-                    <input type="text" placeholder="用户名">
+                    <input type="text" placeholder="用户名" id="teacher_name">
                 </div>
                 <div class="input-field">
                     <i class="fas fa-lock"></i>
-                    <input type="password" placeholder="密码">
+                    <input type="password" placeholder="密码" id="teacher_passwd">
                 </div>
                 <a style="display: block;text-align: right" href="" type="submit" class="atag">忘记密码</a>
-                <input type="submit" class="btn" value="登录">
+                <input type="button" class="btn" onclick="return submitForm()" value="登录">
             </form>
         </div>
     </div>
@@ -58,9 +60,16 @@
         </div>
     </div>
 </div>
-<script src='../static/js/login.js'>
-</script>
-<script src="../static/js/login_script.js">
+<script src='../static/js/login.js' th:src="@{/static/js/login.js}"></script>
+<script src="../static/js/login_script.js" th:src="@{/static/js/login_script.js}"></script>
+<script src="http://libs.baidu.com/jquery/2.1.4/jquery.min.js"></script>
+<script>
+    const form = document.getElementsByTagName('form')
+    for (i of form) {
+        i.addEventListener('submit', function (e) {
+            e.preventDefault();
+        })
+    }
 </script>
 </body>
 
