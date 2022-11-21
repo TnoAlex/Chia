@@ -8,7 +8,6 @@ import org.springframework.security.web.access.AccessDeniedHandler
 import org.springframework.security.web.authentication.AuthenticationFailureHandler
 import org.springframework.stereotype.Component
 import org.summer.chia.pojo.ao.Result
-import org.summer.chia.pojo.ao.ResultStatus
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
@@ -28,7 +27,7 @@ class AuthorizationDeniedHandler : AuthenticationFailureHandler, AuthenticationE
         response: HttpServletResponse,
         authException: AuthenticationException
     ) {
-        response.writer.write(Gson().toJson(Result.error(ResultStatus.NONE_AUTHENTICATION)))
+        response.writer.write(Gson().toJson(Result.error(authException.message!!)))
     }
 
     override fun handle(
