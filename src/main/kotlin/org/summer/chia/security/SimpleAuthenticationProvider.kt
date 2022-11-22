@@ -8,6 +8,7 @@ import org.springframework.security.core.Authentication
 import org.springframework.security.core.AuthenticationException
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.UserDetailsService
+import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Component
 import org.summer.chia.adapter.UserDetailsAdapter
@@ -26,6 +27,7 @@ class SimpleAuthenticationProvider : AuthenticationProvider {
         val password = authentication.credentials as String
         val role = (authentication as UsernamePasswordRoleAuthenticationToken).roleType
         var user = userDetailsService.loadUserByUsername("$username/$role")
+            ?: throw UsernameNotFoundException("The user cannot be found by the given username")
         user = user as UserDetailsAdapter
         return if (passwordEncoder.matches(password, user.password)) {
             val loginJwtToken = UsernamePasswordAuthenticationToken(user.getPayLoad(), password, user.authorities)

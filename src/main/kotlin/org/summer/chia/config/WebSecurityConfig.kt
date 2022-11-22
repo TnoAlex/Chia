@@ -42,6 +42,7 @@ class WebSecurityConfig {
     @Autowired
     private lateinit var logoutSuccessHandler: LogoutSuccessHandler
 
+
     @Bean
     fun authenticationManager(config: AuthenticationConfiguration): AuthenticationManager = config.authenticationManager
 

@@ -27,7 +27,7 @@ class AuthorizationDeniedHandler : AuthenticationFailureHandler, AuthenticationE
         response: HttpServletResponse,
         authException: AuthenticationException
     ) {
-        response.writer.write(Gson().toJson(Result.error(authException.message!!)))
+        handlerException(request, response, authException)
     }
 
     override fun handle(
@@ -35,7 +35,33 @@ class AuthorizationDeniedHandler : AuthenticationFailureHandler, AuthenticationE
         response: HttpServletResponse,
         accessDeniedException: AccessDeniedException
     ) {
-        val res = accessDeniedException.message?.let { Result.error(it) }
-        response.writer.write(Gson().toJson(res))
+        handlerException(request, response, accessDeniedException)
+    }
+
+    private fun handlerException(
+        request: HttpServletRequest,
+        response: HttpServletResponse,
+        exception: RuntimeException
+    ) {
+        val ex = request.getAttribute("javax.servlet.error.exception") as RuntimeException?
+        if (ex == null) {
+            response.writer.write(Gson().toJson(exception.message?.let { Result.error(it) }))
+        } else {
+            when (ex) {
+                is AuthenticationException -> {
+                    response.writer.write(Gson().toJson(ex.message?.let { Result.error(it) }))
+                }
+
+                is AccessDeniedException -> {
+                    request.setAttribute("msg", ex.message)
+                    request.getRequestDispatcher("/error/40x").forward(request, response)
+                    return
+                }
+
+                else -> {
+                    response.writer.write(Gson().toJson(exception.message?.let { Result.error(it) }))
+                }
+            }
+        }
     }
 }
