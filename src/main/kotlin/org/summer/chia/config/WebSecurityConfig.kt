@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.web.SecurityFilterChain
+import org.springframework.security.web.authentication.AnonymousAuthenticationFilter
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.summer.chia.filter.AuthenticationFilter
 import org.summer.chia.filter.AuthenticationProcessingFilter
@@ -41,6 +42,7 @@ class WebSecurityConfig {
     @Autowired
     private lateinit var logoutSuccessHandler: LogoutSuccessHandler
 
+
     @Bean
     fun authenticationManager(config: AuthenticationConfiguration): AuthenticationManager = config.authenticationManager
 
@@ -57,7 +59,7 @@ class WebSecurityConfig {
                     .anyRequest().authenticated()
             }
             .addFilterAt(authenticationProcessingFilter, UsernamePasswordAuthenticationFilter::class.java)
-            .addFilterAfter(authenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
+            .addFilterBefore(authenticationFilter, AnonymousAuthenticationFilter::class.java)
             .userDetailsService(userDetails)
             .authenticationProvider(authenticationProvider)
             .logout().logoutSuccessHandler(logoutSuccessHandler)
