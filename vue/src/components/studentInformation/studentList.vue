@@ -7,9 +7,6 @@
     <LeftNav>
 
     </LeftNav>
-
-
-
     <div class="content-page">
       <div class="content">
 
@@ -22,12 +19,10 @@
               <div class="page-title-box">
                 <div class="page-title-right">
                   <ol class="breadcrumb m-0">
-                    <li class="breadcrumb-item"><a href="javascript: void(0);">Hyper</a></li>
-                    <li class="breadcrumb-item"><a href="javascript: void(0);">eCommerce</a></li>
-                    <li class="breadcrumb-item active">Products</li>
+
                   </ol>
                 </div>
-                <h4 class="page-title">Products</h4>
+                <h4 class="page-title">学生报名信息管理</h4>
               </div>
             </div>
           </div>
@@ -39,13 +34,13 @@
                 <div class="card-body">
                   <div class="row mb-2">
                     <div class="col-sm-5">
-                      <a href="javascript:void(0);" class="btn btn-danger mb-2"><i class="mdi mdi-plus-circle me-2"></i> Add Products</a>
+                      <a href="javascript:void(0);" class="btn btn-danger mb-2"><i class="mdi mdi-plus-circle me-2"></i> 添加学生信息</a>
                     </div>
                     <div class="col-sm-7">
                       <div class="text-sm-end">
                         <button type="button" class="btn btn-success mb-2 me-1"><i class="mdi mdi-cog-outline"></i></button>
-                        <button type="button" class="btn btn-light mb-2 me-1">Import</button>
-                        <button type="button" class="btn btn-light mb-2">Export</button>
+                        <button type="button" class="btn btn-light mb-2 me-1">导入</button>
+                        <button type="button" class="btn btn-light mb-2">导出</button>
                       </div>
                     </div><!-- end col-->
                   </div>
@@ -112,7 +107,6 @@
                           <a href="javascript:void(0);" class="action-icon"> <i class="mdi mdi-delete"></i></a>
                         </td>
                       </tr>
-
                       <tr>
                         <td>
                           <div class="form-check">
@@ -322,7 +316,6 @@
                           <a href="javascript:void(0);" class="action-icon"> <i class="mdi mdi-delete"></i></a>
                         </td>
                       </tr>
-
                       <tr>
                         <td>
                           <div class="form-check">
@@ -365,7 +358,6 @@
                           <a href="javascript:void(0);" class="action-icon"> <i class="mdi mdi-delete"></i></a>
                         </td>
                       </tr>
-
                       <tr>
                         <td>
                           <div class="form-check">
@@ -589,36 +581,32 @@
       </div> <!-- content -->
 
 
-
     </div>
-
-
-
   </div>
   </body>
-
 </template>
 
 <script>
-import topNav from './topNav'
-import leftNav from './leftNav'
+import topNav from "@/components/index/topNav";
+import leftNav from "@/components/index/leftNav";
+
 export default {
+  name: "studentList.vue",
   components:{
     TopNav:topNav,
     LeftNav:leftNav
   },
-  name: "index.vue"
 }
-import {js1} from '../../assets/js/hyper-config'
-import {js8} from '../../assets/js/moment.min'
-import {js9} from '../../assets/js/vendor.min'
-import {js3} from '../../assets/js/apexcharts.min'
-import {js4} from '../../assets/js/daterangepicker'
+
 </script>
 
 <style scoped>
-@import "bootstrap-daterangepicker/daterangepicker.css";
-@import "../../assets/css/index_css/icons.min.css";
-@import "../../assets/css/index_css/app-saas.min.css";
-@import "../../assets/css/index_css/jquery-jvectormap-1.2.2.css";
+
 </style>
+
+<!--<link rel="shortcut icon" href="assets/images/favicon.ico">-->
+<!--<link href="assets/css/dataTables.bootstrap5.min.css" rel="stylesheet" type="text/css">-->
+<!--<link href="assets/css/responsive.bootstrap5.min.css" rel="stylesheet" type="text/css">-->
+<!--<script src="assets/js/hyper-config.js"></script>-->
+<!--<link href="assets/css/icons.min.css" rel="stylesheet" type="text/css">-->
+<!--<link href="assets/css/app-modern.min.css" rel="stylesheet" type="text/css" id="app-style">-->
