@@ -8,24 +8,10 @@ create table if not exists registration
     type       tinyint      not null,
     miss       tinyint      not null,
     constraint reg_to_csp
-        foreign key
-            (
-             csp_id
-                ) references csp_info
-            (
-             id
-                )
-            on update cascade
-            on delete cascade,
+        foreign key (csp_id) references csp_info (id)
+            on update cascade on delete cascade,
     constraint reg_to_student
-        foreign key
-            (
-             student_id
-                ) references student
-            (
-             id
-                )
-            on update cascade
-            on delete cascade
+        foreign key (student_id) references student (id)
+            on update cascade on delete cascade
 );
 

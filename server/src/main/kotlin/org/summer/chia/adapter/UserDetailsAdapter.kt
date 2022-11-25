@@ -3,9 +3,9 @@ package org.summer.chia.adapter
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
-import org.summer.chia.pojo.User
+import org.summer.chia.pojo.dto.User
 
-class UserDetailsAdapter(val user: User) : UserDetails {
+class UserDetailsAdapter(private val user: User) : UserDetails {
 
     fun getPayLoad() = user
 

@@ -7,24 +7,10 @@ create table if not exists pre_registration
     type       tinyint      not null,
     extra      varchar(100) not null,
     constraint pre_reg_to_csp
-        foreign key
-            (
-             csp_id
-                ) references csp_info
-            (
-             id
-                )
-            on update cascade
-            on delete cascade,
+        foreign key (csp_id) references csp_info (id)
+            on update cascade on delete cascade,
     constraint pre_reg_to_student
-        foreign key
-            (
-             student_id
-                ) references student
-            (
-             id
-                )
-            on update cascade
-            on delete cascade
+        foreign key (student_id) references student (id)
+            on update cascade on delete cascade
 );
 

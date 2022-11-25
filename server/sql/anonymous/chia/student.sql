@@ -9,6 +9,6 @@ create table if not exists student
     max_score       int          null,
     free_times      int          not null,
     email           varchar(20)  not null,
-    enrollment_time datetime     not null
+    enrollment_time date         not null
 );
 

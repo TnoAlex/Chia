@@ -1,4 +1,4 @@
-package org.summer.chia.pojo
+package org.summer.chia.pojo.dto
 
 import com.baomidou.mybatisplus.annotation.IdType
 import com.baomidou.mybatisplus.annotation.TableField
