@@ -1,4 +1,4 @@
-package org.summer.chia.pojo
+package org.summer.chia.pojo.dto
 
 open class User() {
     constructor(
