@@ -56,6 +56,7 @@ class WebSecurityConfig {
                 it.antMatchers("/login/**").permitAll()
                     .antMatchers("/logout").permitAll()
                     .antMatchers("/static/**").permitAll()
+                    .antMatchers("/teacher/**").hasRole("Teacher")
                     .anyRequest().authenticated()
             }
             .addFilterAt(authenticationProcessingFilter, UsernamePasswordAuthenticationFilter::class.java)
