@@ -27,7 +27,8 @@ object TelnetUtil : Runnable {
             val commandResponseMap = mapOf(
                 "helo $serverName" to "250 OK", "auth login" to "334",
                 String(Base64Utils.encode(username.toByteArray())) to "334",
-                String(Base64Utils.encode(password.toByteArray())) to "235 Authentication successful"
+                String(Base64Utils.encode(password.toByteArray())) to "235 Authentication successful",
+                "quit" to "221"
             )
             val welcome = connect(host)
             if (!welcome.contains("220"))

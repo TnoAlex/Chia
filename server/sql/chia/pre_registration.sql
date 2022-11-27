@@ -1,4 +1,4 @@
-create table if not exists pre_registration
+create table pre_registration
 (
     id         varchar(128) not null
         primary key,
