@@ -18,4 +18,9 @@ class SettingController {
     fun initMailSenderConfig(@RequestBody config : MailServiceConfig): Result {
         return mailConfigService.initMailConfig(config)
     }
+
+    @PostMapping("/teacher/setting/mail_test")
+    fun testMailSetting():Result {
+        return  mailConfigService.testMailConfig()
+    }
 }

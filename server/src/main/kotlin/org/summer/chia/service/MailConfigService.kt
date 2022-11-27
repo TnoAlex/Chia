@@ -5,4 +5,5 @@ import org.summer.chia.pojo.ao.Result
 
 interface MailConfigService {
     fun initMailConfig(config: MailServiceConfig):Result
+    fun testMailConfig():Result
 }

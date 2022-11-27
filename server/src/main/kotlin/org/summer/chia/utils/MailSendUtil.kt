@@ -12,4 +12,6 @@ class MailSendUtil {
     private lateinit var javaMailSender: JavaMailSender
     @Autowired
     private lateinit var templateEngine: TemplateEngine
+
+
 }
