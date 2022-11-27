@@ -26,6 +26,18 @@ spring:
     mode: HTML
     servlet:
       content-type: text/html
+  mail:
+    default-encoding: utf-8
+    host: None
+    username: None
+    password: None
+    protocol: smtp
+    test-connection: false
+    properties:
+      mail:
+        smtp:
+          auth: true
+
   mvc:
     static-path-pattern: /static/**
   datasource:

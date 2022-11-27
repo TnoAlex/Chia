@@ -1,4 +1,4 @@
-create table if not exists csp_info
+create table csp_info
 (
     id           varchar(128) not null
         primary key,

@@ -1,4 +1,4 @@
-create table if not exists message
+create table message
 (
     id        varchar(128) not null
         primary key,

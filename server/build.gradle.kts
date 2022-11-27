@@ -49,6 +49,13 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
     implementation("com.alibaba:druid-spring-boot-starter:1.2.15")
+    // https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-context
+    implementation("org.springframework.cloud:spring-cloud-context:3.1.5")
+    // https://mvnrepository.com/artifact/org.yaml/snakeyaml
+    implementation("org.yaml:snakeyaml:1.33")
+    // https://mvnrepository.com/artifact/commons-net/commons-net
+    implementation("commons-net:commons-net:3.8.0")
+
 
 
 }

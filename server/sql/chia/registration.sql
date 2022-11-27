@@ -1,4 +1,4 @@
-create table if not exists registration
+create table registration
 (
     id         varchar(128) not null
         primary key,

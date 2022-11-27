@@ -9,4 +9,5 @@ interface StudentService : IService<Student> {
     fun loadUserByUsername(username: String): UserDetails?
 
     fun getBriefInfo():Result
+    fun enableAccount(mailAddress:String):Result
 }
