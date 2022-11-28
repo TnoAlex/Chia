@@ -18,7 +18,8 @@ data class Student(
     var idNumber: String,
     var maxScore: Int,
     var freeTimes: Int,
-    var email: String,
+    var email: String?,
+    var status:Int,
     var enrollmentTime: Date,
     @TableField(exist = false)
     override var role: String?

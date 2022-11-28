@@ -10,19 +10,19 @@ const router = createRouter({
                 component: () => import('@/components/login')
             },
             {
-                path: '/index',
-                name: "index",
-                component: () => import('@/components/index/index')
+                path:'/index',
+                name:"index",
+                component:()=>import('@/components/index/index')
             },
             {
-                path: '/create_csp',
-                name: "create_csp",
-                component: () => import('@/components/index/create_csp')
+                path:'/create_csp',
+                name:"create_csp",
+                component:()=>import('@/components/index/create_csp')
             },
             {
-                path: '/studentList',
-                name: "studentList",
-                component: () => import('@/components/studentInformation/studentList')
+                path:'/studentList',
+                name:"studentList",
+                component:()=>import('@/components/studentInformation/studentList')
             },
 
         ],

@@ -109,7 +109,6 @@ export default {
           JSON.stringify(this.loginObject)
       ).then(() => {
         //alert("登录成功")
-        this.showMessage('success', '登录成功')
 
       })
           .catch(err => {

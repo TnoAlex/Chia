@@ -7,5 +7,6 @@ data class StudentBriefInfo(
     var name:String,
     var studentNum:String,
     var maxScore:Int,
-    var freeTime:Int
+    var freeTime:Int,
+    var status:Int
 )

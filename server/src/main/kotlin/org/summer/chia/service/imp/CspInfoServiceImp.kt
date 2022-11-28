@@ -18,7 +18,7 @@ class CspInfoServiceImp : ServiceImpl<CspInfoMapper, CspInfo>(), CspInfoService 
         baseMapper.selectList(null).forEach {
             val startTime = it.startTime.format(pattern)
             val endTime = it.endTime.format(pattern)
-            res.add(CspBriefInfo(it.id,it.name.toString(), startTime, endTime, it.preQuantity))
+            res.add(CspBriefInfo(it.id!!,it.name.toString(), startTime, endTime, it.preQuantity))
         }
         return Result.success(res)
     }
