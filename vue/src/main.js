@@ -13,4 +13,3 @@ app.config.globalProperties.$axios = axios
 app.config.globalProperties.$MyUtil = MyUtil
 axios.defaults.baseURL = "/api"
 app.mount('#app')
-

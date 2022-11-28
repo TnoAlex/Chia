@@ -5,9 +5,9 @@ const router = createRouter({
         history: createWebHistory(),
         routes: [
             {
-                path:'/',
-                name:"login",
-                component:()=>import('@/components/login')
+                path: '/',
+                name: "login",
+                component: () => import('@/components/login')
             },
             {
                 path:'/index',
