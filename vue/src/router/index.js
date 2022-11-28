@@ -5,20 +5,26 @@ const router = createRouter({
         history: createWebHistory(),
         routes: [
             {
-                path:'/',
-                name:"login",
-                component:()=>import('@/components/login')
+                path: '/',
+                name: "login",
+                component: () => import('@/components/login')
             },
             {
-                path: '/forget_password',
-                name: 'forget_password',
-                component: () => import('@/components/forget_password')
+                path: '/index',
+                name: "index",
+                component: () => import('@/components/index/index')
             },
             {
-                path: '/error',
-                name: 'error',
-                component:()=>import('@/components/error')
-            }
+                path: '/create_csp',
+                name: "create_csp",
+                component: () => import('@/components/index/create_csp')
+            },
+            {
+                path: '/studentList',
+                name: "studentList",
+                component: () => import('@/components/studentInformation/studentList')
+            },
+
         ],
     }
 )
