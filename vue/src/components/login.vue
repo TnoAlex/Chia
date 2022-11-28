@@ -1,72 +1,65 @@
 <template>
   <head>
     <meta charset="UTF-8">
-    <ticharSet面
-    </title>
+    <title>登录界面</title>
   </head>
 
   <body>
   <div class="container">
-    <classNamelass
-    ="forms-container">className
-    <div class="signin-signup">
-      className
-      <form class="sign-in-form">
-        className <h2 class="title">学生登录</h2>
-        className
-        <div class="input-field">
-          className <i class="fas fa-user">
-          className </i>
-          <input id="student_name" v-model="loginObject.username" placeholder="用户名" type="text">
-        </div>
-        <div class="input-field">
-          className <i class="fas fa-lock">
-          className </i>
-          <input id="student_passwd" v-model="loginObject.password" placeholder="密码" type="password">
-        </div>
-        <a class="atag" style="display: block;text-align: right" type="button">忘记密码</a>
-        className <input class="btn solid" type="button" value="登录" @click="submitForm">
-      </form>
-      <form class="sign-up-form">
-        className <h2 class="title">教师登录</h2>
-        className
-        <div class="input-field">
-          className <i class="fas fa-user"></i>className <input id="teacher_name" v-model="loginObject.username"
-                                                                placeholder="用户名" type="text">
-        </div>
-        <div class="input-field">
-          className <i class="fas fa-lock"></i>className <input id="teacher_passwd" v-model="loginObject.password"
-                                                                placeholder="密码" type="password">
-        </div>
-        <a class="atag" href="" style="display: block;text-align: right" type="submit">忘记密码</a>
-        className <input class="btn" type="button" value="登录" @click="submclassNamem">
-      </form>
+    <div class="forms-container">
+      <div class="signin-signup">
+        <form class="sign-in-form">
+          <h2 class="title">学生登录</h2>
+          <div class="input-field">
+            <i class="fas fa-user">
+            </i>
+            <input id="student_name" v-model="loginObject.username" placeholder="用户名" type="text">
+          </div>
+          <div class="input-field">
+            <i class="fas fa-lock">
+            </i>
+            <input id="student_passwd" v-model="loginObject.password" placeholder="密码" type="password">
+          </div>
+          <router-link class="atag" style="display: block;text-align: right" to="forget_password">忘记密码</router-link>
+          <input class="btn solid" type="button" value="登录" @click="submitForm">
+        </form>
+        <form class="sign-up-form">
+          <h2 class="title">教师登录</h2>
+          <div class="input-field">
+            <i class="fas fa-user"></i>
+            <input id="teacher_name" v-model="loginObject.username" placeholder="用户名" type="text">
+          </div>
+          <div class="input-field">
+            <i class="fas fa-lock"></i>
+            <input id="teacher_passwd" v-model="loginObject.password" placeholder="密码" type="password">
+          </div>
+          <router-link class="atag" style="display: block;text-align: right" to="forget_password">忘记密码</router-link>
+          <input class="btn" type="button" value="登录" @click="submitForm">
+        </form>
+      </div>
     </div>
-  </div>
-  <div class="panels-container" className
-  <div class="panel left-panel" className
-  <div class="content" style="mclassName-right: 200px">
-    <h3>您是教师 ?</h3>
-    <p>请 点 击 此 处 进 行 登 录!</p>
-    <button class="btn transparent" classNameign-up-btn
-    ">教师登录</button>
-  </div>
-  </div>
-  <div class="panel right-panelclassName      <div class=" content
-  ">
-  className3>您是学生 ?</h3>
-  <p>请 点 击 此 处 进 行 登 录!</p>
-  <button class="btn transparent" classNameign-in-btn
-  ">学生登录</button>
-  </div>
-  </div>
-  </div>
+    <div class="panels-container">
+      <div class="panel left-panel">
+        <div class="content" style="margin-right: 200px">
+          <h3>您是教师 ?</h3>
+          <p>请 点 击 此 处 进 行 登 录!</p>
+          <button id="sign-up-btn" class="btn transparent">教师登录</button>
+        </div>
+      </div>
+      <div class="panel right-panel">
+        <div class="content">
+          <h3>您是学生 ?</h3>
+          <p>请 点 击 此 处 进 行 登 录!</p>
+          <button id="sign-in-btn" class="btn transparent">学生登录</button>
+        </div>
+      </div>
+    </div>
   </div>
   </body>
 </template>
 
 <script>
-import {ElMessage} from "element-plus";
+import messageBox from "@/utils/commonUtil";
 
 export default {
   name: "login",
@@ -97,29 +90,21 @@ export default {
   },
 
   methods: {
-    showMessage(type, message) {
-      ElMessage({
-        message: message,
-        type: type
-      })
-    },
     async submitForm() {
       await this.$axios.post(
           "/login",
           JSON.stringify(this.loginObject)
       ).then(() => {
-        //alert("登录成功")
-
+        messageBox('success', '登录成功')
       })
           .catch(err => {
-            this.showMessage('error', err.msg)
+            messageBox('error', err.data.msg)
           })
     }
   }
 }
 </script>
 
-<style scoped>
-@import "../assets/css/login.css";
-@import "../assets/css/login_style.css";
-</style>
+<style scoped src="../assets/css/login.css"></style>
+<style scoped src="../assets/css/login_style.css"></style>
+
