@@ -83,6 +83,7 @@
 <script>
 import topNav from './topNav'
 import leftNav from './leftNav'
+import messageBox from "@/utils/commonUtil";
 export default {
   components:{
     TopNav: topNav,
@@ -107,12 +108,12 @@ export default {
       console.log(this.valueEnd-this.valueStart)
       if(this.cspName==='' || this.valueStart===''||this.valueEnd==='')
       {
-        this.$MyUtil.ShowMessage('请将信息填写完整·','warning')
+        messageBox('请将信息填写完整·', 'warning')
         return
       }
       if(this.valueEnd-this.valueStart<=0)
       {
-        this.$MyUtil.ShowMessage('时间选择错误','warning')
+        messageBox('时间选择错误', 'warning')
       }
 
 
@@ -124,10 +125,8 @@ export default {
 
 }
 </script>
-@import "bootstrap-daterangepicker/daterangepicker.css";
-@import "../../assets/css/index_css/icons.min.css";
-@import "../../assets/css/index_css/app-saas.min.css";
-@import "../../assets/css/index_css/jquery-jvectormap-1.2.2.css";
-<style scoped>
 
-</style>
+<style scoped src="../../assets/css/index_css/icons.min.css"></style>
+<style scoped src="../../assets/css/index_css/app-saas.min.css"></style>
+<style scoped src="../../assets/css/index_css/jquery-jvectormap-1.2.2.css"></style>
+<style scoped src="bootstrap-daterangepicker/daterangepicker.css"></style>

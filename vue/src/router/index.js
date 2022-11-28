@@ -15,15 +15,25 @@ const router = createRouter({
                 component:()=>import('@/components/index/index')
             },
             {
-                path:'/create_csp',
-                name:"create_csp",
-                component:()=>import('@/components/index/create_csp')
+                path: '/create_csp',
+                name: "create_csp",
+                component: () => import('@/components/index/create_csp')
             },
             {
-                path:'/studentList',
-                name:"studentList",
-                component:()=>import('@/components/studentInformation/studentList')
+                path: '/studentList',
+                name: "studentList",
+                component: () => import('@/components/studentInformation/studentList')
             },
+            {
+                path: '/error',
+                name: 'error',
+                component: () => import('@/components/error')
+            },
+            {
+                path: '/forget_password',
+                name: 'forget_password',
+                component: () => import('@/components/forget_password')
+            }
 
         ],
     }

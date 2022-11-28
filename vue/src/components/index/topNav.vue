@@ -303,19 +303,12 @@
 </template>
 
 <script>
-import {js1} from '../../assets/js/hyper-config'
-import {js8} from '../../assets/js/moment.min'
-import {js9} from '../../assets/js/vendor.min'
-import {js3} from '../../assets/js/apexcharts.min'
-import {js4} from '../../assets/js/daterangepicker'
 export default {
   name: "topNav.vue"
 }
 </script>
 
-<style scoped>
-@import "bootstrap-daterangepicker/daterangepicker.css";
-@import "../../assets/css/index_css/icons.min.css";
-@import "../../assets/css/index_css/app-saas.min.css";
-@import "../../assets/css/index_css/jquery-jvectormap-1.2.2.css";
-</style>
+<style scoped src="../../assets/css/index_css/icons.min.css"></style>
+<style scoped src="../../assets/css/index_css/app-saas.min.css"></style>
+<style scoped src="../../assets/css/index_css/jquery-jvectormap-1.2.2.css"></style>
+<style scoped src="bootstrap-daterangepicker/daterangepicker.css"></style>
