@@ -9,6 +9,16 @@ const router = createRouter({
                 name:"login",
                 component:()=>import('@/components/login')
             },
+            {
+                path: '/forget_password',
+                name: 'forget_password',
+                component: () => import('@/components/forget_password')
+            },
+            {
+                path: '/error',
+                name: 'error',
+                component:()=>import('@/components/error')
+            }
         ],
     }
 )

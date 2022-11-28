@@ -20,7 +20,7 @@
             </i>
             <input type="password" placeholder="密码" v-model="loginObject.password" id="student_passwd">
           </div>
-          <a style="display: block;text-align: right" type="button" class="atag">忘记密码</a>
+          <router-link style="display: block;text-align: right" to="forget_password" class="atag">忘记密码</router-link>
           <input type="button" value="登录" @click="submitForm" class="btn solid">
         </form>
         <form class="sign-up-form">
@@ -33,7 +33,7 @@
             <i class="fas fa-lock"></i>
             <input type="password" placeholder="密码" v-model="loginObject.password" id="teacher_passwd">
           </div>
-          <a style="display: block;text-align: right" href="" type="submit" class="atag">忘记密码</a>
+          <router-link style="display: block;text-align: right" class="atag" to="forget_password">忘记密码</router-link>
           <input type="button" class="btn" @click="submitForm" value="登录">
         </form>
       </div>
@@ -59,7 +59,7 @@
 </template>
 
 <script>
-import {ElMessage} from "element-plus";
+import messageBox from "@/utils/commonUtil";
 
 export default {
   name: "login",
@@ -90,29 +90,21 @@ export default {
   },
 
   methods: {
-    showMessage(type,message){
-      ElMessage({
-        message:message,
-        type:type
-      })
-    },
     async submitForm() {
       await this.$axios.post(
           "/login",
           JSON.stringify(this.loginObject)
       ).then(() => {
-        alert("登录成功")
-        // this.showMessage('success','登录成功')
+        messageBox('success','登录成功')
       })
           .catch(err => {
-            this.showMessage('error',err.msg)
+            messageBox('error',err.data.msg)
           })
     }
   }
 }
 </script>
 
-<style scoped>
-@import "../assets/css/login.css";
-@import "../assets/css/login_style.css";
-</style>
+<style src="../assets/css/login.css" scoped></style>
+<style src="../assets/css/login_style.css" scoped></style>
+
