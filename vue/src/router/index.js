@@ -17,7 +17,7 @@ const router = createRouter({
             {
                 path: '/create_csp',
                 name: "create_csp",
-                component: () => import('@/components/index/create_csp')
+                component: () => import('@/components/index/createCsp')
             },
             {
                 path: '/studentList',

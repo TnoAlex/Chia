@@ -59,8 +59,7 @@
 </template>
 
 <script>
-import messageBox from "@/utils/commonUtil";
-
+import util from '../utils/commonUtil'
 export default {
   name: "login",
 
@@ -95,10 +94,12 @@ export default {
           "/login",
           JSON.stringify(this.loginObject)
       ).then(() => {
-        messageBox('success', '登录成功')
+        util.messageBox( '登录成功','success')
+        util.userInfo.type = this.loginObject.type
+        this.$router.push('/index')
       })
           .catch(err => {
-            messageBox('error', err.data.msg)
+            util.messageBox( err.data.msg,'error')
           })
     }
   }
