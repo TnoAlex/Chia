@@ -191,8 +191,8 @@
                                     <img src="../../assets/picture/avatar-1.jpg" alt="user-image" class="rounded-circle">
                                 </span>
             <span>
-                                    <span class="account-user-name">Dominic Keller</span>
-                                    <span class="account-position">Founder</span>
+                                    <span class="account-user-name">{{userName}}</span>
+                                    <span class="account-position">{{studentNum}}</span>
                                 </span>
           </a>
           <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated topbar-dropdown-menu profile-dropdown">
@@ -303,9 +303,25 @@
 </template>
 
 <script>
+import util from '../../utils/commonUtil'
 export default {
-  name: "topNav.vue"
+  name: "topNav.vue",
+  data(){
+    return{
+      util,
+      userName:util.userInfo.userName,
+      studentNum:util.userInfo.studentNum
+    }
+  },
+  methods:{
+    getUserData(obj)
+    {
+      this.userName =obj.userName
+      this.studentNum = obj.studentNum
+    }
+  }
 }
+
 </script>
 
 <style scoped src="../../assets/css/index_css/icons.min.css"></style>
