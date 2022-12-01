@@ -11,4 +11,6 @@ interface StudentService : IService<Student> {
     fun getBriefInfo():Result
     fun enableAccount(mailAddress:String):Result
     fun importStudent(infos:List<FreshmanInfo>):Result
+    fun queryStudentList(pageNum: String, pageSize: String):Result
+    fun queryStudentTotalNumber():Result
 }

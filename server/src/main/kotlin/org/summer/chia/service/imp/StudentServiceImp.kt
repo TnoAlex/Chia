@@ -2,6 +2,7 @@ package org.summer.chia.service.imp
 
 import com.baomidou.mybatisplus.extension.kotlin.KtQueryWrapper
 import com.baomidou.mybatisplus.extension.kotlin.KtUpdateWrapper
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.EnableAspectJAutoProxy
@@ -17,16 +18,18 @@ import org.summer.chia.exception.SqlException
 import org.summer.chia.mapper.CaptchaMapper
 import org.summer.chia.mapper.StudentMapper
 import org.summer.chia.pojo.ao.FreshmanInfo
-import org.summer.chia.pojo.dto.Student
 import org.summer.chia.pojo.ao.Result
 import org.summer.chia.pojo.ao.StudentBriefInfo
+import org.summer.chia.pojo.ao.StudentListItem
 import org.summer.chia.pojo.dto.Captcha
+import org.summer.chia.pojo.dto.Student
 import org.summer.chia.service.StudentService
 import org.summer.chia.utils.MailSendUtil
 import org.summer.chia.utils.verificationCode
 import java.sql.Timestamp
 import java.text.SimpleDateFormat
-import java.util.Date
+import java.util.*
+import org.summer.chia.exception.TypeCastException
 
 @Service
 @EnableAspectJAutoProxy(exposeProxy = true)
@@ -50,7 +53,8 @@ class StudentServiceImp : ServiceImpl<StudentMapper, Student>(), StudentService 
     }
 
     override fun getBriefInfo(): Result {
-        val account = ((SecurityContextHolder.getContext().authentication.principal as UserDetailsAdapter).getPayLoad() as Student).studentNumber
+        val account =
+            ((SecurityContextHolder.getContext().authentication.principal as UserDetailsAdapter).getPayLoad() as Student).studentNumber
         val query = KtQueryWrapper(Student::class.java)
         query.eq(Student::studentNumber, account)
         val res = baseMapper.selectOne(query)
@@ -86,9 +90,9 @@ class StudentServiceImp : ServiceImpl<StudentMapper, Student>(), StudentService 
             )
             mailSendUtils.sendTemplateMail(mailAddress, "邮箱绑定确认", "email_binding", data)
         } catch (e: Exception) {
-            when(e){
+            when (e) {
                 is MailSendException -> throw e
-                else -> throw throw SqlException("Insert or Update Exception",this::enableAccount.name)
+                else -> throw throw SqlException("Insert or Update Exception", this::enableAccount.name)
             }
 
         }
@@ -113,6 +117,38 @@ class StudentServiceImp : ServiceImpl<StudentMapper, Student>(), StudentService 
             throw SqlException("Insert Exception", this::importStudent.name)
         }
         return Result.success()
+    }
+
+    override fun queryStudentList(pageNum: String, pageSize: String): Result {
+        try {
+            val page = Page<Student>(pageNum.toLong(), pageSize.toLong())
+            val students = baseMapper.selectPage(page, null)
+            val res = ArrayList<StudentListItem>()
+            students.records.forEach {
+                val calendar = Calendar.getInstance()
+                calendar.time = it.enrollmentTime
+                res.add(
+                    StudentListItem(
+                        it.name,
+                        it.studentNumber,
+                        it.maxScore,
+                        it.freeTimes,
+                        calendar.get(Calendar.YEAR).toString() + "级"
+                    )
+                )
+            }
+            return Result.success(res)
+        }catch (e : Exception){
+            when(e){
+                is NumberFormatException-> throw TypeCastException("Can not cast parameter to 'Long'",this::queryStudentList.name)
+                else -> throw SqlException("Query Exception",this::queryStudentList.name)
+            }
+        }
+    }
+
+    override fun queryStudentTotalNumber(): Result {
+        val res = baseMapper.selectCount(null)
+        return Result.success(res)
     }
 
 }

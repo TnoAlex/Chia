@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 import org.summer.chia.pojo.ao.FreshmanInfo
+import org.summer.chia.pojo.ao.RestPassword
 import org.summer.chia.pojo.ao.Result
 import org.summer.chia.service.StudentService
 import org.summer.chia.service.TeacherService
@@ -22,6 +23,8 @@ class UserController {
     @Autowired
     private lateinit var studentService: StudentService
 
+    @Autowired
+    private lateinit var userService: UserService
 
 
     @GetMapping("/teacher/brief_info")
@@ -40,12 +43,22 @@ class UserController {
     }
 
     @PostMapping("/teacher/import/freshman")
-    fun importFreshManInfo(@RequestBody infoList:List<FreshmanInfo>): Result {
+    fun importFreshManInfo(@RequestBody infoList: List<FreshmanInfo>): Result {
         return studentService.importStudent(infoList)
     }
 
     @PostMapping("/user/reset/password")
-    fun resetPassword(){
+    fun resetPassword(@RequestBody obj: RestPassword): Result {
+        return userService.resetUserPassword(obj)
+    }
 
+    @GetMapping("/student/list/{pageNum}/{pageSize}")
+    fun queryStudentList(@PathVariable pageNum: String, @PathVariable pageSize: String): Result {
+        return studentService.queryStudentList(pageNum, pageSize)
+    }
+
+    @GetMapping("/student/list/total")
+    fun queryStudentTotalNum(): Result {
+        return studentService.queryStudentTotalNumber()
     }
 }

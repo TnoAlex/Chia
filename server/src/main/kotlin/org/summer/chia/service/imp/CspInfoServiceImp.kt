@@ -1,5 +1,6 @@
 package org.summer.chia.service.imp
 
+import com.baomidou.mybatisplus.extension.kotlin.KtQueryWrapper
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl
 import org.springframework.stereotype.Service
 import org.summer.chia.mapper.CspInfoMapper
@@ -15,7 +16,7 @@ class CspInfoServiceImp : ServiceImpl<CspInfoMapper, CspInfo>(), CspInfoService 
     override fun getAllPreRegistrationBriefInfo(): Result {
         val pattern = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
         val res = ArrayList<CspBriefInfo>()
-        baseMapper.selectList(null).forEach {
+        baseMapper.selectList(KtQueryWrapper(CspInfo::class.java).orderByDesc(CspInfo::startTime)).forEach {
             val startTime = it.startTime.format(pattern)
             val endTime = it.endTime.format(pattern)
             res.add(CspBriefInfo(it.id!!,it.name.toString(), startTime, endTime, it.preQuantity))
