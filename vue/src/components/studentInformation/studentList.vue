@@ -40,10 +40,10 @@
 
 
                     <el-select-v2 style="margin-right: 20px;"
-                        v-model="value"
-                        :options="options"
-                        clearable
-                        placeholder="请选择..."
+                                  v-model="value"
+                                  :options="options"
+                                  clearable
+                                  placeholder="请选择..."
 
                     />
                     <el-select-v2 style="margin-right: 20px;"
@@ -125,21 +125,17 @@
                       </span>
                         </template>
                       </el-dialog>
-
-
                     </div>
                     <div class="col-sm-7">
-
-                      <div class="text-sm-end" >
+                      <div class="text-sm-end">
                         <a href="static/学生信息导入模板.xlsx" download="学生信息导入模板">
                           <el-button style="margin-right: 20px" type="primary" size="large">导入模板下载</el-button>
                         </a>
-
                         <el-upload ref="upload" style="display: inline-block;margin-right: 20px"
-                            action="##"
-                            :auto-upload="false"
-                            :show-file-list="false"
-                            :on-change="handleExcel"
+                                   action="##"
+                                   :auto-upload="false"
+                                   :show-file-list="false"
+                                   :on-change="handleExcel"
                         >
                           <el-button type="primary" size="large">导入</el-button>
 
@@ -152,10 +148,10 @@
                   </div>
 
                   <el-table border
-                      ref="multipleTableRef"
-                      :data="tableData.slice((currentPage-1)*pageSize,currentPage*pageSize)"
-                      style="width: 100%"
-                      @selection-change="handleSelectionChange"
+                            ref="multipleTableRef"
+                            :data="tableData.slice((currentPage-1)*pageSize,currentPage*pageSize)"
+                            style="width: 100%"
+                            @selection-change="handleSelectionChange"
                   >
                     <el-table-column type="selection" width="55" />
                     <el-table-column property="studentNumber" label="学号" width="120" />
@@ -208,7 +204,6 @@ import util from '@/utils/commonUtil'
 import axios from "axios";
 export default {
   name: "studentList.vue",
-
   components:{
     TopNav:topNav,
     LeftNav:leftNav
@@ -223,14 +218,13 @@ export default {
         studentNum:'',
         name:'',
       }
-        ,
+      ,
       value:'请选择...',
       options:[{value:1,label:'a'},{value:2,label:'b'},{value:3,label:'c'}],
       tableData:[],
       totalDataNum :0,
       currentPage:1,
       pageSize:5
-
     }
   },
   methods:{
@@ -240,7 +234,6 @@ export default {
     },
     handleEdit()
     {
-
     },
     getInitTableData()
     {
@@ -263,9 +256,8 @@ export default {
     {
       this.currentPage = index
     },
-   async handleExcel(ev)
+    async handleExcel(ev)
     {
-
       let xlsx = require("xlsx")
       let file = ev.raw
       if(!file) return
@@ -299,13 +291,14 @@ export default {
       this.totalDataNum = tempArray.length
       this.$refs.upload.clearFiles()
     },
-
-
   },created() {
-   //this.getInitTableData()
+    // axios.get('/teacher/brief_info')
+    //     .then(res =>{
+    //       console.log(res)
+    //     })
+    //this.getInitTableData()
   }
 }
-
 </script>
 <style scoped>
 @import "../../assets/css/index_css/icons.min.css";

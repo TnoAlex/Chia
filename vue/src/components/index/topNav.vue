@@ -1,7 +1,6 @@
 <template>
   <div  class="navbar-custom topnav-navbar">
     <div class="container-fluid detached-nav">
-
       <!-- Topbar Logo -->
       <div class="logo-topbar">
         <!-- Logo light -->
@@ -13,7 +12,6 @@
                                 <img src="../../assets/picture/logo-sm.png" alt="small logo" height="22">
                             </span>
         </a>
-
         <!-- Logo Dark -->
         <a href="" class="logo-dark">
                             <span class="logo-lg">
@@ -24,12 +22,10 @@
                             </span>
         </a>
       </div>
-
       <!-- Sidebar Menu Toggle Button -->
       <button class="button-toggle-menu">
         <i class="mdi mdi-menu"></i>
       </button>
-
       <!-- Horizontal Menu Toggle Button -->
       <button class="navbar-toggle" data-bs-toggle="collapse" data-bs-target="#topnav-menu-content">
         <div class="lines">
@@ -38,7 +34,6 @@
           <span></span>
         </div>
       </button>
-
       <ul class="list-unstyled topbar-menu float-end mb-0">
         <li class="dropdown notification-list d-lg-none">
           <a class="nav-link dropdown-toggle arrow-none" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
@@ -50,7 +45,6 @@
             </form>
           </div>
         </li>
-
         <li class="dropdown notification-list">
           <a class="nav-link dropdown-toggle arrow-none" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
             <i class="ri-notification-3-line noti-icon"></i>
@@ -69,12 +63,9 @@
                 </div>
               </div>
             </div>
-
             <div class="px-3" style="max-height: 300px;" data-simplebar="">
-
               <h5 class="text-muted font-13 fw-normal mt-2">Today</h5>
               <!-- item-->
-
               <a href="javascript:void(0);" class="dropdown-item p-0 notify-item card unread-noti shadow-none mb-2">
                 <div class="card-body">
                   <span class="float-end noti-close-btn text-muted"><i class="mdi mdi-close"></i></span>
@@ -91,7 +82,6 @@
                   </div>
                 </div>
               </a>
-
               <!-- item-->
               <a href="javascript:void(0);" class="dropdown-item p-0 notify-item card read-noti shadow-none mb-2">
                 <div class="card-body">
@@ -109,9 +99,7 @@
                   </div>
                 </div>
               </a>
-
               <h5 class="text-muted font-13 fw-normal mt-0">Yesterday</h5>
-
               <!-- item-->
               <a href="javascript:void(0);" class="dropdown-item p-0 notify-item card read-noti shadow-none mb-2">
                 <div class="card-body">
@@ -129,9 +117,7 @@
                   </div>
                 </div>
               </a>
-
               <h5 class="text-muted font-13 fw-normal mt-0">30 Dec 2021</h5>
-
               <!-- item-->
               <a href="javascript:void(0);" class="dropdown-item p-0 notify-item card read-noti shadow-none mb-2">
                 <div class="card-body">
@@ -149,7 +135,6 @@
                   </div>
                 </div>
               </a>
-
               <!-- item-->
               <a href="javascript:void(0);" class="dropdown-item p-0 notify-item card read-noti shadow-none mb-2">
                 <div class="card-body">
@@ -167,24 +152,16 @@
                   </div>
                 </div>
               </a>
-
               <div class="text-center">
                 <i class="mdi mdi-dots-circle mdi-spin text-muted h3 mt-0"></i>
               </div>
             </div>
-
             <!-- All-->
             <a href="javascript:void(0);" class="dropdown-item text-center text-primary notify-item border-top border-light py-2">
               View All
             </a>
-
           </div>
         </li>
-
-
-
-
-
         <li class="dropdown notification-list">
           <a class="nav-link dropdown-toggle nav-user arrow-none me-0" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
                                 <span class="account-user-avatar">
@@ -200,24 +177,29 @@
             <div class=" dropdown-header noti-title">
               <h6 class="text-overflow m-0">欢 迎 !</h6>
             </div>
+
             <!-- item-->
             <a href="javascript:void(0);" class="dropdown-item notify-item">
               <i class="mdi mdi-account-circle me-1"></i>
               <span>我的账号</span>
+
             </a>
+
             <!-- item-->
             <a href="javascript:void(0);" class="dropdown-item notify-item">
               <i class="mdi mdi-account-edit me-1"></i>
               <span>设置</span>
+
             </a>
+
             <a href="javascript:void(0);" class="dropdown-item notify-item">
               <i class="mdi mdi-logout me-1"></i>
               <span>登出</span>
+
             </a>
           </div>
         </li>
       </ul>
-
       <!-- Topbar Search Form -->
       <div class="app-search dropdown">
         <form>
@@ -227,36 +209,30 @@
             <button class="input-group-text btn btn-primary" type="submit">搜索</button>
           </div>
         </form>
-
         <div class="dropdown-menu dropdown-menu-animated dropdown-lg" id="search-dropdown">
           <!-- item-->
           <div class="dropdown-header noti-title">
             <h5 class="text-overflow mb-2">Found <span class="text-danger">17</span> results</h5>
           </div>
-
           <!-- item-->
           <a href="javascript:void(0);" class="dropdown-item notify-item">
             <i class="uil-notes font-16 me-1"></i>
             <span>Analytics Report</span>
           </a>
-
           <!-- item-->
           <a href="javascript:void(0);" class="dropdown-item notify-item">
             <i class="uil-life-ring font-16 me-1"></i>
             <span>How can I help you?</span>
           </a>
-
           <!-- item-->
           <a href="javascript:void(0);" class="dropdown-item notify-item">
             <i class="uil-cog font-16 me-1"></i>
             <span>User profile settings</span>
           </a>
-
           <!-- item-->
           <div class="dropdown-header noti-title">
             <h6 class="text-overflow mb-2 text-uppercase">Users</h6>
           </div>
-
           <div class="notification-list">
             <!-- item-->
             <a href="javascript:void(0);" class="dropdown-item notify-item">
@@ -268,7 +244,6 @@
                 </div>
               </div>
             </a>
-
             <!-- item-->
             <a href="javascript:void(0);" class="dropdown-item notify-item">
               <div class="d-flex">
@@ -285,7 +260,6 @@
     </div>
   </div>
 </template>
-
 <script>
 import util from '../../utils/commonUtil'
 export default {
@@ -295,7 +269,6 @@ export default {
       util,
       userName:util.userInfo.userName,
       studentNum:util.userInfo.studentNum
-
     }
   },
   methods:{
@@ -306,9 +279,7 @@ export default {
     }
   }
 }
-
 </script>
-
 <style scoped src="../../assets/css/index_css/icons.min.css"></style>
 <style scoped src="../../assets/css/index_css/app-saas.min.css"></style>
 <style scoped src="../../assets/css/index_css/jquery-jvectormap-1.2.2.css"></style>
