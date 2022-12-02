@@ -61,4 +61,21 @@ class UserController {
     fun queryStudentTotalNum(): Result {
         return studentService.queryStudentTotalNumber()
     }
+
+    @PostMapping("/teacher/admin/remove/{sid}")
+    fun removeStudent(@PathVariable sid: String): Result {
+        return studentService.removeStudent(sid)
+    }
+
+    @GetMapping("/student/filter/{score}/{score_filter}/{grade}/{free_time}/{pageNum}/{pageSize}")
+    fun filterStudentList(@PathVariable score: String, @PathVariable score_filter: String, @PathVariable grade: String,
+                          @PathVariable free_time: String, @PathVariable pageNum: String, @PathVariable pageSize: String
+    ): Result {
+        return studentService.doFilterStudentList(score, score_filter, grade, free_time, pageNum, pageSize)
+    }
+
+    @GetMapping("/student/filter/{name}/{number}")
+    fun queryStudentByNameOrNumber(@PathVariable name: String, @PathVariable number: String): Result {
+        return studentService.queryStudentByNameOrNumber(name, number)
+    }
 }
