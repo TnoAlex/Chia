@@ -13,7 +13,7 @@ data class Teacher(
     override var id: String?,
     override var name: String,
     override var password: String,
-    var email: String,
+    override var email: String?,
     @TableField(exist = false)
     override var role: String?
-) : User(id, name, password, null)
+) : User(id, name, password, email,null)

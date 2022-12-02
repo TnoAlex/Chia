@@ -1,4 +1,4 @@
-package org.summer.chia.controllerTest
+package org.summer.chia.controller
 
 import com.google.gson.Gson
 import org.junit.jupiter.api.Test
