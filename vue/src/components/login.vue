@@ -89,18 +89,84 @@ export default {
   },
 
   methods: {
+    async getUserInfo() {
+      if(util.userInfo.type===1)
+      {
+        await this.$axios.get('/teacher/brief_info')
+            .then((res)=>{
+              console.log(res)
+              util.userInfo.userName = res.data.msg
+            })
+            .catch(reason => {
+              console.log(reason)
+              if(reason.data.data===null)
+              {
+                util.messageBox(reason.data.msg,'error')
+              }
+              else {
+                this.$router.push({path:'/error',
+                  errorCode:reason.data.code,
+                  errorMsg:reason.data.msg,
+                  errorCaused:reason.data
+                })
+              }
+            })
+      }
+      else {
+        await this.$axios.get('student/brief_info')
+            .then((res)=>{
+              console.log(res)
+              util.userInfo.userName = res.data.data.name
+              util.userInfo.studentNum = res.data.data.studentNum
+            })
+            .catch(reason => {
+              console.log(reason)
+              if(reason.data.data===null)
+              {
+                util.messageBox(reason.data.msg,'error')
+              }
+              else {
+                this.$router.push({path:'/error',
+                  errorCode:reason.data.code,
+                  errorMsg:reason.data.msg,
+                  errorCaused:reason.data
+                })
+              }
+
+            })
+      }
+
+
+
+    },
     async submitForm() {
+      let loading = util.loadingWait('登录中...')
+      let loginStatus = 0
+      await util.delay(100)
       await this.$axios.post(
           "/login",
           JSON.stringify(this.loginObject)
       ).then(() => {
-        util.messageBox( '登录成功','success')
         util.userInfo.type = this.loginObject.type
-        this.$router.push('/index')
+        this.getUserInfo()
+        loginStatus=1
       })
           .catch(err => {
-            util.messageBox( err.data.msg,'error')
+            console.log(err)
+
           })
+      await util.delay(100)
+      loading.close()
+      if(loginStatus===0)
+      {
+        util.messageBox('登录失败','error')
+      }
+      else
+      {
+        util.messageBox( '登录成功','success')
+        this.$router.push('/index')
+
+      }
     }
   }
 }

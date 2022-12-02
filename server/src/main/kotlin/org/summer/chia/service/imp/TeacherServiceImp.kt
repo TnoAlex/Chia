@@ -27,7 +27,7 @@ class TeacherServiceImp : ServiceImpl<TeacherMapper, Teacher>(), TeacherService 
     }
 
     override fun getUserNameByAccount(): Result {
-        val account = (SecurityContextHolder.getContext().authentication.principal as UserDetailsAdapter).username
+        val account = ((SecurityContextHolder.getContext().authentication.principal as UserDetailsAdapter).getPayLoad() as Teacher).email
         val query = KtQueryWrapper(Teacher::class.java)
         query.eq(Teacher::email,account)
         val res = baseMapper.selectOne(query)

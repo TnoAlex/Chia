@@ -1,6 +1,5 @@
 import {ElMessage} from "element-plus";
 import {ElLoading} from 'element-plus'
-import axios from "axios";
 const userInfo = {
     type:0,
     id:'2222',
@@ -14,7 +13,6 @@ export default{
     userInfo,
     dateTranslate,
     loadingWait,
-    axiosGet
 }
 function messageBox(msg, type) {
     ElMessage({
@@ -56,17 +54,6 @@ function dateTranslate(date)
     let day = date.getDay()
     return year+'-'+Month+'-'+day
 }
-async function axiosGet(url)
-{
-   return  await axios.get(url)
-        .then(res=>{
-            console.log(res)
-        })
-        .catch(reason => {
-            console.log(reason)
-        })
-}
-
 
 
 

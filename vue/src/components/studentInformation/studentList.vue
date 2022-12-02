@@ -103,10 +103,38 @@
                   <div class="row mb-2">
 
                     <div class="col-sm-5">
-                      <a href="javascript:void(0);" class="btn btn-danger mb-2"><i class="mdi mdi-plus-circle me-2"></i> 添加学生信息</a>
+                      <span @click="addInfoDialogVisible = true"  class="btn btn-danger mb-2"><i class="mdi mdi-plus-circle me-2"></i> 添加学生信息</span>
+                      <el-dialog
+                          v-model="addInfoDialogVisible"
+                          title="学生信息添加"
+                          width="30%"
+                          @close="addInputInfoClose"
+                      >
+                        <div>
+                          <label class="form-label">姓名</label>
+                          <el-input style="margin-bottom: 10px" v-model="addInputInfo.name" placeholder="输入姓名" />
+                          <label class="form-label">学号</label>
+                          <el-input style="margin-bottom: 10px" v-model="addInputInfo.studentNum" placeholder="输入学号" />
+                        </div>
+                        <template #footer>
+                      <span class="dialog-footer">
+                      <el-button @click="addInfoDialogVisible = false">关闭</el-button>
+                      <el-button type="primary" @click="addInfoDialogVisible = false">
+                      确认
+                      </el-button>
+                      </span>
+                        </template>
+                      </el-dialog>
+
+
                     </div>
                     <div class="col-sm-7">
-                      <div class="text-sm-end">
+
+                      <div class="text-sm-end" >
+                        <a href="static/学生信息导入模板.xlsx" download="学生信息导入模板">
+                          <el-button style="margin-right: 20px" type="primary" size="large">导入模板下载</el-button>
+                        </a>
+
                         <el-upload ref="upload" style="display: inline-block;margin-right: 20px"
                             action="##"
                             :auto-upload="false"
@@ -190,6 +218,12 @@ export default {
       Search,
       Delete,
       Edit,
+      addInfoDialogVisible:false
+      ,addInputInfo:{
+        studentNum:'',
+        name:'',
+      }
+        ,
       value:'请选择...',
       options:[{value:1,label:'a'},{value:2,label:'b'},{value:3,label:'c'}],
       tableData:[],
@@ -200,6 +234,10 @@ export default {
     }
   },
   methods:{
+    addInputInfoClose(){
+      this.addInputInfo.name=''
+      this.addInputInfo.studentNum=''
+    },
     handleEdit()
     {
 
@@ -264,10 +302,6 @@ export default {
 
 
   },created() {
-    axios.get('/teacher/brief_info')
-        .then(res =>{
-          console.log(res)
-        })
    //this.getInitTableData()
   }
 }

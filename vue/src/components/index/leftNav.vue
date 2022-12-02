@@ -51,9 +51,7 @@
               <li>
                 <router-link :to="{path:'/index'}">回到主页</router-link>
               </li>
-              <li v-if="util.userInfo.type===1">
-                <router-link :to="{path:'/create_csp'}">发布CSP预报名</router-link>
-              </li>
+
 
             </ul>
           </div>
@@ -65,7 +63,7 @@
           <router-link :to="{path:'/studentList'}" class="side-nav-link">
             <i class="uil-table">
             </i>
-            <span> 学生报名表 </span>
+            <span> 学生信息表 </span>
           </router-link>
         </li>
 
@@ -274,12 +272,15 @@ import {js1} from '../../assets/js/hyper-config'
 import {js8} from '../../assets/js/moment.min'
 import {js9} from '../../assets/js/vendor.min'
 import {js3} from '../../assets/js/apexcharts.min'
-console.log(js1,js8,js9,js3)
 export default {
   name: "leftBar.vue",
   data(){
     return{
-      util
+      util,
+      js1,
+      js8,
+      js9,
+      js3
     }
   },
 
