@@ -30,6 +30,7 @@ import java.sql.Timestamp
 import java.text.SimpleDateFormat
 import java.util.*
 import org.summer.chia.exception.TypeCastException
+import kotlin.collections.ArrayList
 
 @Service
 @EnableAspectJAutoProxy(exposeProxy = true)
@@ -123,12 +124,13 @@ class StudentServiceImp : ServiceImpl<StudentMapper, Student>(), StudentService 
         try {
             val page = Page<Student>(pageNum.toLong(), pageSize.toLong())
             val students = baseMapper.selectPage(page, null)
+            val calendar = Calendar.getInstance()
             val res = ArrayList<StudentListItem>()
             students.records.forEach {
-                val calendar = Calendar.getInstance()
                 calendar.time = it.enrollmentTime
                 res.add(
                     StudentListItem(
+                        it.id!!,
                         it.name,
                         it.studentNumber,
                         it.maxScore,
@@ -138,10 +140,14 @@ class StudentServiceImp : ServiceImpl<StudentMapper, Student>(), StudentService 
                 )
             }
             return Result.success(res)
-        }catch (e : Exception){
-            when(e){
-                is NumberFormatException-> throw TypeCastException("Can not cast parameter to 'Long'",this::queryStudentList.name)
-                else -> throw SqlException("Query Exception",this::queryStudentList.name)
+        } catch (e: Exception) {
+            when (e) {
+                is NumberFormatException -> throw TypeCastException(
+                    "Can not cast parameter to 'Long'",
+                    this::queryStudentList.name
+                )
+
+                else -> throw SqlException("Query Exception", this::queryStudentList.name)
             }
         }
     }
@@ -149,6 +155,106 @@ class StudentServiceImp : ServiceImpl<StudentMapper, Student>(), StudentService 
     override fun queryStudentTotalNumber(): Result {
         val res = baseMapper.selectCount(null)
         return Result.success(res)
+    }
+
+    @Transactional
+    override fun removeStudent(sid: String): Result {
+        try {
+            val query = KtQueryWrapper(Student::class.java)
+            query.eq(Student::id, sid)
+            baseMapper.delete(query)
+            return Result.success()
+        } catch (e: Exception) {
+            throw SqlException("Delete Exception", this::removeStudent.name)
+        }
+    }
+
+    override fun doFilterStudentList(
+        score: String,
+        score_filter: String,
+        grade: String,
+        free_time: String,
+        pageNum: String,
+        pageSize: String
+    ): Result {
+        try {
+            val query = KtQueryWrapper(Student::class.java)
+            if (score.isNotBlank()) {
+                when (score_filter) {
+                    "1" -> query.gt(Student::maxScore, score.toInt())
+                    "2" -> query.lt(Student::maxScore, score.toInt())
+                    "4" -> query.eq(Student::maxScore, score.toInt())
+                    "5" -> query.ge(Student::maxScore, score.toInt())
+                    "6" -> query.le(Student::maxScore, score.toInt())
+                    else -> return Result.error("错误的枚举")
+                }
+            }
+            if (grade.isNotBlank()) {
+                val date = SimpleDateFormat("yyyy-MM-dd").parse(grade)
+                query.eq(Student::enrollmentTime, java.sql.Date(date.time))
+            }
+            if (free_time.isNotBlank()) {
+                query.eq(Student::freeTimes, free_time.toInt())
+            }
+            if (query.isEmptyOfWhere)
+                return Result.error("无效的查询条件")
+            else {
+                val page = Page<Student>(pageNum.toLong(), pageSize.toLong())
+                val list = baseMapper.selectPage(page, query)
+                val res = ArrayList<StudentListItem>()
+                val calendar = Calendar.getInstance()
+                list.records.forEach {
+                    calendar.time = it.enrollmentTime
+                    res.add(
+                        StudentListItem(
+                            it.id!!,
+                            it.name,
+                            it.studentNumber,
+                            it.maxScore,
+                            it.freeTimes,
+                            calendar.get(Calendar.YEAR).toString() + "级"
+                        )
+                    )
+                }
+                return Result.success(res)
+            }
+        } catch (e: Exception) {
+            when (e) {
+                is NumberFormatException -> throw TypeCastException(
+                    "Can not cast parameter to 'Long'",
+                    this::queryStudentList.name
+                )
+
+                else -> throw SqlException("Query Exception", this::queryStudentList.name)
+            }
+        }
+    }
+
+    override fun queryStudentByNameOrNumber(name: String, number: String): Result {
+        val query = KtQueryWrapper(Student::class.java)
+        val calendar = Calendar.getInstance()
+        if (name.isNotBlank()) {
+            query.eq(Student::name, name)
+        }
+        if (number.isNotBlank()) {
+            query.eq(Student::studentNumber, number)
+        }
+        if (query.isEmptyOfWhere) {
+            return Result.error("条件错误")
+        } else {
+            val user = baseMapper.selectOne(query)
+            calendar.time = user.enrollmentTime
+            return Result.success(
+                StudentListItem(
+                    user.id!!,
+                    user.name,
+                    user.studentNumber,
+                    user.maxScore,
+                    user.freeTimes,
+                    calendar.get(Calendar.YEAR).toString() + "级"
+                )
+            )
+        }
     }
 
 }

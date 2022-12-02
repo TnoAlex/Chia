@@ -8,9 +8,18 @@ import org.summer.chia.pojo.ao.Result
 
 interface StudentService : IService<Student> {
     fun loadUserByUsername(username: String): UserDetails?
-    fun getBriefInfo():Result
-    fun enableAccount(mailAddress:String):Result
-    fun importStudent(infos:List<FreshmanInfo>):Result
-    fun queryStudentList(pageNum: String, pageSize: String):Result
-    fun queryStudentTotalNumber():Result
+    fun getBriefInfo(): Result
+    fun enableAccount(mailAddress: String): Result
+    fun importStudent(infos: List<FreshmanInfo>): Result
+    fun queryStudentList(pageNum: String, pageSize: String): Result
+    fun queryStudentTotalNumber(): Result
+    fun removeStudent(sid: String): Result
+    fun doFilterStudentList(
+        score: String, score_filter: String, grade: String,
+        free_time: String,
+        pageNum: String,
+        pageSize: String
+    ): Result
+
+    fun queryStudentByNameOrNumber(name: String, number: String):Result
 }
