@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional
 import org.summer.chia.adapter.UserDetailsAdapter
 import org.summer.chia.exception.MailSendException
 import org.summer.chia.exception.SqlException
+import org.summer.chia.exception.TypeCastException
 import org.summer.chia.mapper.CaptchaMapper
 import org.summer.chia.mapper.StudentMapper
 import org.summer.chia.pojo.ao.FreshmanInfo
@@ -29,8 +30,6 @@ import org.summer.chia.utils.verificationCode
 import java.sql.Timestamp
 import java.text.SimpleDateFormat
 import java.util.*
-import org.summer.chia.exception.TypeCastException
-import kotlin.collections.ArrayList
 
 @Service
 @EnableAspectJAutoProxy(exposeProxy = true)
@@ -179,7 +178,7 @@ class StudentServiceImp : ServiceImpl<StudentMapper, Student>(), StudentService 
     ): Result {
         try {
             val query = KtQueryWrapper(Student::class.java)
-            if (score.isNotBlank()) {
+            if (score != "null") {
                 when (score_filter) {
                     "1" -> query.gt(Student::maxScore, score.toInt())
                     "2" -> query.lt(Student::maxScore, score.toInt())
@@ -189,11 +188,11 @@ class StudentServiceImp : ServiceImpl<StudentMapper, Student>(), StudentService 
                     else -> return Result.error("错误的枚举")
                 }
             }
-            if (grade.isNotBlank()) {
+            if (grade != "null") {
                 val date = SimpleDateFormat("yyyy-MM-dd").parse(grade)
                 query.eq(Student::enrollmentTime, java.sql.Date(date.time))
             }
-            if (free_time.isNotBlank()) {
+            if (free_time != "null") {
                 query.eq(Student::freeTimes, free_time.toInt())
             }
             if (query.isEmptyOfWhere)
@@ -233,10 +232,9 @@ class StudentServiceImp : ServiceImpl<StudentMapper, Student>(), StudentService 
     override fun queryStudentByNameOrNumber(name: String, number: String): Result {
         val query = KtQueryWrapper(Student::class.java)
         val calendar = Calendar.getInstance()
-        if (name.isNotBlank()) {
+        if (name != "null") {
             query.eq(Student::name, name)
-        }
-        if (number.isNotBlank()) {
+        } else if (number != "null") {
             query.eq(Student::studentNumber, number)
         }
         if (query.isEmptyOfWhere) {
