@@ -139,13 +139,12 @@ export default {
         util.userInfo.type = this.loginObject.type
         this.getUserInfo()
         loginStatus = 1
-        this.$router.push('/index')
       })
           .catch(err => {
             console.log(err)
-            util.messageBox(err.data.msg, 'error')
           })
       await util.delay(100)
+      console.log("跳出")
       loading.close()
       if (loginStatus === 0) {
         util.messageBox('登录失败', 'error')
