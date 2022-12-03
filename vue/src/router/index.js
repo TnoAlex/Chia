@@ -28,6 +28,11 @@ const router = createRouter({
                 path: '/forget_password',
                 name: 'forget_password',
                 component: () => import('@/components/forget_password')
+            },
+            {
+                path: '/personal_info',
+                name: 'personal-info',
+                component: ()=>import('@/components/personal_info')
             }
 
         ],
