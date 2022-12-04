@@ -4,9 +4,10 @@ create table registration
         primary key,
     csp_id     varchar(128) not null,
     student_id varchar(128) not null,
-    score      int          not null,
+    score      int          null,
     type       tinyint      not null,
-    miss       tinyint      not null,
+    miss       tinyint      null,
+    state      tinyint      not null,
     constraint reg_to_csp
         foreign key (csp_id) references csp_info (id)
             on update cascade on delete cascade,
