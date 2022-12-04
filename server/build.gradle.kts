@@ -57,8 +57,7 @@ dependencies {
     implementation("commons-net:commons-net:3.8.0")
     // https://mvnrepository.com/artifact/org.aspectj/aspectjrt
     runtimeOnly("org.aspectj:aspectjrt:1.9.9.1")
-
-    3
+// https://mvnrepository.com/artifact/org.aspectj/aspectjweaver
     runtimeOnly("org.aspectj:aspectjweaver:1.9.9.1")
 
 
