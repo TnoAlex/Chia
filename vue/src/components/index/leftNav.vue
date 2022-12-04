@@ -1,6 +1,5 @@
 <template>
   <div  class="leftside-menu">
-
     <!-- Logo Light -->
     <a href="" class="logo logo-light">
                     <span class="logo-lg" style="height: 100%;width: 100%;">
@@ -10,7 +9,6 @@
                         <img src="../../assets/picture/logo-sm.png" alt="small logo" height="22">
                     </span>
     </a>
-
     <!-- Logo Dark -->
     <a href="" class="logo logo-dark">
                     <span class="logo-lg">
@@ -20,7 +18,6 @@
                         <img src="../../assets/picture/logo-dark-sm.png" alt="small logo" height="22">
                     </span>
     </a>
-
     <!-- Sidebar Hover Menu Toggle Button -->
     <button type="button" class="btn button-sm-hover p-0" data-bs-toggle="tooltip" data-bs-placement="right" title="Show Full Sidebar">
       <i class="ri-checkbox-blank-circle-line align-middle"></i>
@@ -34,12 +31,9 @@
           <span class="leftbar-user-name">Dominic Keller</span>
         </a>
       </div>
-
       <!--- Sidemenu -->
       <ul class="side-nav">
-
         <li class="side-nav-title side-nav-item">导航栏</li>
-
         <li class="side-nav-item">
           <a data-bs-toggle="collapse" href="#sidebarDashboards" aria-expanded="false" aria-controls="sidebarDashboards" class="side-nav-link">
             <i class="uil-home-alt"></i>
@@ -51,26 +45,19 @@
               <li>
                 <router-link :to="{path:'/index'}">回到主页</router-link>
               </li>
-              <li v-if="util.userInfo.type===1">
-                <router-link :to="{path:'/create_csp'}">发布CSP预报名</router-link>
-              </li>
-
             </ul>
           </div>
         </li>
-
         <li class="side-nav-title side-nav-item">学生信息管理</li>
-
         <li class="side-nav-item" v-if="util.userInfo.type===1">
           <router-link :to="{path:'/studentList'}" class="side-nav-link">
             <i class="uil-table">
             </i>
-            <span> 学生报名表 </span>
+            <span> 学生信息表 </span>
           </router-link>
         </li>
 
         <li class="side-nav-title side-nav-item">Custom</li>
-
         <li class="side-nav-item">
           <a data-bs-toggle="collapse" href="#sidebarPages" aria-expanded="false" aria-controls="sidebarPages" class="side-nav-link">
             <i class="uil-copy-alt"></i>
@@ -262,12 +249,10 @@
           </div>
         </li>
       </ul>
-
       <div class="clearfix"></div>
     </div>
   </div>
 </template>
-
 <script>
 import util from '../../utils/commonUtil'
 import {js1} from '../../assets/js/hyper-config'
@@ -279,10 +264,13 @@ export default {
   name: "leftBar.vue",
   data(){
     return{
-      util
+      util,
+      js1,
+      js8,
+      js9,
+      js3,
     }
   },
-
 }
 </script>
 <style scoped src="../../assets/css/index_css/icons.min.css"></style>

@@ -5,8 +5,10 @@ import router from "@/router"
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
 import locale from 'element-plus/lib/locale/lang/zh-cn'
+import cookies from 'vue-cookies'
 const app = createApp(App)
 app.use(router)
+app.use(cookies)
 app.use(ElementPlus,{locale})
 app.config.globalProperties.$axios = axios
 axios.defaults.baseURL = "/api"

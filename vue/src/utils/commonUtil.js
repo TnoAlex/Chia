@@ -37,7 +37,7 @@ export function readFile(file){
         let reader = new FileReader()
         reader.readAsBinaryString(file)
         reader.onload =ev=>{
-          resolve(ev.target.result)
+            resolve(ev.target.result)
         };
     });
 }
@@ -58,7 +58,7 @@ function dateTranslate(date)
 }
 async function axiosGet(url)
 {
-   return  await axios.get(url)
+    return  await axios.get(url)
         .then(res=>{
             console.log(res)
         })
@@ -66,7 +66,3 @@ async function axiosGet(url)
             console.log(reason)
         })
 }
-
-
-
-
