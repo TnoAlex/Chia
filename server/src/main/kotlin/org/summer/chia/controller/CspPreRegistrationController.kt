@@ -1,6 +1,7 @@
 package org.summer.chia.controller
 
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
@@ -17,5 +18,10 @@ class CspPreRegistrationController {
     @PostMapping("/pre/reg")
     fun preRegistration(@RequestBody preRegistration: PreRegistration): Result {
         return preRegistrationService.doPreRegistration(preRegistration)
+    }
+
+    @PostMapping("/pre/reg/cancel/{pid}")
+    fun cancelPreRegistration(@PathVariable pid: String): Result {
+        return preRegistrationService.doCancelPreRegistration(pid)
     }
 }
