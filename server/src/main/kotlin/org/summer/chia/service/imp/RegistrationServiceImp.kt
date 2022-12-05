@@ -7,10 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.summer.chia.exception.SqlException
+import org.summer.chia.mapper.CspInfoMapper
 import org.summer.chia.mapper.RegistrationMapper
 import org.summer.chia.mapper.StudentMapper
 import org.summer.chia.pojo.ao.RegistrationListItem
 import org.summer.chia.pojo.ao.Result
+import org.summer.chia.pojo.dto.CspInfo
 import org.summer.chia.pojo.dto.Registration
 import org.summer.chia.pojo.dto.Student
 import org.summer.chia.service.RegistrationService
@@ -21,6 +23,9 @@ class RegistrationServiceImp : ServiceImpl<RegistrationMapper, Registration>(), 
     @Autowired
     private lateinit var studentMapper: StudentMapper
 
+    @Autowired
+    private lateinit var cspInfoMapper: CspInfoMapper
+
     @Transactional
     override fun registrationList(objList: List<RegistrationListItem>): Result {
         val studentId = studentMapper.selectList(
@@ -30,7 +35,14 @@ class RegistrationServiceImp : ServiceImpl<RegistrationMapper, Registration>(), 
         ).associate { it.idNumber to it.id }
         try {
             objList.forEach {
-                baseMapper.insert(Registration(null, it.cspId, studentId[it.studentIdNumber]!!, null, it.type, null, 0))
+                baseMapper.insert(Registration(null, it.cspId, studentId[it.studentIdNumber]!!, null, it.type, null))
+            }
+            val cspId = objList.map { it.cspId }.toSet()
+            cspId.forEach {
+                cspInfoMapper.update(
+                    null,
+                    KtUpdateWrapper(CspInfo::class.java).eq(CspInfo::id, it).set(CspInfo::stage, 1)
+                )
             }
         } catch (e: Exception) {
             throw SqlException("Insert Exception", this::registrationList.name)
@@ -53,7 +65,13 @@ class RegistrationServiceImp : ServiceImpl<RegistrationMapper, Registration>(), 
                         .eq(Registration::studentId, studentId[it.studentIdNumber]!!)
                         .set(Registration::miss, 0)
                         .set(Registration::score, it.socre!!)
-                        .set(Registration::state, 1)
+                )
+            }
+            val cspId = objList.map { it.cspId }.toSet()
+            cspId.forEach {
+                cspInfoMapper.update(
+                    null,
+                    KtUpdateWrapper(CspInfo::class.java).eq(CspInfo::id, it).set(CspInfo::stage, 2)
                 )
             }
         } catch (e: Exception) {
@@ -63,6 +81,28 @@ class RegistrationServiceImp : ServiceImpl<RegistrationMapper, Registration>(), 
     }
 
     override fun doQueryAbsentOfficialRegistration(cid: String): Result {
-        TODO("Not yet implemented")
+        val cspStage = cspInfoMapper.selectOne(KtQueryWrapper(CspInfo::class.java).eq(CspInfo::id, cid)).stage!!
+        if (cspStage < 1) {
+            return Result.error("正式报名名单未导入")
+        }
+        return try {
+            val students = baseMapper.absentOfficialRegistration(cid)
+            Result.success(students)
+        } catch (e: Exception) {
+            throw SqlException("Query Exception", this::doQueryAbsentOfficialRegistration.name)
+        }
+    }
+
+    override fun doQueryAbsentExam(cid: String): Result {
+        val cspStage = cspInfoMapper.selectOne(KtQueryWrapper(CspInfo::class.java).eq(CspInfo::id, cid)).stage!!
+        if (cspStage < 2) {
+            return Result.error("成绩单未导入")
+        }
+        return try {
+            val students = baseMapper.absentExam(cid)
+            Result.success(students)
+        } catch (e: Exception) {
+            throw SqlException("Query Exception", this::doQueryAbsentOfficialRegistration.name)
+        }
     }
 }

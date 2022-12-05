@@ -19,5 +19,5 @@ data class CspInfo(
     var quantity: Int?,
     var scoreH: Int?,
     var scoreA: Int?,
-
-    )
+    var stage: Int?,
+)

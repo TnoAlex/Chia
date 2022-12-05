@@ -9,6 +9,7 @@ create table csp_info
     pre_quantity int default 0 null,
     quantity     int default 0 null,
     score_h      int default 0 null,
-    score_a      int default 0 null
+    score_a      int default 0 null,
+    stage        int default 0 null
 );
 

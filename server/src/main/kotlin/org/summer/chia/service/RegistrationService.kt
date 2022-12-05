@@ -9,5 +9,5 @@ interface RegistrationService : IService<Registration> {
     fun registrationList(objList: List<RegistrationListItem>): Result
     fun transcriptsList(objList: List<RegistrationListItem>): Result
     fun doQueryAbsentOfficialRegistration(cid: String): Result
-
+    fun doQueryAbsentExam(cid: String): Result
 }

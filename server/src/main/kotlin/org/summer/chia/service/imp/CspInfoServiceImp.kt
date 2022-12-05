@@ -46,7 +46,8 @@ class CspInfoServiceImp : ServiceImpl<CspInfoMapper, CspInfo>(), CspInfoService 
             null,
             null,
             null,
-            null
+            null,
+            null,
         )
         return try {
             baseMapper.insert(cspInfo)

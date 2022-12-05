@@ -15,5 +15,4 @@ data class Registration(
     var score: Int?,
     var type: Int,
     var miss: Int?,
-    var state: Int,
 )

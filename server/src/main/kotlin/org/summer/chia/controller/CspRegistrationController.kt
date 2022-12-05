@@ -25,4 +25,9 @@ class CspRegistrationController {
     fun queryAbsentOfficialRegistration(@PathVariable cid: String): Result {
         return registrationService.doQueryAbsentOfficialRegistration(cid)
     }
+
+    @GetMapping("/teacher/query/absent/exam/{cid}")
+    fun queryAbsentExam(@PathVariable cid: String): Result {
+        return registrationService.doQueryAbsentExam(cid)
+    }
 }
