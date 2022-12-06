@@ -30,4 +30,9 @@ class CspRegistrationController {
     fun queryAbsentExam(@PathVariable cid: String): Result {
         return registrationService.doQueryAbsentExam(cid)
     }
+
+    @PostMapping("/teacher/notice/official/{cid}")
+    fun noticeStudent(@RequestBody list: List<String>, @PathVariable cid: String): Result {
+        return registrationService.noticeStudent(list, cid)
+    }
 }

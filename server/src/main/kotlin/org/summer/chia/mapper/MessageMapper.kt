@@ -9,4 +9,5 @@ import org.summer.chia.pojo.dto.Message
 interface MessageMapper : BaseMapper<Message> {
     fun queryStudentMessage(sid: String): List<MessageListItem>
     fun queryTeacherMessage(tid: String): List<MessageListItem>
+    fun querySystemMessage(tid: String): List<MessageListItem>
 }
