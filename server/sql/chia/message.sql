@@ -6,6 +6,6 @@ create table message
     content   blob         not null,
     deli_id   varchar(128) not null,
     reci_id   varchar(128) not null,
-    deli_type tinyint      not null
+    status int default 0 not null
 );
 
