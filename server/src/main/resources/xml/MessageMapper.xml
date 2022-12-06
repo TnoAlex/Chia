@@ -13,7 +13,14 @@
         from message as m
                  left join student as s on m.deli_id = s.id
                  left join teacher as t on m.reci_id = t.id
-        where s.id = #{tid}
+        where t.id = #{tid}
+    </select>
+    <select id="querySystemMessage" resultMap="MessageListItem">
+        select m.content, m.id, 'System' as send_form, t.name as send_to, m.status
+        from message as m
+                 left join teacher as t on m.reci_id = t.id
+        where t.id = #{tid}
+          and m.deli_id = 'System'
     </select>
     <resultMap id="MessageListItem" type="org.summer.chia.pojo.ao.MessageListItem">
         <result property="id" column="id"/>

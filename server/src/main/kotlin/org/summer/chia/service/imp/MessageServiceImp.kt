@@ -68,6 +68,8 @@ class MessageServiceImp : ServiceImpl<MessageMapper, Message>(), MessageService 
 
                 is Teacher -> {
                     val res = baseMapper.queryTeacherMessage(user.id!!)
+                    val systemMessage = baseMapper.querySystemMessage(user.id!!)
+                    res.toMutableList().addAll(systemMessage)
                     Result.success(res)
                 }
 
