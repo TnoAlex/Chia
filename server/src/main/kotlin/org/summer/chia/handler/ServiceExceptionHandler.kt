@@ -44,7 +44,7 @@ class ServiceExceptionHandler {
         val res = HashMap<String, Any>()
         res["code"] = HttpStatus.INTERNAL_SERVER_ERROR
         res["msg"] = msg
-        res["data"] = "caused by$causedBy"
+        res["data"] = "caused by: $causedBy"
         return res
     }
 }

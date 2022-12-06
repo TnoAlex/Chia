@@ -125,6 +125,7 @@ class StudentServiceImp : ServiceImpl<StudentMapper, Student>(), StudentService 
             val students = baseMapper.selectPage(page, null)
             val calendar = Calendar.getInstance()
             val res = ArrayList<StudentListItem>()
+            val totalSize = baseMapper.selectCount(null)
             students.records.forEach {
                 calendar.time = it.enrollmentTime
                 res.add(
@@ -134,7 +135,8 @@ class StudentServiceImp : ServiceImpl<StudentMapper, Student>(), StudentService 
                         it.studentNumber,
                         it.maxScore,
                         it.freeTimes,
-                        calendar.get(Calendar.YEAR).toString() + "级"
+                        calendar.get(Calendar.YEAR).toString() + "级",
+                        totalSize
                     )
                 )
             }
@@ -157,10 +159,10 @@ class StudentServiceImp : ServiceImpl<StudentMapper, Student>(), StudentService 
     }
 
     @Transactional
-    override fun removeStudent(sid: String): Result {
+    override fun removeStudent(list: List<String>): Result {
         try {
             val query = KtQueryWrapper(Student::class.java)
-            query.eq(Student::id, sid)
+            query.`in`(Student::id, list)
             baseMapper.delete(query)
             return Result.success()
         } catch (e: Exception) {
@@ -200,6 +202,7 @@ class StudentServiceImp : ServiceImpl<StudentMapper, Student>(), StudentService 
             else {
                 val page = Page<Student>(pageNum.toLong(), pageSize.toLong())
                 val list = baseMapper.selectPage(page, query)
+                val totalSize = baseMapper.selectCount(query)
                 val res = ArrayList<StudentListItem>()
                 val calendar = Calendar.getInstance()
                 list.records.forEach {
@@ -211,7 +214,8 @@ class StudentServiceImp : ServiceImpl<StudentMapper, Student>(), StudentService 
                             it.studentNumber,
                             it.maxScore,
                             it.freeTimes,
-                            calendar.get(Calendar.YEAR).toString() + "级"
+                            calendar.get(Calendar.YEAR).toString() + "级",
+                            totalSize
                         )
                     )
                 }
@@ -241,6 +245,7 @@ class StudentServiceImp : ServiceImpl<StudentMapper, Student>(), StudentService 
             return Result.error("条件错误")
         } else {
             val user = baseMapper.selectOne(query)
+            val totalSize = baseMapper.selectCount(query)
             calendar.time = user.enrollmentTime
             return Result.success(
                 StudentListItem(
@@ -249,7 +254,8 @@ class StudentServiceImp : ServiceImpl<StudentMapper, Student>(), StudentService 
                     user.studentNumber,
                     user.maxScore,
                     user.freeTimes,
-                    calendar.get(Calendar.YEAR).toString() + "级"
+                    calendar.get(Calendar.YEAR).toString() + "级",
+                    totalSize
                 )
             )
         }

@@ -6,8 +6,9 @@ import org.summer.chia.annotation.NoArg
 data class StudentListItem(
     var id: String,
     var name: String,
-    var studentNum: String,
+    var studentNumber: String,
     var maxScore: Int,
     var freeTime: Int,
-    var grade: String
+    var grade: String,
+    var totalSize: Long
 )
