@@ -192,6 +192,7 @@ export default {
   },
   name: "index.vue",
   mounted() {
+    util.print('haha')
     this.userInfo = cookies.get('userInfo')
     this.getCspInfo()
   },
