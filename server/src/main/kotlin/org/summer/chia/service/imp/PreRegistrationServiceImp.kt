@@ -14,13 +14,20 @@ import org.summer.chia.pojo.dto.Student
 import org.summer.chia.service.PreRegistrationService
 
 @Service
-class PreRegistrationServiceImp:ServiceImpl<PreRegistrationMapper,PreRegistration>(),PreRegistrationService {
+class PreRegistrationServiceImp : ServiceImpl<PreRegistrationMapper, PreRegistration>(), PreRegistrationService {
 
     @Transactional
     override fun doPreRegistration(obj: PreRegistration): Result {
         val account =
             ((SecurityContextHolder.getContext().authentication.principal as UserDetailsAdapter).getPayLoad()) as Student
         obj.studentId = account.id
+        if (baseMapper.selectOne(
+                KtQueryWrapper(PreRegistration::class.java).eq(PreRegistration::studentId, account.id)
+                    .eq(PreRegistration::cspId, obj.cspId)
+            ) != null
+        ) {
+            return Result.error("已经报名此次CSP认证，无法重复报名")
+        }
         return try {
             baseMapper.insert(obj)
             Result.success()
