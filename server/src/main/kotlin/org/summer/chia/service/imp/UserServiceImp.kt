@@ -13,11 +13,11 @@ import org.summer.chia.pojo.ao.RestPassword
 import org.summer.chia.pojo.ao.Result
 import org.summer.chia.pojo.dto.Student
 import org.summer.chia.pojo.dto.Teacher
-import org.summer.chia.pojo.dto.User
 import org.summer.chia.service.CaptchaService
 import org.summer.chia.service.StudentService
 import org.summer.chia.service.TeacherService
 import org.summer.chia.service.UserService
+import org.summer.chia.utils.Log
 
 @Service
 class UserServiceImp : UserService {
@@ -58,6 +58,7 @@ class UserServiceImp : UserService {
                 }
             }
         }catch (e:Exception){
+            Log.error(this.javaClass, e.message!!, e.suppressed)
             throw SqlException("Update Exception",this::resetUserPassword.name)
         }
         return Result.success()
@@ -76,6 +77,7 @@ class UserServiceImp : UserService {
             }
 
             else -> {
+                Log.error(this.javaClass, "Incorrect Permission Descriptor", null)
                 throw RoleTypeErrorException("Incorrect Permission Descriptor")
             }
         }

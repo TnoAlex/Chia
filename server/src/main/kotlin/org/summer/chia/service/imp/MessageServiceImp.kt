@@ -18,6 +18,7 @@ import org.summer.chia.pojo.dto.Message
 import org.summer.chia.pojo.dto.Student
 import org.summer.chia.pojo.dto.Teacher
 import org.summer.chia.service.MessageService
+import org.summer.chia.utils.Log
 import java.sql.Timestamp
 
 @Service
@@ -41,6 +42,7 @@ class MessageServiceImp : ServiceImpl<MessageMapper, Message>(), MessageService 
             )
             return Result.success()
         } catch (e: Exception) {
+            Log.error(this.javaClass, this::doPostMessage.name + " Insert Exception", e.suppressed)
             throw SqlException("Insert Exception", this::doPostMessage.name)
         }
     }
@@ -53,6 +55,7 @@ class MessageServiceImp : ServiceImpl<MessageMapper, Message>(), MessageService 
             }
             return Result.success(res)
         } catch (e: Exception) {
+            Log.error(this.javaClass, this::doQueryCommunicative.name + " Query Exception", e.suppressed)
             throw SqlException("Query Exception", this::doQueryCommunicative.name)
         }
     }
@@ -78,6 +81,7 @@ class MessageServiceImp : ServiceImpl<MessageMapper, Message>(), MessageService 
                 }
             }
         } catch (e: Exception) {
+            Log.error(this.javaClass, this::doQueryMessageList.name + " Query Exception", e.suppressed)
             throw SqlException("Query Exception", this::doQueryMessageList.name)
         }
 
@@ -91,6 +95,7 @@ class MessageServiceImp : ServiceImpl<MessageMapper, Message>(), MessageService 
             baseMapper.update(null, query)
             return Result.success()
         } catch (e: Exception) {
+            Log.error(this.javaClass, this::markMessage.name + " Update Exception", e.suppressed)
             throw SqlException("Update Exception", this::markMessage.name)
         }
     }
@@ -103,6 +108,7 @@ class MessageServiceImp : ServiceImpl<MessageMapper, Message>(), MessageService 
             baseMapper.delete(query)
             return Result.success()
         } catch (e: Exception) {
+            Log.error(this.javaClass, this::deleteMessage.name + " Delete Exception", e.suppressed)
             throw SqlException("Delete Exception", this::deleteMessage.name)
         }
     }

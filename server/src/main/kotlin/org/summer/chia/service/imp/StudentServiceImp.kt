@@ -18,13 +18,11 @@ import org.summer.chia.exception.SqlException
 import org.summer.chia.exception.TypeCastException
 import org.summer.chia.mapper.CaptchaMapper
 import org.summer.chia.mapper.StudentMapper
-import org.summer.chia.pojo.ao.FreshmanInfo
-import org.summer.chia.pojo.ao.Result
-import org.summer.chia.pojo.ao.StudentBriefInfo
-import org.summer.chia.pojo.ao.StudentListItem
+import org.summer.chia.pojo.ao.*
 import org.summer.chia.pojo.dto.Captcha
 import org.summer.chia.pojo.dto.Student
 import org.summer.chia.service.StudentService
+import org.summer.chia.utils.Log
 import org.summer.chia.utils.MailSendUtil
 import org.summer.chia.utils.verificationCode
 import java.sql.Timestamp
@@ -68,8 +66,11 @@ class StudentServiceImp : ServiceImpl<StudentMapper, Student>(), StudentService 
                     res.status
                 )
             )
-        } else
+        } else {
+            Log.warn(this.javaClass, this::getBriefInfo.name + "Query Exceptions", null)
             throw SqlException("Query Exceptions", this::getBriefInfo.name)
+        }
+
     }
 
     @Async
@@ -90,6 +91,7 @@ class StudentServiceImp : ServiceImpl<StudentMapper, Student>(), StudentService 
             )
             mailSendUtils.sendTemplateMail(mailAddress, "邮箱绑定确认", "email_binding", data)
         } catch (e: Exception) {
+            Log.error(this.javaClass, this::enableAccount.name + " Insert or Update Exception", e.suppressed)
             when (e) {
                 is MailSendException -> throw e
                 else -> throw throw SqlException("Insert or Update Exception", this::enableAccount.name)
@@ -114,6 +116,7 @@ class StudentServiceImp : ServiceImpl<StudentMapper, Student>(), StudentService 
                 )
             }
         } catch (e: Exception) {
+            Log.error(this.javaClass, this::importStudent.name + " Insert Exception", e.suppressed)
             throw SqlException("Insert Exception", this::importStudent.name)
         }
         return Result.success()
@@ -142,6 +145,7 @@ class StudentServiceImp : ServiceImpl<StudentMapper, Student>(), StudentService 
             }
             return Result.success(res)
         } catch (e: Exception) {
+            Log.error(this.javaClass, this::queryStudentList.name, e.suppressed)
             when (e) {
                 is NumberFormatException -> throw TypeCastException(
                     "Can not cast parameter to 'Long'",
@@ -166,6 +170,7 @@ class StudentServiceImp : ServiceImpl<StudentMapper, Student>(), StudentService 
             baseMapper.delete(query)
             return Result.success()
         } catch (e: Exception) {
+            Log.error(this.javaClass, this::removeStudent.name + " Delete Exception", e.suppressed)
             throw SqlException("Delete Exception", this::removeStudent.name)
         }
     }
@@ -179,24 +184,7 @@ class StudentServiceImp : ServiceImpl<StudentMapper, Student>(), StudentService 
         pageSize: String
     ): Result {
         try {
-            val query = KtQueryWrapper(Student::class.java)
-            if (score != "null") {
-                when (score_filter) {
-                    "1" -> query.gt(Student::maxScore, score.toInt())
-                    "2" -> query.lt(Student::maxScore, score.toInt())
-                    "4" -> query.eq(Student::maxScore, score.toInt())
-                    "5" -> query.ge(Student::maxScore, score.toInt())
-                    "6" -> query.le(Student::maxScore, score.toInt())
-                    else -> return Result.error("错误的枚举")
-                }
-            }
-            if (grade != "null") {
-                val date = SimpleDateFormat("yyyy-MM-dd").parse(grade)
-                query.eq(Student::enrollmentTime, java.sql.Date(date.time))
-            }
-            if (free_time != "null") {
-                query.eq(Student::freeTimes, free_time.toInt())
-            }
+            val query = filterQueryGen(score, score_filter, grade, free_time)
             if (query.isEmptyOfWhere)
                 return Result.error("无效的查询条件")
             else {
@@ -222,6 +210,7 @@ class StudentServiceImp : ServiceImpl<StudentMapper, Student>(), StudentService 
                 return Result.success(res)
             }
         } catch (e: Exception) {
+            Log.error(this.javaClass, this::queryStudentList.name, e.suppressed)
             when (e) {
                 is NumberFormatException -> throw TypeCastException(
                     "Can not cast parameter to 'Long'",
@@ -261,6 +250,63 @@ class StudentServiceImp : ServiceImpl<StudentMapper, Student>(), StudentService 
                 }
             )
         }
+    }
+
+    override fun doQueryDetails(): Result {
+        val account =
+            ((SecurityContextHolder.getContext().authentication.principal as UserDetailsAdapter).getPayLoad()) as Student
+        val email = "****@" + account.email!!.split("@")[1]
+        val idNumber = account.idNumber.replace(Regex("(?<=\\w{3})\\w(?=\\w{4})"), "*")
+        return Result.success(
+            StudentDetails(
+                account.name,
+                account.studentNumber,
+                idNumber,
+                account.maxScore,
+                account.freeTimes,
+                email
+            )
+        )
+    }
+
+    @Transactional
+    override fun doFilterStudentDelete(score: String, score_filter: String, grade: String, free_time: String): Result {
+        val query = filterQueryGen(score, score_filter, grade, free_time)
+        if (query.isEmptyOfWhere)
+            return Result.error("无效的条件")
+        try {
+            baseMapper.delete(query)
+            return Result.success()
+        } catch (e: Exception) {
+            Log.error(this.javaClass, this::doFilterStudentDelete.name + " Delete Exception", e.suppressed)
+            throw SqlException("Delete Exception", this::doFilterStudentDelete.name)
+        }
+    }
+
+    private fun filterQueryGen(
+        score: String,
+        score_filter: String,
+        grade: String,
+        free_time: String
+    ): KtQueryWrapper<Student> {
+        val query = KtQueryWrapper(Student::class.java)
+        if (score != "null") {
+            when (score_filter) {
+                "1" -> query.gt(Student::maxScore, score.toInt())
+                "2" -> query.lt(Student::maxScore, score.toInt())
+                "4" -> query.eq(Student::maxScore, score.toInt())
+                "5" -> query.ge(Student::maxScore, score.toInt())
+                "6" -> query.le(Student::maxScore, score.toInt())
+            }
+        }
+        if (grade != "null") {
+            val date = SimpleDateFormat("yyyy-MM-dd").parse(grade)
+            query.eq(Student::enrollmentTime, java.sql.Date(date.time))
+        }
+        if (free_time != "null") {
+            query.eq(Student::freeTimes, free_time.toInt())
+        }
+        return query
     }
 
 }

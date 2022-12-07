@@ -12,6 +12,7 @@ import org.summer.chia.pojo.ao.PublishCsp
 import org.summer.chia.pojo.ao.Result
 import org.summer.chia.pojo.dto.CspInfo
 import org.summer.chia.service.CspInfoService
+import org.summer.chia.utils.Log
 import java.sql.Timestamp
 import java.text.SimpleDateFormat
 import java.util.*
@@ -53,6 +54,7 @@ class CspInfoServiceImp : ServiceImpl<CspInfoMapper, CspInfo>(), CspInfoService 
             baseMapper.insert(cspInfo)
             Result.success()
         } catch (e: Exception) {
+            Log.error(this.javaClass, this::addCsp.name + " Insert Exception", e.suppressed)
             throw SqlException("Insert Exception", this::addCsp.name)
         }
     }
@@ -68,6 +70,7 @@ class CspInfoServiceImp : ServiceImpl<CspInfoMapper, CspInfo>(), CspInfoService 
             baseMapper.update(null, query)
             Result.success()
         } catch (e: Exception) {
+            Log.error(this.javaClass, this::modifyCspInfo.name + " Update Exception", e.suppressed)
             throw SqlException("Update Exception", this::modifyCspInfo.name)
         }
     }
