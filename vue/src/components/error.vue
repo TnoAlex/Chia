@@ -1,7 +1,7 @@
 <template>
   <main>
-    <div class="container">
-      <div class="row">
+    <div class="container " style="width: 75%;height: 30%;text-align: center">
+      <div class="row align-items-center">
         <div class="col-md-6 align-self-center">
           <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
                viewBox="0 0 800 600" style="visibility: visible;">
@@ -283,8 +283,8 @@
           </svg>
         </div>
         <div class="col-md-6 align-self-center">
-          <h1>{{errorCode}}</h1>
-          <h2>UH OH! {{errorMsg}}</h2>
+          <h3>{{errorCode}}</h3>
+          <p style="font-size: larger">UH OH! {{errorMsg}}</p>
           <p>此错误可能由以下原因造成{{errorCaused}}</p>
         </div>
       </div>
@@ -305,9 +305,9 @@ export default {
     }
   },
   mounted() {
-    this.errorCode = this.$route.query.error_code
-    this.errorMsg = this.$route.query.error_msg
-    this.errorCaused = this.$route.query.error_caused
+    this.errorCode = this.$route.query.errorCode
+    this.errorMsg = this.$route.query.errorMsg
+    this.errorCaused = this.$route.query.errorCaused
 
     gsap.set("svg", {visibility: "visible"});
     gsap.to("#headStripe", {
@@ -402,5 +402,5 @@ export default {
 
 </script>
 <style>
-@import "@/assets/css/error.css"
+@import "@/assets/css/error.css";
 </style>>

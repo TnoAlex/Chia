@@ -1,11 +1,14 @@
 import {ElMessage} from "element-plus";
-import {ElLoading} from 'element-plus'
-import axios from "axios";
+import {ElLoading} from 'element-plus';
+
 const userInfo = {
     type:0,
     id:'2222',
     userName:'',
-    studentNum:''
+    studentNum:'',
+    status:1,
+    freeTime:0,
+    maxScore:500,
 }
 export default{
     messageBox,
@@ -14,7 +17,9 @@ export default{
     userInfo,
     dateTranslate,
     loadingWait,
-    axiosGet
+    print,
+    judgeInputIsNumber,
+    preFixInteger
 }
 function messageBox(msg, type) {
     ElMessage({
@@ -24,12 +29,13 @@ function messageBox(msg, type) {
         grouping: true
     })
 }
-function loadingWait(text)
+function loadingWait(text,targetId)
 {
     return ElLoading.service({
         lock:true,
         text:text,
-        background:'rgba(0, 0, 0, 0.7)',
+        background:'rgba(255, 255, 255, 0.85)',
+        target:document.getElementById(targetId)
     })
 }
 export function readFile(file){
@@ -51,18 +57,19 @@ function delay(interval =0){
 }
 function dateTranslate(date)
 {
-    let year  = date.getFullYear()
-    let Month = date.getMonth()+1
-    let day = date.getDay()
-    return year+'-'+Month+'-'+day
+    return date+'-'+'9-1'
 }
-async function axiosGet(url)
+function print(text)
 {
-    return  await axios.get(url)
-        .then(res=>{
-            console.log(res)
-        })
-        .catch(reason => {
-            console.log(reason)
-        })
+    console.log(text)
+}
+function judgeInputIsNumber(text)
+{
+    //单独使用!isNaN(parseFloat(value))会将123abc当成数值，
+    // 所以用isFinite额外判断一次
+    return !isNaN(parseFloat(text)) && isFinite(text); // false
+}
+function preFixInteger(num,length)
+{
+    return (Array(length).join('0')+num).slice(-length)
 }
