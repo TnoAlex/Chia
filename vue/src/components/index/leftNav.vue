@@ -49,7 +49,7 @@
           </div>
         </li>
         <li class="side-nav-title side-nav-item">学生信息管理</li>
-        <li class="side-nav-item" v-if="util.userInfo.type===1">
+        <li class="side-nav-item" v-if="userInfo.type===1">
           <router-link :to="{path:'/studentList'}" class="side-nav-link">
             <i class="uil-table">
             </i>
@@ -259,7 +259,7 @@ import {js1} from '../../assets/js/hyper-config'
 import {js8} from '../../assets/js/moment.min'
 import {js9} from '../../assets/js/vendor.min'
 import {js3} from '../../assets/js/apexcharts.min'
-console.log(js1,js8,js9,js3)
+import cookies from "vue-cookies";
 export default {
   name: "leftBar.vue",
   data(){
@@ -269,8 +269,12 @@ export default {
       js8,
       js9,
       js3,
+      userInfo: {}
     }
   },
+  created() {
+    this.userInfo = cookies.get('userInfo')
+  }
 }
 </script>
 <style scoped src="../../assets/css/index_css/icons.min.css"></style>

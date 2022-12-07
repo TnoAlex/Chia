@@ -163,14 +163,14 @@
           </div>
         </li>
         <li class="dropdown notification-list">
-          <a class="nav-link dropdown-toggle nav-user arrow-none me-0" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
-                                <span class="account-user-avatar">
+          <a style="display: inline-block;width: 300px" class="nav-link dropdown-toggle nav-user arrow-none me-0" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+                                <div class="account-user-avatar" style="display: flex; justify-content: center; align-items: center;margin-left: 0;margin-right: 0">
                                     <img src="../../assets/picture/avatar-1.jpg" alt="user-image" class="rounded-circle">
-                                </span>
-            <span>
-                                    <span  class="account-user-name">{{util.userInfo.type===0?userName:'&emsp;&emsp;'}}</span>
-                                    <span  class="account-position"> {{util.userInfo.type===0?studentNum:userName}}</span>
-                                </span>
+                                    <span style="margin-left: 5px" >
+                                    {{userInfo.userName}}
+                                    </span>
+                                </div>
+
           </a>
           <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated topbar-dropdown-menu profile-dropdown">
             <!-- item-->
@@ -179,11 +179,17 @@
             </div>
 
             <!-- item-->
-            <a href="javascript:void(0);" class="dropdown-item notify-item">
+<!--            <a href="javascript:void(0);" class="dropdown-item notify-item">-->
+<!--              <i class="mdi mdi-account-circle me-1"></i>-->
+<!--              <span>我的账号</span>-->
+
+<!--            </a>-->
+            <router-link :to="{path:'/personal_info'}" class="dropdown-item notify-item">
               <i class="mdi mdi-account-circle me-1"></i>
               <span>我的账号</span>
 
-            </a>
+            </router-link>
+
 
             <!-- item-->
             <a href="javascript:void(0);" class="dropdown-item notify-item">
@@ -262,25 +268,24 @@
 </template>
 <script>
 import util from '../../utils/commonUtil'
+import cookies from "vue-cookies";
+
 export default {
   name: "topNav.vue",
   data(){
     return{
       util,
-      userName:util.userInfo.userName,
-      studentNum:util.userInfo.studentNum
+      userInfo:{}
     }
   },
   methods:{
-    getUserData(obj)
-    {
-      this.userName =obj.userName
-      this.studentNum = obj.studentNum
-    }
+  },
+  created() {
+    this.userInfo = cookies.get('userInfo')
   }
 }
 </script>
 <style scoped src="../../assets/css/index_css/icons.min.css"></style>
-<style scoped src="../../assets/css/index_css/app-saas.min.css"></style>
-<style scoped src="../../assets/css/index_css/jquery-jvectormap-1.2.2.css"></style>
-<style scoped src="bootstrap-daterangepicker/daterangepicker.css"></style>
+<!--<style scoped src="../../assets/css/index_css/app-saas.min.css"></style>-->
+<!--<style scoped src="../../assets/css/index_css/jquery-jvectormap-1.2.2.css"></style>-->
+<!--<style scoped src="bootstrap-daterangepicker/daterangepicker.css"></style>-->

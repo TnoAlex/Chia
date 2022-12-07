@@ -60,6 +60,8 @@
 </template>
 <script>
 import util from '../utils/commonUtil'
+import cookies from "vue-cookies";
+import axios from "axios";
 
 export default {
   name: "login",
@@ -90,11 +92,10 @@ export default {
       if (util.userInfo.type === 1) {
         await this.$axios.get('/teacher/brief_info')
             .then((res) => {
-              console.log(res)
               util.userInfo.userName = res.data.msg
             })
             .catch(reason => {
-              console.log(reason)
+
               if (reason.data.data === null) {
                 util.messageBox(reason.data.msg, 'error')
               } else {
@@ -109,22 +110,21 @@ export default {
       } else {
         await this.$axios.get('student/brief_info')
             .then((res) => {
-              console.log(res)
               util.userInfo.userName = res.data.data.name
               util.userInfo.studentNum = res.data.data.studentNum
+              util.userInfo.maxScore = res.data.data.maxScore
+              util.userInfo.freeTime = res.data.data.freeTime
+              util.userInfo.status = res.data.data.status
             })
-            .catch(reason => {
-              console.log(reason)
-              if (reason.data.data === null) {
-                util.messageBox(reason.data.msg, 'error')
-              } else {
-                this.$router.push({
-                  path: '/error',
-                  errorCode: reason.data.code,
-                  errorMsg: reason.data.msg,
-                  errorCaused: reason.data
-                })
-              }
+            .catch(err => {
+              this.$router.push({
+                path:'/error',
+                query:{
+                  errorCode: err.response.status,
+                  errorMsg: err.msg,
+                  errorCaused: err.response.data
+                }
+              })
             })
       }
     },
@@ -137,19 +137,43 @@ export default {
           JSON.stringify(this.loginObject)
       ).then(() => {
         util.userInfo.type = this.loginObject.type
-        this.getUserInfo()
         loginStatus = 1
       })
           .catch(err => {
-            console.log(err)
+            loading.close()
+            if (err.response.status===500)
+            {
+              util.messageBox('登录失败', 'error')
+              this.$router.push({
+                path:'/error',
+                query:{
+                  errorCode: err.response.status,
+                  errorMsg: err.msg,
+                  errorCaused: err.response.data
+                }
+              })
+            }
+            else
+            {
+              util.messageBox('身份验证错误', 'error')
+            }
+
+
           })
+      if (loginStatus === 0)
+      {
+        return
+      }
+
+      await this.getUserInfo()
       await util.delay(100)
-      console.log("跳出")
       loading.close()
       if (loginStatus === 0) {
         util.messageBox('登录失败', 'error')
+
       } else {
         util.messageBox('登录成功', 'success')
+        cookies.set('userInfo',util.userInfo,{ expires: 7 })
         this.$router.push('/index')
       }
     }

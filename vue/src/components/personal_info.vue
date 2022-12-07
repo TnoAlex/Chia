@@ -218,9 +218,11 @@ export default {
 }
 </script>
 
-<style scoped>
-@import "bootstrap-daterangepicker/daterangepicker.css";
-@import "../assets/css/index_css/icons.min.css";
-@import "../assets/css/setting_css/app-saas.min.css";
-@import "../assets/css/index_css/jquery-jvectormap-1.2.2.css";
-</style>
+<!--<style scoped>-->
+<!--@import "../assets/css/index_css/icons.min.css";-->
+<!--@import "../assets/css/setting_css/app-saas.min.css";-->
+<!--@import "../assets/css/index_css/jquery-jvectormap-1.2.2.css";-->
+<!--</style>-->
+<style scoped src="../assets/css/index_css/icons.min.css"></style>
+<!--<style scoped src="../assets/css/setting_css/app-saas.min.css"></style>-->
+<style scoped src="../assets/css/index_css/jquery-jvectormap-1.2.2.css"></style>

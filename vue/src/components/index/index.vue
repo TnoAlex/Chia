@@ -69,22 +69,54 @@
             </div>
             <!-- end row-->
             <div class="row">
+
               <div class="col-md-6 col-xxl-3" style="width: 300px;height: 300px;" v-for="(item,index) in cspInfoList" :key="index">
+                <el-dialog
+                    v-model="enrollVisible"
+                    :title="`第${item.name}次CSP报名`"
+                    width="30%"
+                >
+                  <div>
+                    <el-select style="margin-left: 0!important;" v-model="enrollInfo.freeOrOwn" class="m-2" placeholder="选择自费或者免费">
+                      <el-option
+                          v-for="item in enrollInfo.options"
+                          :key="item.value"
+                          :label="item.label"
+                          :value="item.value"
+                      />
+                    </el-select>
+                    <el-input v-model="enrollInfo.extra" placeholder="输入补充信息" />
+                  </div>
+
+                  <template #footer>
+                              <span class="dialog-footer">
+                                <el-button @click="enrollVisible = false">取消</el-button>
+                                <el-button type="primary" @click="uploadEnrollInfo(index)">
+                                  确认
+                                </el-button>
+                              </span>
+                  </template>
+                </el-dialog>
                 <!-- project card -->
                 <div class="card d-block">
                   <div class="card-body">
-                    <div class="dropdown card-widgets" v-if="util.userInfo.type===1">
+                    <div class="dropdown card-widgets" >
                       <a href="#" class="dropdown-toggle arrow-none" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="ri-more-fill"></i>
                       </a>
                       <div class="dropdown-menu dropdown-menu-end" >
-                        <a href="javascript:void(0);" class="dropdown-item"><i class="mdi mdi-pencil me-1"></i>编辑</a>
-                        <a href="javascript:void(0);" class="dropdown-item"><i class="mdi mdi-delete me-1"></i>删除</a>
+                        <span @click ="editCspInfo(index)" v-if="userInfo.type" href="javascript:void(0);" class="dropdown-item"><i class="mdi mdi-pencil me-1"></i>编辑</span>
+                        <span @click ="deleteCspInfo(index)" v-if="userInfo.type===1" href="javascript:void(0);" class="dropdown-item"><i class="mdi mdi-delete me-1"></i>删除</span>
+                        <span @click="enroll" v-if="userInfo.type===0" href="javascript:void(0);" class="dropdown-item">
+                          <i class="mdi mdi-star-box me-1"></i>报名
+                        </span>
+                        <span @click="enrollCancel" v-if="userInfo.type===0" href="javascript:void(0);" class="dropdown-item"><i class="mdi mdi-cancel me-1"></i>取消报名</span>
                       </div>
+
                     </div>
                     <!-- project title-->
                     <h4 class="mt-0">
-                      <a href="apps-projects-details.html" class="text-title">第{{item.name}}次CSP</a>
+                      <a href="" class="text-title">第{{item.name}}次CSP</a>
                     </h4>
                     <div class="badge bg-success">{{getProcession(item.startTime,item.endTime)<100?'报名中':'已过期'}}</div>
 
@@ -131,6 +163,8 @@
 import topNav from './topNav'
 import leftNav from './leftNav'
 import util from '../../utils/commonUtil'
+import cookies from "vue-cookies";
+import axios from "axios";
 export default {
   components: {
     TopNav: topNav,
@@ -142,24 +176,37 @@ export default {
       createCspInfo:{
         number:'',
         startTime:'',
-        endTime:''
+        endTime:'',
+
       },
+      enrollVisible:false,
       createCspVisible:false
-      ,
-      cspInfoList:[]
+      ,userInfo:{},
+      cspInfoList:[],
+      enrollInfo:{
+        options:[{value: 0, label: '自费'},{value: 1, label: '免费'}],
+        freeOrOwn:'',
+        extra:''
+      }
     }
   },
   name: "index.vue",
-  created() {
+  mounted() {
+    this.userInfo = cookies.get('userInfo')
     this.getCspInfo()
-    // this.getCspInfo2()
   },
   methods: {
+    deleteCspInfo(){
+
+    },
+    editCspInfo()
+    {
+
+    },
     createCspClose(){
       this.createCspInfo.endTime=''
       this.createCspInfo.startTime=''
       this.createCspInfo.number=''
-      console.log("关闭回调")
     },
     getProcession(startTime,endTime)
     {
@@ -168,23 +215,68 @@ export default {
       let nowValue = (new Date()).valueOf()
       let pro = (nowValue-startValue)/(endValue-startValue)
       let proStr = (Number(pro).toFixed(2)*100)
-      return Number(proStr)
+      if (Number(proStr)>=100)
+      {
+        return 100
+      }
+      else {
+        return Math.ceil(Number(proStr))
+      }
     },
-    // getCspInfo2()
-    // {
-    //
-    //
-    // },
+    async uploadEnrollInfo(index){
+      util.print(this.enrollInfo)
+      let loading = util.loadingWait('报名中。。。')
+      await util.delay(50)
+      await axios({
+        method:'POST',
+        url:'pre/reg',
+        headers:{'content-type': 'application/json;charset=UTF-8'},
+        data:{
+          cspId:this.cspInfoList[index].id,
+          type:this.enrollInfo.freeOrOwn,
+          extra: this.enrollInfo.extra
+        }
+      }).then(async (res) => {
+        await util.delay(100)
+        loading.close()
+        util.messageBox('报名成功','success')
+        this.enrollInfo.extra=''
+        this.enrollInfo.freeOrOwn=''
+        this.enrollVisible = false
+        await this.getCspInfo()
+        util.print(res)
+      }).catch(async (err) => {
+        await util.delay(100)
+        loading.close()
+        util.messageBox('报名失败','error')
+        util.print(err)
+      })
+    },
     async getCspInfo(){
+      let loading = util.loadingWait('拉取CSP信息中。。。')
+      await util.delay(50)
       await this.$axios.get('csp_info/pre')
-          .then((res)=>{
-            console.log(res)
+          .then(async (res) => {
+            await util.delay(100)
+            loading.close()
             this.cspInfoList = res.data.data
           })
-          .catch(reason => {
-            console.log(reason)
+          .catch(async () => {
+            await util.delay(100)
+            loading.close()
+            util.messageBox('拉取CSP信息失败','error')
           })
+
+
     },
+
+    async enroll(){
+      this.enrollVisible = true
+    },
+    enrollCancel()
+    {
+
+    }
   }
 }
 </script>
