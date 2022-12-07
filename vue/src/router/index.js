@@ -33,8 +33,13 @@ const router = createRouter({
                 path: '/personal_info',
                 name: 'personal-info',
                 component: ()=>import('@/components/personal_info')
-            },
 
+            },
+          {
+                            path: '/forget_password',
+                name: 'forget_password',
+                component: () => import('@/components/forget_password')
+          }
 
         ],
     }
