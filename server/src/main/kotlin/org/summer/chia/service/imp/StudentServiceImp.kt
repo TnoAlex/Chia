@@ -12,7 +12,6 @@ import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.util.Base64Utils
 import org.summer.chia.adapter.UserDetailsAdapter
 import org.summer.chia.exception.MailSendException
 import org.summer.chia.exception.SqlException
@@ -238,26 +237,28 @@ class StudentServiceImp : ServiceImpl<StudentMapper, Student>(), StudentService 
         val query = KtQueryWrapper(Student::class.java)
         val calendar = Calendar.getInstance()
         if (name != "null") {
-            query.eq(Student::name, Base64Utils.decode(name.toByteArray(Charsets.UTF_8)).toString())
+            query.eq(Student::name, name)
         } else if (number != "null") {
             query.eq(Student::studentNumber, number)
         }
         if (query.isEmptyOfWhere) {
             return Result.error("条件错误")
         } else {
-            val user = baseMapper.selectOne(query) ?: return Result.error("无效的查询")
+            val userList = baseMapper.selectList(query) ?: return Result.error("无效的查询")
             val totalSize = baseMapper.selectCount(query)
-            calendar.time = user.enrollmentTime
             return Result.success(
-                StudentListItem(
-                    user.id!!,
-                    user.name,
-                    user.studentNumber,
-                    user.maxScore,
-                    user.freeTimes,
-                    calendar.get(Calendar.YEAR).toString() + "级",
-                    totalSize
-                )
+                userList.map { user ->
+                    calendar.time = user.enrollmentTime
+                    StudentListItem(
+                        user.id!!,
+                        user.name,
+                        user.studentNumber,
+                        user.maxScore,
+                        user.freeTimes,
+                        calendar.get(Calendar.YEAR).toString() + "级",
+                        totalSize
+                    )
+                }
             )
         }
     }
