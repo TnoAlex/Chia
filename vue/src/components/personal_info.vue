@@ -139,8 +139,8 @@
                         </div> <!-- end row -->
 
                         <div class="text-end">
-                          <button type="submit" class="btn btn-success mt-2"><i class="mdi mdi-content-save"></i>保存并提交
-                          </button>
+                          <span type="submit" class="btn btn-success mt-2"><i class="mdi mdi-content-save"></i>保存并提交
+                          </span>
                         </div>
                       </form>
                     </div>
