@@ -4,6 +4,7 @@ create table captcha
         primary key,
     uid         varchar(128) not null,
     code        varchar(10)  not null,
-    create_time timestamp    not null
+    create_time timestamp    not null,
+    status      int          not null
 );
 

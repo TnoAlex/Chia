@@ -7,6 +7,5 @@ import org.summer.chia.pojo.ao.Result
 
 interface TeacherService : IService<Teacher> {
     fun loadUserByUsername(username: String): UserDetails?
-
     fun getUserNameByAccount():Result
 }

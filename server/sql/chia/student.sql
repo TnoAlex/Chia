@@ -8,7 +8,7 @@ create table student
     id_number       varchar(20)  not null,
     max_score       int          null,
     free_times      int          not null,
-    email           varchar(20)  not null,
+    email           varchar(20)  null,
     enrollment_time date         not null,
     status          int          not null
 );

@@ -12,8 +12,7 @@ data class Registration(
     var id: String?,
     var cspId: String,
     var studentId: String,
-    var score: Int,
+    var score: Int?,
     var type: Int,
-    var miss: Int,
-
-    )
+    var miss: Int?,
+)

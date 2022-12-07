@@ -14,12 +14,12 @@ class SettingController {
     @Autowired
     private lateinit var mailConfigService: MailConfigService
 
-    @PostMapping("/teacher/setting/mail_init")
+    @PostMapping("/sys/setting/mail_init")
     fun initMailSenderConfig(@RequestBody config : MailServiceConfig): Result {
         return mailConfigService.initMailConfig(config)
     }
 
-    @PostMapping("/teacher/setting/mail_test")
+    @PostMapping("/sys/setting/mail_test")
     fun testMailSetting():Result {
         return  mailConfigService.testMailConfig()
     }
