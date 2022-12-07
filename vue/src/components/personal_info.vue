@@ -4,7 +4,7 @@
   <div class="wrapper">
     <TopNav ref="childTopNav">
     </TopNav>
-    <LeftNav  >
+    <LeftNav>
     </LeftNav>
 
     <div class="content-page">
@@ -52,7 +52,6 @@
 
                       <h5 class="text-uppercase"><i class="mdi mdi-briefcase me-1"></i>
                         主要信息</h5>
-
                       <div class="timeline-alt pb-0">
                         <div class="timeline-item">
                           <i class="mdi mdi-circle bg-info-lighten text-info timeline-icon"></i>
@@ -79,7 +78,7 @@
                         </div>
 
                         <div class="timeline-item">
-                          <i class="mdi mdi-circle bg-info-lighten text-info timeline-icon"></i>
+                          <i class="mdi mdi-circle bg-info-lighten text-primary timeline-icon"></i>
                           <div class="timeline-item-info">
                             <h5 class="mt-0 mb-1">邮箱</h5>
                             <p class="text-muted mt-2 mb-0 pb-2">在此处填入邮箱</p>
@@ -95,7 +94,7 @@
                         </div>
 
                         <div class="timeline-item">
-                          <i class="mdi mdi-circle bg-info-lighten text-info timeline-icon"></i>
+                          <i class="mdi mdi-circle bg-info-lighten text-primary timeline-icon"></i>
                           <div class="timeline-item-info">
                             <h5 class="mt-0 mb-1">是否拥有免费资格</h5>
                             <p class="text-muted mt-2 mb-0 pb-2">拥有？</p>
@@ -110,7 +109,7 @@
 
                     <div class="tab-pane" id="settings">
                       <form>
-                        <h5 class="mb-4 text-uppercase"><i class="mdi mdi-account-circle me-1"></i> Personal Info</h5>
+                        <h5 class="mb-4 text-uppercase"><i class="mdi mdi-account-circle me-1"></i> 个人信息</h5>
                         <div class="row">
                           <div class="col-md-6">
                             <div class="mb-3">
@@ -122,7 +121,8 @@
                             <div class="mb-3">
                               <label for="password" class="form-label">密码</label>
                               <input type="text" class="form-control" id="password" placeholder="输入密码">
-                              <span class="form-text text-muted"><small>If you want to change email please <a href="javascript: void(0);">click</a> here.</small></span>
+                              <span class="form-text text-muted"><small>如果需要修改请<a
+                                  href="javascript: void(0);">点击</a>这里</small></span>
                             </div>
                           </div> <!-- end col -->
                         </div> <!-- end row -->
@@ -132,13 +132,15 @@
                             <div class="mb-3">
                               <label for="id" class="form-label">身份证号</label>
                               <input type="email" class="form-control" id="id" placeholder="36xxxxxxxxxxxxxxxx">
-                              <span class="form-text text-muted"><small>If you want to change email please <a href="javascript: void(0);">click</a> here.</small></span>
+                              <span class="form-text text-muted"><small>如果需要修改请<a
+                                  href="javascript: void(0);">点击</a>这里</small></span>
                             </div>
                           </div>
                         </div> <!-- end row -->
 
                         <div class="text-end">
-                          <button type="submit" class="btn btn-success mt-2"><i class="mdi mdi-content-save"></i> Save</button>
+                          <button type="submit" class="btn btn-success mt-2"><i class="mdi mdi-content-save"></i>保存并提交
+                          </button>
                         </div>
                       </form>
                     </div>
@@ -219,6 +221,6 @@ export default {
 <style scoped>
 @import "bootstrap-daterangepicker/daterangepicker.css";
 @import "../assets/css/index_css/icons.min.css";
-@import "../assets/css/index_css/app-saas.min.css";
+@import "../assets/css/setting_css/app-saas.min.css";
 @import "../assets/css/index_css/jquery-jvectormap-1.2.2.css";
 </style>

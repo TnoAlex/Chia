@@ -153,7 +153,8 @@
     --ct-card-border-color: #dee2e6;
     --ct-card-box-shadow: var(--ct-box-shadow);
     --ct-card-cap-bg: #fff;
-    --ct-card-bg: #fff
+    --ct-card-bg: #fff;
+    /*内框色*/
 }
 
 :root .accordion {
@@ -2010,7 +2011,7 @@ progress {
         -webkit-box-flex: 0;
         -ms-flex: 0 0 auto;
         flex: 0 0 auto;
-        width: 58.33333333%
+        width: 100%
     }
 
     .col-lg-8 {
@@ -2261,7 +2262,9 @@ progress {
         -webkit-box-flex: 0;
         -ms-flex: 0 0 auto;
         flex: 0 0 auto;
-        width: 66.66666667%
+        padding-left:320px;
+        padding-right:320px;
+        width: 100%
     }
 
     .col-xl-9 {
@@ -5530,7 +5533,7 @@ textarea.form-control-lg {
 
 .card {
     --ct-card-spacer-y: 1.5rem;
-    --ct-card-spacer-x: 1.5rem;
+    --ct-card-spacer-x: 20rem;
     --ct-card-title-spacer-y: 0.75rem;
     --ct-card-border-width: 0;
     --ct-card-border-color: #dee2e6;
@@ -5591,7 +5594,7 @@ textarea.form-control-lg {
     -ms-flex: 1 1 auto;
     flex: 1 1 auto;
     padding: var(--ct-card-spacer-y) var(--ct-card-spacer-x);
-    color: var(--ct-card-color)
+    color: var(--ct-card-color);
 }
 
 .card-title {
@@ -16683,40 +16686,40 @@ html[data-layout=topnav] #layout-detached, html[data-layout=topnav] #sidebar-col
 
 @font-face {
     font-family: Nunito;
-    src: url(../../fonts/Nunito-Light.eot);
-    src: local("Nunito Light"), local("Nunito-Light"), url(../../fonts/Nunito-Light.eot) format("embedded-opentype"), url(../../fonts/Nunito-Light.woff) format("woff"), url(../../fonts/Nunito-Light.ttf) format("truetype"), url(../../fonts/Nunito-Light.svg#Roboto) format("svg");
+    src: url(../../font/Nunito-Light.eot);
+    src: local("Nunito Light"), local("Nunito-Light"), url(../../font/Nunito-Light.eot) format("embedded-opentype"), url(../../font/Nunito-Light.woff) format("woff"), url(../../font/Nunito-Light.ttf) format("truetype"), url() format("svg");
     font-weight: 300;
     font-style: normal
 }
 
 @font-face {
     font-family: Nunito;
-    src: url(../../fonts/Nunito-Regular.eot);
-    src: local("Nunito Regular"), local("Nunito-Regular"), url(../../fonts/Nunito-Regular.eot) format("embedded-opentype"), url(../../fonts/Nunito-Regular.woff) format("woff"), url(../../fonts/Nunito-Regular.ttf) format("truetype"), url(../../fonts/Nunito-Regular.svg#Roboto) format("svg");
+    src: url(../../font/Nunito-Regular.eot);
+    src: local("Nunito Regular"), local("Nunito-Regular"), url(../../font/Nunito-Regular.eot) format("embedded-opentype"), url(../../font/Nunito-Regular.woff) format("woff"), url(../../font/Nunito-Regular.ttf) format("truetype"), url() format("svg");
     font-weight: 400;
     font-style: normal
 }
 
 @font-face {
     font-family: Nunito;
-    src: url(../../fonts/Nunito-Medium.eot);
-    src: local("Nunito Medium"), local("Nunito-Medium"), url(../../fonts/Nunito-Medium.eot) format("embedded-opentype"), url(../../fonts/Nunito-Medium.woff) format("woff"), url(../../fonts/Nunito-Medium.ttf) format("truetype"), url(../../fonts/Nunito-Medium.svg#Roboto) format("svg");
+    src: url(../../font/Nunito-Medium.eot);
+    src: local("Nunito Medium"), local("Nunito-Medium"), url(../../font/Nunito-Medium.eot) format("embedded-opentype"), url(../../font/Nunito-Medium.woff) format("woff"), url(../../font/Nunito-Medium.ttf) format("truetype"), url() format("svg");
     font-weight: 500;
     font-style: normal
 }
 
 @font-face {
     font-family: Nunito;
-    src: url(../../fonts/Nunito-SemiBold.eot);
-    src: local("Nunito SemiBold"), local("Nunito-SemiBold"), url(../../fonts/Nunito-SemiBold.eot) format("embedded-opentype"), url(../../fonts/Nunito-SemiBold.woff) format("woff"), url(../../fonts/Nunito-SemiBold.ttf) format("truetype"), url(../../fonts/Nunito-SemiBold.svg#Roboto) format("svg");
+    src: url(../../font/Nunito-SemiBold.eot);
+    src: local("Nunito SemiBold"), local("Nunito-SemiBold"), url(../../font/Nunito-SemiBold.eot) format("embedded-opentype"), url(../../font/Nunito-SemiBold.woff) format("woff"), url(../../font/Nunito-SemiBold.ttf) format("truetype"), url() format("svg");
     font-weight: 600;
     font-style: normal
 }
 
 @font-face {
     font-family: Nunito;
-    src: url(../../fonts/Nunito-Bold.eot);
-    src: local("Nunito Bold"), local("Nunito-Bold"), url(../../fonts/Nunito-Bold.eot) format("embedded-opentype"), url(../../fonts/Nunito-Bold.woff) format("woff"), url(../../fonts/Nunito-Bold.ttf) format("truetype"), url(../../fonts/Nunito-Bold.svg#Roboto) format("svg");
+    src: url(../../font/Nunito-Bold.eot);
+    src: local("Nunito Bold"), local("Nunito-Bold"), url(../../font/Nunito-Bold.eot) format("embedded-opentype"), url(../../font/Nunito-Bold.woff) format("woff"), url(../../font/Nunito-Bold.ttf) format("truetype"), url() format("svg");
     font-weight: 700;
     font-style: normal
 }
@@ -18820,11 +18823,13 @@ html[data-theme=dark] .text-secondary {
 
 .timeline-alt {
     padding: 20px 0;
-    position: relative
+    position: relative;
+    text-align:center;
 }
 
 .timeline-alt .timeline-item {
-    position: relative
+    position: relative;
+    text-align:center;
 }
 
 .timeline-alt .timeline-item:before {
