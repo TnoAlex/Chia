@@ -640,6 +640,7 @@ export default {
     }
   },
  mounted() {
+    util.print('haha')
     this.getInitTableData(1,5)
 
   }
