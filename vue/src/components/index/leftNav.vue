@@ -45,6 +45,10 @@
               <li>
                 <router-link :to="{path:'/index'}">回到主页</router-link>
               </li>
+
+              <li>
+                <router-link :to="{path:'/message'}">通知</router-link>
+              </li>
             </ul>
           </div>
         </li>
