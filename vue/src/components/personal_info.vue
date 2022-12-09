@@ -57,7 +57,7 @@
                           <i class="mdi mdi-circle bg-info-lighten text-info timeline-icon"></i>
                           <div class="timeline-item-info">
                             <h5 class="mt-0 mb-1">姓名</h5>
-                            <p class="text-muted mt-2 mb-0 pb-3">在此处填入姓名</p>
+                            <p class="text-muted mt-2 mb-0 pb-3">{{getinfoObject.name}}</p>
                           </div>
                         </div>
 
@@ -65,7 +65,7 @@
                           <i class="mdi mdi-circle bg-primary-lighten text-primary timeline-icon"></i>
                           <div class="timeline-item-info">
                             <h5 class="mt-0 mb-1">学号</h5>
-                            <p class="text-muted mt-2 mb-0 pb-3">在此处填入学号</p>
+                            <p class="text-muted mt-2 mb-0 pb-3">{{ getinfoObject.studentID }}</p>
                           </div>
                         </div>
 
@@ -73,7 +73,7 @@
                           <i class="mdi mdi-circle bg-info-lighten text-info timeline-icon"></i>
                           <div class="timeline-item-info">
                             <h5 class="mt-0 mb-1">身份证号</h5>
-                            <p class="text-muted mt-2 mb-0 pb-2">在此处填入身份证号</p>
+                            <p class="text-muted mt-2 mb-0 pb-2">{{ getinfoObject.idNumber }}</p>
                           </div>
                         </div>
 
@@ -81,7 +81,7 @@
                           <i class="mdi mdi-circle bg-info-lighten text-primary timeline-icon"></i>
                           <div class="timeline-item-info">
                             <h5 class="mt-0 mb-1">邮箱</h5>
-                            <p class="text-muted mt-2 mb-0 pb-2">在此处填入邮箱</p>
+                            <p class="text-muted mt-2 mb-0 pb-2">{{ getinfoObject.email }}</p>
                           </div>
                         </div>
 
@@ -89,15 +89,15 @@
                           <i class="mdi mdi-circle bg-info-lighten text-info timeline-icon"></i>
                           <div class="timeline-item-info">
                             <h5 class="mt-0 mb-1">最高分</h5>
-                            <p class="text-muted mt-2 mb-0 pb-2">在此处填入最高分</p>
+                            <p class="text-muted mt-2 mb-0 pb-2">{{ getinfoObject.maxScore }}</p>
                           </div>
                         </div>
 
                         <div class="timeline-item">
                           <i class="mdi mdi-circle bg-info-lighten text-primary timeline-icon"></i>
                           <div class="timeline-item-info">
-                            <h5 class="mt-0 mb-1">是否拥有免费资格</h5>
-                            <p class="text-muted mt-2 mb-0 pb-2">拥有？</p>
+                            <h5 class="mt-0 mb-1">免费资格次数</h5>
+                            <p class="text-muted mt-2 mb-0 pb-2">{{getinfoObject.freeTime}}</p>
                           </div>
                         </div>
 
@@ -113,29 +113,12 @@
                         <div class="row">
                           <div class="col-md-6">
                             <div class="mb-3">
-                              <label for="name" class="form-label">姓名</label>
-                              <input type="text" class="form-control" id="name" placeholder="输入姓名">
-                            </div>
-                          </div>
-                          <div class="col-md-6">
-                            <div class="mb-3">
                               <label for="password" class="form-label">密码</label>
                               <input type="text" class="form-control" id="password" placeholder="输入密码">
                               <span class="form-text text-muted"><small>如果需要修改请<a
                                   href="javascript: void(0);">点击</a>这里</small></span>
                             </div>
                           </div> <!-- end col -->
-                        </div> <!-- end row -->
-
-                        <div class="row">
-                          <div class="col-md-6">
-                            <div class="mb-3">
-                              <label for="id" class="form-label">身份证号</label>
-                              <input type="email" class="form-control" id="id" placeholder="36xxxxxxxxxxxxxxxx">
-                              <span class="form-text text-muted"><small>如果需要修改请<a
-                                  href="javascript: void(0);">点击</a>这里</small></span>
-                            </div>
-                          </div>
                         </div> <!-- end row -->
 
                         <div class="text-end">
@@ -207,7 +190,6 @@ import '../assets/js/vendor.min'
 import '../assets/js/jquery.mask.min'
 import '../assets/js/moment.min'
 
-
 export default {
 
   name: "personal_info",
@@ -215,6 +197,38 @@ export default {
     TopNav: topNav,
     LeftNav: leftNav
   },
+  beforeMount() {
+    this.getinfo()
+    console.log(1)
+  },
+  data(){
+    return {
+      getinfoObject:{
+        name: '',
+        studentID: '',
+        idNumber: '',
+        maxScore: '',
+        freeTime: '',
+        email: '',
+      },
+      pwdchangeObject:{
+        newPwd: ''
+      }
+    }
+  },
+  methods:{
+    async getinfo(){
+      await this.$axios.get('/student/query/details')
+          .then((res) => {
+            this.getinfoObject = res.data.data
+            console.log(res.data)
+          })
+    },
+    async changePwd(){
+
+    }
+  }
+
 }
 </script>
 

@@ -12,6 +12,7 @@ import org.summer.chia.pojo.ao.Result
 import org.summer.chia.pojo.dto.PreRegistration
 import org.summer.chia.pojo.dto.Student
 import org.summer.chia.service.PreRegistrationService
+import org.summer.chia.utils.Log
 
 @Service
 class PreRegistrationServiceImp : ServiceImpl<PreRegistrationMapper, PreRegistration>(), PreRegistrationService {
@@ -21,17 +22,19 @@ class PreRegistrationServiceImp : ServiceImpl<PreRegistrationMapper, PreRegistra
         val account =
             ((SecurityContextHolder.getContext().authentication.principal as UserDetailsAdapter).getPayLoad()) as Student
         obj.studentId = account.id
-        if (baseMapper.selectOne(
-                KtQueryWrapper(PreRegistration::class.java).eq(PreRegistration::studentId, account.id)
-                    .eq(PreRegistration::cspId, obj.cspId)
-            ) != null
-        ) {
-            return Result.error("已经报名此次CSP认证，无法重复报名")
-        }
-        return try {
-            baseMapper.insert(obj)
-            Result.success()
+        try {
+            return if (baseMapper.selectOne(
+                    KtQueryWrapper(PreRegistration::class.java).eq(PreRegistration::studentId, account.id)
+                        .eq(PreRegistration::cspId, obj.cspId)
+                ) != null
+            ) {
+                Result.error("已经报名此次CSP认证，无法重复报名")
+            } else {
+                baseMapper.insert(obj)
+                Result.success()
+            }
         } catch (e: RuntimeException) {
+            Log.error(this.javaClass, this::doPreRegistration.name + " Insertion error", e.suppressed)
             throw SqlException("Insertion error", this::doPreRegistration.name)
         }
     }
@@ -52,6 +55,11 @@ class PreRegistrationServiceImp : ServiceImpl<PreRegistrationMapper, PreRegistra
                 Result.success("取消预报名成功")
             }
         } catch (e: Exception) {
+            Log.error(
+                this.javaClass,
+                this::doCancelPreRegistration.name + " An Exception Occurs during query or delete",
+                e.suppressed
+            )
             throw SqlException("An Exception Occurs during query or delete", this::doCancelPreRegistration.name)
         }
     }

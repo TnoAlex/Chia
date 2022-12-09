@@ -2,6 +2,7 @@ package org.summer.chia.service.imp
 
 import com.baomidou.mybatisplus.extension.kotlin.KtQueryWrapper
 import com.baomidou.mybatisplus.extension.kotlin.KtUpdateWrapper
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.context.SecurityContextHolder
@@ -12,12 +13,14 @@ import org.summer.chia.exception.SqlException
 import org.summer.chia.mapper.MessageMapper
 import org.summer.chia.mapper.TeacherMapper
 import org.summer.chia.pojo.ao.CommunicativeTarget
+import org.summer.chia.pojo.ao.MessageListItem
 import org.summer.chia.pojo.ao.MessageObject
 import org.summer.chia.pojo.ao.Result
 import org.summer.chia.pojo.dto.Message
 import org.summer.chia.pojo.dto.Student
 import org.summer.chia.pojo.dto.Teacher
 import org.summer.chia.service.MessageService
+import org.summer.chia.utils.Log
 import java.sql.Timestamp
 
 @Service
@@ -41,6 +44,7 @@ class MessageServiceImp : ServiceImpl<MessageMapper, Message>(), MessageService 
             )
             return Result.success()
         } catch (e: Exception) {
+            Log.error(this.javaClass, this::doPostMessage.name + " Insert Exception", e.suppressed)
             throw SqlException("Insert Exception", this::doPostMessage.name)
         }
     }
@@ -48,29 +52,31 @@ class MessageServiceImp : ServiceImpl<MessageMapper, Message>(), MessageService 
     override fun doQueryCommunicative(): Result {
         try {
             val target = teacherMapper.selectList(null) ?: return Result.error("暂时无可联系的老师")
-            val res = target.map {
+            val res = target.filter {
+                it.id!! != "System"
+            }.map {
                 CommunicativeTarget(it.id!!, it.name)
             }
             return Result.success(res)
         } catch (e: Exception) {
+            Log.error(this.javaClass, this::doQueryCommunicative.name + " Query Exception", e.suppressed)
             throw SqlException("Query Exception", this::doQueryCommunicative.name)
         }
     }
 
-    override fun doQueryMessageList(uid: String): Result {
+    override fun doQueryMessageList(pageNum: String, pageSize: String): Result {
         val user = (SecurityContextHolder.getContext().authentication.principal as UserDetailsAdapter).getPayLoad()
+        val page = Page<MessageListItem>(pageNum.toLong(), pageSize.toLong())
         try {
             return when (user) {
                 is Student -> {
-                    val res = baseMapper.queryStudentMessage(user.id!!)
-                    Result.success(res)
+                    val res = baseMapper.queryStudentMessage(page, user.id!!)
+                    Result.success(res.records)
                 }
 
                 is Teacher -> {
-                    val res = baseMapper.queryTeacherMessage(user.id!!)
-                    val systemMessage = baseMapper.querySystemMessage(user.id!!)
-                    res.toMutableList().addAll(systemMessage)
-                    Result.success(res)
+                    val res = baseMapper.queryTeacherMessage(page, user.id!!)
+                    Result.success(res.records)
                 }
 
                 else -> {
@@ -78,9 +84,21 @@ class MessageServiceImp : ServiceImpl<MessageMapper, Message>(), MessageService 
                 }
             }
         } catch (e: Exception) {
+            Log.error(this.javaClass, this::doQueryMessageList.name + " Query Exception", e.suppressed)
             throw SqlException("Query Exception", this::doQueryMessageList.name)
         }
 
+    }
+
+    override fun doQuerySystemMessage(pageNum: String, pageSize: String): Result {
+        val user = (SecurityContextHolder.getContext().authentication.principal as UserDetailsAdapter).getPayLoad()
+        val page = Page<MessageListItem>(pageNum.toLong(), pageSize.toLong())
+        try {
+            val res = baseMapper.querySystemMessage(page, user.id!!)
+            return Result.success(res.records)
+        } catch (e: Exception) {
+            throw SqlException("Query Exception", this::doQuerySystemMessage.name)
+        }
     }
 
     @Transactional
@@ -91,6 +109,7 @@ class MessageServiceImp : ServiceImpl<MessageMapper, Message>(), MessageService 
             baseMapper.update(null, query)
             return Result.success()
         } catch (e: Exception) {
+            Log.error(this.javaClass, this::markMessage.name + " Update Exception", e.suppressed)
             throw SqlException("Update Exception", this::markMessage.name)
         }
     }
@@ -103,6 +122,7 @@ class MessageServiceImp : ServiceImpl<MessageMapper, Message>(), MessageService 
             baseMapper.delete(query)
             return Result.success()
         } catch (e: Exception) {
+            Log.error(this.javaClass, this::deleteMessage.name + " Delete Exception", e.suppressed)
             throw SqlException("Delete Exception", this::deleteMessage.name)
         }
     }

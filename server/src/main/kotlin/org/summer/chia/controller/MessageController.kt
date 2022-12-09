@@ -21,9 +21,14 @@ class MessageController {
         return messageService.doQueryCommunicative()
     }
 
-    @GetMapping("/message/query/list/{uid}")
-    fun queryMessageList(@PathVariable uid: String): Result {
-        return messageService.doQueryMessageList(uid)
+    @GetMapping("/message/query/list/{pageNum}/{pageSize}")
+    fun queryMessageList(@PathVariable pageSize: String, @PathVariable pageNum: String): Result {
+        return messageService.doQueryMessageList(pageNum, pageSize)
+    }
+
+    @GetMapping("/teacher/message/list/{pageNum}/{pageSize}")
+    fun querySystemMessage(@PathVariable pageNum: String, @PathVariable pageSize: String): Result {
+        return messageService.doQuerySystemMessage(pageNum, pageSize)
     }
 
     @PostMapping("/message/read")

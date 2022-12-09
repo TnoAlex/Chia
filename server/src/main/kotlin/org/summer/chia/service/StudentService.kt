@@ -21,5 +21,10 @@ interface StudentService : IService<Student> {
         pageSize: String
     ): Result
 
-    fun queryStudentByNameOrNumber(name: String, number: String):Result
+    fun queryStudentByNameOrNumber(name: String, number: String): Result
+    fun doQueryDetails(): Result
+    fun doFilterStudentDelete(
+        score: String, score_filter: String, grade: String,
+        free_time: String
+    ): Result
 }

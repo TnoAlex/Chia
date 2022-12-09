@@ -11,7 +11,6 @@ server:
       force: true
       charset: utf-8
       enabled: true
-
 spring:
   main:
     allow-circular-references: true
@@ -43,9 +42,9 @@ spring:
   datasource:
     druid:
       driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://localhost:3306/chia?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
-      username: chia
-      password: Chia
+      url: jdbc:mysql://localhost:3306/script?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+      username: root
+      password: 41691446
       initial-size: 5
       max-active: 20
       max-wait: 60000
@@ -65,3 +64,5 @@ mybatis-plus:
     db-config:
       id-type: assign_id
   mapper-locations: xml/*xml
+logging:
+  config: classpath:logback-spring.xml
