@@ -18,10 +18,10 @@ import org.summer.chia.pojo.ao.Result
 import org.summer.chia.pojo.dto.Captcha
 import org.summer.chia.pojo.dto.Student
 import org.summer.chia.service.CaptchaService
+import org.summer.chia.utils.Log
 import org.summer.chia.utils.MailSendUtil
 import org.summer.chia.utils.verificationCode
 import java.sql.Timestamp
-import java.text.SimpleDateFormat
 import java.util.*
 
 @Service
@@ -74,6 +74,7 @@ class CaptchaServiceImp : ServiceImpl<CaptchaMapper, Captcha>(), CaptchaService 
             mailSendUtils.sendTemplateMail(user.email!!, "您正在修改您的密码", "forget_password.html", data)
             Result.success()
         }catch (e:Exception){
+            Log.error(this.javaClass, this::genRestPasswordCode.name + " Insert Exception", e.suppressed)
             when (e){
                 is MailSendException-> throw e
                 else -> throw SqlException("Insert Exception",this::genRestPasswordCode.name)

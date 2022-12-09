@@ -48,12 +48,12 @@ class UserController {
         return userService.resetUserPassword(obj)
     }
 
-    @GetMapping("/student/list/{pageNum}/{pageSize}")
+    @GetMapping("/teacher/list/{pageNum}/{pageSize}")
     fun queryStudentList(@PathVariable pageNum: String, @PathVariable pageSize: String): Result {
         return studentService.queryStudentList(pageNum, pageSize)
     }
 
-    @GetMapping("/student/list/total")
+    @GetMapping("/teacher/list/total")
     fun queryStudentTotalNum(): Result {
         return studentService.queryStudentTotalNumber()
     }
@@ -63,7 +63,7 @@ class UserController {
         return studentService.removeStudent(list)
     }
 
-    @GetMapping("/student/filter/{score}/{score_filter}/{grade}/{free_time}/{pageNum}/{pageSize}")
+    @GetMapping("/teacher/filter/{score}/{score_filter}/{grade}/{free_time}/{pageNum}/{pageSize}")
     fun filterStudentList(
         @PathVariable score: String, @PathVariable score_filter: String, @PathVariable grade: String,
         @PathVariable free_time: String, @PathVariable pageNum: String, @PathVariable pageSize: String
@@ -71,8 +71,21 @@ class UserController {
         return studentService.doFilterStudentList(score, score_filter, grade, free_time, pageNum, pageSize)
     }
 
-    @GetMapping("/student/filter/{name}/{number}")
+    @PostMapping("/teacher/filter/{score}/{score_filter}/{grade}/{free_time}")
+    fun filterStudentDelete(
+        @PathVariable score: String, @PathVariable score_filter: String, @PathVariable grade: String,
+        @PathVariable free_time: String
+    ): Result {
+        return studentService.doFilterStudentDelete(score, score_filter, grade, free_time)
+    }
+
+    @GetMapping("/teacher/filter/{name}/{number}")
     fun queryStudentByNameOrNumber(@PathVariable name: String, @PathVariable number: String): Result {
         return studentService.queryStudentByNameOrNumber(name, number)
+    }
+
+    @GetMapping("/student/query/details")
+    fun queryStudentDetails(): Result {
+        return studentService.doQueryDetails()
     }
 }

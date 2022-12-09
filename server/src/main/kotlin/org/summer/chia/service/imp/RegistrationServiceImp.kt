@@ -22,6 +22,7 @@ import org.summer.chia.pojo.dto.Message
 import org.summer.chia.pojo.dto.Registration
 import org.summer.chia.pojo.dto.Student
 import org.summer.chia.service.RegistrationService
+import org.summer.chia.utils.Log
 import org.summer.chia.utils.MailSendUtil
 import java.sql.Timestamp
 
@@ -60,6 +61,7 @@ class RegistrationServiceImp : ServiceImpl<RegistrationMapper, Registration>(), 
                 )
             }
         } catch (e: Exception) {
+            Log.error(this.javaClass, this::registrationList.name + " Insert Exception", e.suppressed)
             throw SqlException("Insert Exception", this::registrationList.name)
         }
         return Result.success()
@@ -90,6 +92,7 @@ class RegistrationServiceImp : ServiceImpl<RegistrationMapper, Registration>(), 
                 )
             }
         } catch (e: Exception) {
+            Log.error(this.javaClass, this::transcriptsList.name + " Update Exception", e.suppressed)
             throw SqlException("Update Exception", this::transcriptsList.name)
         }
         return Result.success()
@@ -104,6 +107,7 @@ class RegistrationServiceImp : ServiceImpl<RegistrationMapper, Registration>(), 
             val students = baseMapper.absentOfficialRegistration(cid)
             Result.success(students)
         } catch (e: Exception) {
+            Log.error(this.javaClass, this::doQueryAbsentOfficialRegistration.name + " Query Exception", e.suppressed)
             throw SqlException("Query Exception", this::doQueryAbsentOfficialRegistration.name)
         }
     }
@@ -117,6 +121,7 @@ class RegistrationServiceImp : ServiceImpl<RegistrationMapper, Registration>(), 
             val students = baseMapper.absentExam(cid)
             Result.success(students)
         } catch (e: Exception) {
+            Log.error(this.javaClass, this::doQueryAbsentOfficialRegistration.name + " Query Exception", e.suppressed)
             throw SqlException("Query Exception", this::doQueryAbsentOfficialRegistration.name)
         }
     }
@@ -163,6 +168,7 @@ class RegistrationServiceImp : ServiceImpl<RegistrationMapper, Registration>(), 
             }
             Result.success()
         } catch (e: Exception) {
+            Log.error(this.javaClass, this::noticeStudent.name, e.suppressed)
             Result.error("邮件发送失败")
         }
     }

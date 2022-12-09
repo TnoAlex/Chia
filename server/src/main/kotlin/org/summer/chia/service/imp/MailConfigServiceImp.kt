@@ -9,6 +9,7 @@ import org.summer.chia.exception.ServiceConfigException
 import org.summer.chia.pojo.ao.MailServiceConfig
 import org.summer.chia.pojo.ao.Result
 import org.summer.chia.service.MailConfigService
+import org.summer.chia.utils.Log
 import org.summer.chia.utils.TelnetUtil
 import org.yaml.snakeyaml.Yaml
 import java.io.File
@@ -50,6 +51,11 @@ class MailConfigServiceImp : MailConfigService {
             contextRefresher.refresh()
             return Result.success()
         } catch (e: Exception) {
+            Log.error(
+                this.javaClass,
+                this::initMailConfig.name + " An exception occurred in the system configuration",
+                e.suppressed
+            )
             throw ServiceConfigException("An exception occurred in the system configuration", this::initMailConfig.name)
         }
     }
