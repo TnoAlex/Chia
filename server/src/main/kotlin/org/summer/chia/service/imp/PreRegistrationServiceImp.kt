@@ -22,16 +22,17 @@ class PreRegistrationServiceImp : ServiceImpl<PreRegistrationMapper, PreRegistra
         val account =
             ((SecurityContextHolder.getContext().authentication.principal as UserDetailsAdapter).getPayLoad()) as Student
         obj.studentId = account.id
-        if (baseMapper.selectOne(
-                KtQueryWrapper(PreRegistration::class.java).eq(PreRegistration::studentId, account.id)
-                    .eq(PreRegistration::cspId, obj.cspId)
-            ) != null
-        ) {
-            return Result.error("已经报名此次CSP认证，无法重复报名")
-        }
-        return try {
-            baseMapper.insert(obj)
-            Result.success()
+        try {
+            return if (baseMapper.selectOne(
+                    KtQueryWrapper(PreRegistration::class.java).eq(PreRegistration::studentId, account.id)
+                        .eq(PreRegistration::cspId, obj.cspId)
+                ) != null
+            ) {
+                Result.error("已经报名此次CSP认证，无法重复报名")
+            } else {
+                baseMapper.insert(obj)
+                Result.success()
+            }
         } catch (e: RuntimeException) {
             Log.error(this.javaClass, this::doPreRegistration.name + " Insertion error", e.suppressed)
             throw SqlException("Insertion error", this::doPreRegistration.name)

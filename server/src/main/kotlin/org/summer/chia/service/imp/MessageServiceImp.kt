@@ -2,6 +2,7 @@ package org.summer.chia.service.imp
 
 import com.baomidou.mybatisplus.extension.kotlin.KtQueryWrapper
 import com.baomidou.mybatisplus.extension.kotlin.KtUpdateWrapper
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.context.SecurityContextHolder
@@ -12,6 +13,7 @@ import org.summer.chia.exception.SqlException
 import org.summer.chia.mapper.MessageMapper
 import org.summer.chia.mapper.TeacherMapper
 import org.summer.chia.pojo.ao.CommunicativeTarget
+import org.summer.chia.pojo.ao.MessageListItem
 import org.summer.chia.pojo.ao.MessageObject
 import org.summer.chia.pojo.ao.Result
 import org.summer.chia.pojo.dto.Message
@@ -50,7 +52,9 @@ class MessageServiceImp : ServiceImpl<MessageMapper, Message>(), MessageService 
     override fun doQueryCommunicative(): Result {
         try {
             val target = teacherMapper.selectList(null) ?: return Result.error("暂时无可联系的老师")
-            val res = target.map {
+            val res = target.filter {
+                it.id!! != "System"
+            }.map {
                 CommunicativeTarget(it.id!!, it.name)
             }
             return Result.success(res)
@@ -60,20 +64,19 @@ class MessageServiceImp : ServiceImpl<MessageMapper, Message>(), MessageService 
         }
     }
 
-    override fun doQueryMessageList(uid: String): Result {
+    override fun doQueryMessageList(pageNum: String, pageSize: String): Result {
         val user = (SecurityContextHolder.getContext().authentication.principal as UserDetailsAdapter).getPayLoad()
+        val page = Page<MessageListItem>(pageNum.toLong(), pageSize.toLong())
         try {
             return when (user) {
                 is Student -> {
-                    val res = baseMapper.queryStudentMessage(user.id!!)
-                    Result.success(res)
+                    val res = baseMapper.queryStudentMessage(page, user.id!!)
+                    Result.success(res.records)
                 }
 
                 is Teacher -> {
-                    val res = baseMapper.queryTeacherMessage(user.id!!)
-                    val systemMessage = baseMapper.querySystemMessage(user.id!!)
-                    res.toMutableList().addAll(systemMessage)
-                    Result.success(res)
+                    val res = baseMapper.queryTeacherMessage(page, user.id!!)
+                    Result.success(res.records)
                 }
 
                 else -> {
@@ -85,6 +88,17 @@ class MessageServiceImp : ServiceImpl<MessageMapper, Message>(), MessageService 
             throw SqlException("Query Exception", this::doQueryMessageList.name)
         }
 
+    }
+
+    override fun doQuerySystemMessage(pageNum: String, pageSize: String): Result {
+        val user = (SecurityContextHolder.getContext().authentication.principal as UserDetailsAdapter).getPayLoad()
+        val page = Page<MessageListItem>(pageNum.toLong(), pageSize.toLong())
+        try {
+            val res = baseMapper.querySystemMessage(page, user.id!!)
+            return Result.success(res.records)
+        } catch (e: Exception) {
+            throw SqlException("Query Exception", this::doQuerySystemMessage.name)
+        }
     }
 
     @Transactional

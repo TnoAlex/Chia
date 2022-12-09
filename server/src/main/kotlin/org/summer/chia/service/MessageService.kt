@@ -8,7 +8,8 @@ import org.summer.chia.pojo.dto.Message
 interface MessageService : IService<Message> {
     fun doPostMessage(message: MessageObject): Result
     fun doQueryCommunicative(): Result
-    fun doQueryMessageList(uid: String): Result
+    fun doQueryMessageList(pageNum: String, pageSize: String): Result
+    fun doQuerySystemMessage(pageNum: String, pageSize: String): Result
     fun markMessage(list: List<String>): Result
     fun deleteMessage(list: List<String>): Result
 }
