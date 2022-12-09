@@ -34,11 +34,6 @@ class ChiaApplication : ApplicationRunner {
     private lateinit var applicationContext: ApplicationContext
 
     override fun run(args: ApplicationArguments) {
-        Log.info(
-            javaClass,
-            "----------------------------------------初始化开始--------------------------------------",
-            null
-        )
         if (!args.containsOption("ea") || !args.containsOption("ep") || !args.containsOption("eh")) {
             Log.error(this.javaClass, "初始化邮箱账户和密码未提供", null)
             SpringApplication.exit(applicationContext)
@@ -68,11 +63,7 @@ class ChiaApplication : ApplicationRunner {
                     teacherMapper.insert(Teacher("System", "System", UUID.randomUUID().toString(), "System", null))
                 }
                 Log.info(this.javaClass, "数据库初始化成功", null)
-                Log.info(
-                    javaClass,
-                    "----------------------------------------初始化结束--------------------------------------",
-                    null
-                )
+
             } catch (e: Exception) {
                 Log.error(this.javaClass, "初始化进程错误", e.suppressed)
                 SpringApplication.exit(applicationContext)
