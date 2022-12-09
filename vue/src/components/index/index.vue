@@ -20,7 +20,7 @@
             <!-- end page title -->
 
             <div class="row mb-2">
-              <div class="col-sm-4" v-if="util.userInfo.type===1">
+              <div class="col-sm-4" v-show="userInfo.type===1">
                 <span @click="createCspVisible = true" class="btn btn-danger rounded-pill mb-3"><i class="mdi mdi-plus"></i> 发布CSP预报名</span>
                 <el-dialog
                     v-model="createCspVisible"
@@ -58,31 +58,24 @@
                   <template #footer>
                       <span class="dialog-footer">
                       <el-button @click="createCspVisible = false">关闭</el-button>
-                      <el-button type="primary" @click="createCspVisible = false">
+                      <el-button type="primary" @click="createCsp">
                       发布
                       </el-button>
                       </span>
                   </template>
                 </el-dialog>
-              </div>
-
-            </div>
-            <!-- end row-->
-            <div class="row">
-
-              <div class="col-md-6 col-xxl-3" style="width: 300px;height: 300px;" v-for="(item,index) in cspInfoList" :key="index">
                 <el-dialog
                     v-model="enrollVisible"
-                    :title="`第${item.name}次CSP报名`"
+                    :title="`第${currentCspInfo.name}次CSP报名`"
                     width="30%"
                 >
                   <div>
                     <el-select style="margin-left: 0!important;" v-model="enrollInfo.freeOrOwn" class="m-2" placeholder="选择自费或者免费">
                       <el-option
-                          v-for="item in enrollInfo.options"
-                          :key="item.value"
-                          :label="item.label"
-                          :value="item.value"
+                          v-for="item1 in enrollInfo.options"
+                          :key="item1.value"
+                          :label="item1.label"
+                          :value="item1.value"
                       />
                     </el-select>
                     <el-input v-model="enrollInfo.extra" placeholder="输入补充信息" />
@@ -90,14 +83,63 @@
 
                   <template #footer>
                               <span class="dialog-footer">
-                                <el-button @click="enrollVisible = false">取消</el-button>
-                                <el-button type="primary" @click="uploadEnrollInfo(index)">
+                                <el-button @click="enrollCancel(enrollVisible = false)">取消</el-button>
+                                <el-button type="primary" @click="uploadEnrollInfo(currentCspInfo.id)">
                                   确认
                                 </el-button>
                               </span>
                   </template>
-                </el-dialog>
-                <!-- project card -->
+                    </el-dialog>
+
+                    <el-dialog
+                    v-model="editCspVisible"
+                    title="CSP预报名信息修改"
+                    width="30%"
+                    @close="editCspClose"
+                  >
+                  <div>
+                    <label class="form-label">届次</label>
+                    <el-input style="margin-bottom: 10px" v-model="editCspInfo.number" placeholder="输入届次" />
+                    <div class="mb-3 position-relative" id="datepicker1">
+                      <label class="form-label">开始时间</label>
+                      <div class="block">
+                        <el-date-picker
+                            v-model="editCspInfo.startTime"
+                            type="datetime"
+                            placeholder="选择开始时间"
+                            format="YYYY/MM/DD HH:mm:ss"
+                        />
+                      </div>
+                    </div>
+
+                    <div class="mb-3 position-relative" id="datepicker1">
+                      <label class="form-label">截止时间</label>
+                      <div class="block">
+                        <el-date-picker
+                            v-model="editCspInfo.endTime"
+                            type="datetime"
+                            placeholder="选择开始时间"
+                            format="YYYY/MM/DD HH:mm:ss"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <template #footer>
+                      <span class="dialog-footer">
+                      <el-button @click="editCspVisible = false">关闭</el-button>
+                      <el-button type="primary" @click="editCsp">
+                      更新
+                      </el-button>
+                      </span>
+                  </template>
+                    </el-dialog>
+
+              </div>
+
+            </div>
+            <!-- end row-->
+            <div class="row">
+              <div class="col-md-6 col-xxl-3" style="width: 300px;height: 300px; margin-bottom: 80px;" v-for="(item,index) in cspInfoList" :key="index">               
                 <div class="card d-block">
                   <div class="card-body">
                     <div class="dropdown card-widgets" >
@@ -105,12 +147,12 @@
                         <i class="ri-more-fill"></i>
                       </a>
                       <div class="dropdown-menu dropdown-menu-end" >
-                        <span @click ="editCspInfo(index)" v-if="userInfo.type" href="javascript:void(0);" class="dropdown-item"><i class="mdi mdi-pencil me-1"></i>编辑</span>
-                        <span @click ="deleteCspInfo(index)" v-if="userInfo.type===1" href="javascript:void(0);" class="dropdown-item"><i class="mdi mdi-delete me-1"></i>删除</span>
-                        <span @click="enroll" v-if="userInfo.type===0" href="javascript:void(0);" class="dropdown-item">
+                        <span @click ="editCspOpen(index)" v-show="userInfo.type===1" href="javascript:void(0);" class="dropdown-item"><i class="mdi mdi-pencil me-1"></i>编辑</span>
+                        <span @click ="deleteCspInfo(item.id)" v-show="userInfo.type===1" href="javascript:void(0);" class="dropdown-item"><i class="mdi mdi-delete me-1"></i>删除</span>
+                        <span @click="enroll(index)" v-show="userInfo.type===0" href="javascript:void(0);" class="dropdown-item">
                           <i class="mdi mdi-star-box me-1"></i>报名
                         </span>
-                        <span @click="enrollCancel" v-if="userInfo.type===0" href="javascript:void(0);" class="dropdown-item"><i class="mdi mdi-cancel me-1"></i>取消报名</span>
+                        <span @click="deleteEnroll(item.id)" v-show="userInfo.type===0" href="javascript:void(0);" class="dropdown-item"><i class="mdi mdi-cancel me-1"></i>取消报名</span>
                       </div>
 
                     </div>
@@ -118,7 +160,9 @@
                     <h4 class="mt-0">
                       <a href="" class="text-title">第{{item.name}}次CSP</a>
                     </h4>
-                    <div class="badge bg-success">{{getProcession(item.startTime,item.endTime)<100?'报名中':'已过期'}}</div>
+                    <div class="badge bg-success">{{this.getProcessionStr(item.startTime,item.endTime)}}</div>
+                    
+                    
 
                     <!-- project detail-->
                     <p class="mb-1">
@@ -149,12 +193,12 @@
                       <p class="mb-2 fw-bold">进度<span class="float-end">{{getProcession(item.startTime,item.endTime)}}%</span></p>
                       <el-progress :percentage="getProcession(item.startTime,item.endTime)" :show-text="false" />
                     </li>
-                  </ul>
-                </div> <!-- end card-->
-              </div> <!-- end col -->
+                  </ul> <!-- end card-->
+                </div>
+              </div>
             </div>
-          </div> <!-- container -->
-        </div> <!-- content -->
+          </div>
+        </div>
       </div>
   </div>
   </body>
@@ -180,9 +224,17 @@ export default {
 
       },
       enrollVisible:false,
-      createCspVisible:false
-      ,userInfo:{},
+      createCspVisible:false,
+      userInfo:{},
       cspInfoList:[],
+      currentCspInfo:{},
+      editCspVisible:false,
+      editCspInfo:{
+        number:'',
+        startTime:'',
+        endTime:'',
+        id:''
+      },
       enrollInfo:{
         options:[{value: 0, label: '自费'},{value: 1, label: '免费'}],
         freeOrOwn:'',
@@ -192,23 +244,146 @@ export default {
   },
   name: "index.vue",
   mounted() {
+    util.print('haha')
     this.userInfo = cookies.get('userInfo')
     this.getCspInfo()
   },
   methods: {
-    deleteCspInfo(){
+
+    async createCsp()
+    {
+      if(this.createCspInfo.endTime===''||this.createCspInfo.startTime===''||this.createCspInfo.number==='')
+      {
+        util.messageBox('请将信息填写完整','warning')
+        return 
+      }
+      let loading = util.loadingWait('正在发布中。。。')
+      await util.delay(100)
+      axios({
+        url:'teacher/publish/csp',
+        method:'POST',
+        headers:{'content-type':'application/json'},
+        data:{
+          name:this.createCspInfo.number,
+          startTime: util.timeStampToTime(this.createCspInfo.startTime.getTime()),
+          endTime:util.timeStampToTime(this.createCspInfo.endTime.getTime())
+        }
+      }).then(async (res)=>{
+        await util.delay(100)
+        loading.close()
+        util.messageBox('发布成功','success')
+        this.getCspInfo()
+        this.createCspVisible = false
+      }).catch(async()=>{
+        await util.delay(100)
+        loading.close()
+        util.messageBox('发布失败','error')
+
+      })
+    },
+    async deleteCspInfo(pid){
+      let loading = util.loadingWait('删除中。。。')
+      await util.delay(100)
+      axios({
+        url:`teacher/publish/delete/${pid}`,
+        method:'POST',
+        headers:{'content-type': 'application/json;charset=UTF-8'},
+      }).then(async (res)=>{
+        await util.delay(100)
+        loading.close()
+        if(res.data.code===403)
+        {
+          util.messageBox(res.data.msg,'warning')
+        }
+        else
+        {
+          util.messageBox('删除成功','success')
+          this.getCspInfo()
+        }
+        
+      }).catch(async ()=>{
+        await util.delay(100)
+        loading.close()
+        util.messageBox('删除失败','error')
+      })
+    },
+   async editCsp()
+    {
+      if(this.editCspInfo.endTime===''||this.editCspInfo.startTime===''||this.editCspInfo.number==='')
+      {
+        util.messageBox('请将信息填写完整','warning')
+        return 
+      }
+      let loading = util.loadingWait('修改中。。。')
+      await util.delay(100)
+      axios({
+        method:'POST',
+        url:`teacher/publish/modify`,
+        headers:{'content-type':'application/json'},
+        data:{
+          id:this.editCspInfo.id,
+          name:this.editCspInfo.number,
+          startTime:util.timeStampToTime(this.editCspInfo.startTime.getTime()),
+          endTime:util.timeStampToTime(this.editCspInfo.endTime.getTime())
+        }
+      }).then(async (res)=>{
+        await util.delay(100)
+        loading.close()
+        util.messageBox('修改成功','success')
+        this.getCspInfo()
+        this.editCspVisible = false
+      }).catch(async ()=>{
+        await util.delay(100)
+        loading.close()
+        util.messageBox('修改失败','error')
+      })
 
     },
-    editCspInfo()
+    editCspOpen(index)
     {
-
+      this.editCspInfo.id = this.cspInfoList[index].id
+      this.editCspVisible = true
+    },
+    editCspClose()
+    {
+      this.editCspInfo.endTime=''
+      this.editCspInfo.startTime=''
+      this.editCspInfo.number=''
     },
     createCspClose(){
       this.createCspInfo.endTime=''
       this.createCspInfo.startTime=''
       this.createCspInfo.number=''
     },
+    getProcessionStr(startTime,endTime)
+    {
+      let res = this.getProcessionNum(startTime,endTime)
+      if(res<0)
+      {
+        return '未开始'
+      }
+      else if(res>100) {
+        return '已结束'
+      }
+      else{
+        return '报名中'
+      }
+    },
     getProcession(startTime,endTime)
+    {
+      let res= this.getProcessionNum(startTime,endTime)
+      if (res<0)
+      {
+        return 0
+      }else if(res>100)
+      {
+        return 100
+      }else
+      {
+        return res
+      }
+    },
+    getProcessionNum(startTime,endTime)
     {
       let startValue = (new Date(startTime)).valueOf()
       let endValue = (new Date(endTime)).valueOf()
@@ -217,14 +392,19 @@ export default {
       let proStr = (Number(pro).toFixed(2)*100)
       if (Number(proStr)>=100)
       {
-        return 100
+        return 101
+      }
+      else if(Number(proStr)<0)
+      {
+        return -1
       }
       else {
         return Math.ceil(Number(proStr))
       }
     },
-    async uploadEnrollInfo(index){
-      util.print(this.enrollInfo)
+    async uploadEnrollInfo(pid){
+  
+
       let loading = util.loadingWait('报名中。。。')
       await util.delay(50)
       await axios({
@@ -232,33 +412,40 @@ export default {
         url:'pre/reg',
         headers:{'content-type': 'application/json;charset=UTF-8'},
         data:{
-          cspId:this.cspInfoList[index].id,
+          cspId:pid,
           type:this.enrollInfo.freeOrOwn,
           extra: this.enrollInfo.extra
         }
       }).then(async (res) => {
         await util.delay(100)
         loading.close()
-        util.messageBox('报名成功','success')
+        if(res.data.code===403)
+        {
+          util.messageBox('您已经报名成功，请勿多次报名，','warning')
+        }else
+        {
+          util.messageBox('报名成功','success')
+          this.enrollInfo.extra=''
+          this.enrollInfo.freeOrOwn=''
+          this.enrollVisible = false
+          await this.getCspInfo()
+        }
         this.enrollInfo.extra=''
         this.enrollInfo.freeOrOwn=''
-        this.enrollVisible = false
-        await this.getCspInfo()
-        util.print(res)
       }).catch(async (err) => {
         await util.delay(100)
         loading.close()
         util.messageBox('报名失败','error')
-        util.print(err)
       })
     },
     async getCspInfo(){
       let loading = util.loadingWait('拉取CSP信息中。。。')
-      await util.delay(50)
+      await util.delay(200)
       await this.$axios.get('csp_info/pre')
           .then(async (res) => {
             await util.delay(100)
             loading.close()
+            util.messageBox('CSP信息拉取成功','success')
             this.cspInfoList = res.data.data
           })
           .catch(async () => {
@@ -266,15 +453,45 @@ export default {
             loading.close()
             util.messageBox('拉取CSP信息失败','error')
           })
-
-
     },
 
-    async enroll(){
+    enroll(index){
       this.enrollVisible = true
+      this.currentCspInfo =this.cspInfoList[index] 
     },
     enrollCancel()
     {
+      this.enrollInfo.extra=''
+      this.enrollInfo.freeOrOwn=''
+    },
+    async deleteEnroll(pid)
+    {
+      let loading = util.loadingWait('取消报名中。。。')
+      await util.delay(50)
+      axios({
+        method:'POST',
+        headers:{'content-type':'application/x-www-form-urlencoded;charset=UTF-8'},
+        url: `pre/reg/cancel/${pid}`
+      }).then(async (res)=>{
+        await util.delay(100)
+        loading.close()
+        if(res.data.code===403)
+        {
+          util.messageBox('您没有报名，请勿随意操作','warning')
+        }
+        else
+        {
+          util.messageBox('取消报名成功','success')
+          this.getCspInfo()
+        }
+
+        
+      }).catch(async ()=>{
+        await util.delay(100)
+        loading.close()
+        util.messageBox('取消报名失败','error')
+      })  
+
 
     }
   }

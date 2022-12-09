@@ -19,9 +19,7 @@
               <div class="page-title-box">
                 <div class="page-title-right">
                   <ol class="breadcrumb m-0">
-                    <li class="breadcrumb-item"><a href="javascript: void(0);">主页</a></li>
-                    <li class="breadcrumb-item"><a href="javascript: void(0);">页面</a></li>
-                    <li class="breadcrumb-item active">个人信息页</li>
+                  
                   </ol>
                 </div>
                 <h4 class="page-title">个人信息页</h4>
@@ -139,8 +137,8 @@
                         </div> <!-- end row -->
 
                         <div class="text-end">
-                          <button type="submit" class="btn btn-success mt-2"><i class="mdi mdi-content-save"></i>保存并提交
-                          </button>
+                          <span type="submit" class="btn btn-success mt-2"><i class="mdi mdi-content-save"></i>保存并提交
+                          </span>
                         </div>
                       </form>
                     </div>
@@ -157,37 +155,8 @@
         <!-- container -->
 
       </div>
-      <!-- content -->
-
-      <!-- Footer Start -->
-      <footer class="footer">
-        <div class="container-fluid">
-          <div class="row">
-            <div class="col-md-6">
-              <div class="text-md-end footer-links d-none d-md-block">
-                <a href="javascript: void(0);">关于我们</a>
-                <a href="javascript: void(0);">支持我们</a>
-                <a href="javascript: void(0);">联系我们</a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </footer>
-      <!-- end Footer -->
-
     </div>
-
-
-    <!-- ============================================================== -->
-    <!-- End Page content -->
-    <!-- ============================================================== -->
-
   </div>
-  <!-- END wrapper -->
-
-  <!-- Theme Settings -->
-
-
   </body>
 
 
