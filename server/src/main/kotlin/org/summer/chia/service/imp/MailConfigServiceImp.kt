@@ -2,7 +2,7 @@ package org.summer.chia.service.imp
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
-import org.springframework.beans.factory.annotation.Value
+import org.springframework.boot.autoconfigure.mail.MailProperties
 import org.springframework.cloud.context.refresh.ContextRefresher
 import org.springframework.stereotype.Service
 import org.summer.chia.exception.ServiceConfigException
@@ -24,25 +24,20 @@ class MailConfigServiceImp : MailConfigService {
     @Autowired
     private lateinit var contextRefresher: ContextRefresher
 
-    @Value("\${spring.mail.host}")
-    private lateinit var host: String
-
-    @Value("\${spring.mail.username}")
-    private lateinit var username: String
-
-    @Value("\${spring.mail.password}")
-    private lateinit var password: String
+    @Autowired
+    private lateinit var mailConfig: MailProperties
 
     override fun initMailConfig(config: MailServiceConfig): Result {
         try {
             val configPath = this::class.java.classLoader.getResource("application.yml")!!.path
             val yaml = Yaml()
             val stream = FileInputStream(configPath)
-            val params = yaml.load<Map<String, Any>>(stream)
-            val mailParams = ((params["spring"] as Map<*, *>)["mail"] as Map<*, *>).toMutableMap()
+            val params = yaml.load<MutableMap<String, Any>>(stream)
+            val mailParams = ((params["spring"] as MutableMap<*, *>)["mail"] as MutableMap<String, String>)
             mailParams["host"] = config.mailHost
             mailParams["username"] = config.mailUser
             mailParams["password"] = config.mailAuthorizationCode
+
             val writer = FileWriter(File(configPath))
             writer.write(yaml.dumpAsMap(params))
             writer.flush()
@@ -62,7 +57,7 @@ class MailConfigServiceImp : MailConfigService {
 
     override fun testMailConfig(): Result {
         try {
-            TelnetUtil.testMailConnection(host, username, password)
+            TelnetUtil.testMailConnection(mailConfig.host, mailConfig.username, mailConfig.password)
         } catch (e: Exception) {
             throw e
         }
