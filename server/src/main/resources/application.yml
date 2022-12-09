@@ -12,6 +12,9 @@ server:
       charset: utf-8
       enabled: true
 spring:
+  output:
+    ansi:
+      enabled: always
   main:
     allow-circular-references: true
   jackson:
