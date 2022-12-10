@@ -35,12 +35,18 @@ object TelnetUtil : Runnable {
                 throw ServiceConfigException("The remote server connection failed", this::testMailConnection.name)
             for (i in commandResponseMap.keys) {
                 val res = senCommand(i)
+                Log.info(javaClass, this::testMailConnection.name + ": 检查:" + i + " 结果: " + res, null)
                 if(!res.contains(commandResponseMap[i]!!)){
+                    Log.error(javaClass, "未匹配", null)
                     throw ServiceConfigException("System mailbox configuration failed with incorrect user name or password", this::testMailConnection.name)
                 }
+                Log.info(javaClass, "--成功--", null)
             }
         } catch (e: Exception) {
-            throw ServiceConfigException("An unexpected occurred during system mailbox configuration",this::testMailConnection.name)
+            throw ServiceConfigException(
+                "An unexpected occurred during system mailbox configuration: " + e.message,
+                this::testMailConnection.name
+            )
         }
     }
 

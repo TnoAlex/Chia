@@ -6,11 +6,14 @@ plugins {
     kotlin("jvm") version "1.7.10"
     kotlin("plugin.spring") version "1.7.10"
     id("org.jetbrains.kotlin.plugin.noarg") version "1.7.10"
+    id("war")
 }
+
 
 group = "org.summer"
 version = "0.0.1-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_11
+
 
 configurations {
     compileOnly {

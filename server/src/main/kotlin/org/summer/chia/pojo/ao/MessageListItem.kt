@@ -8,5 +8,6 @@ data class MessageListItem(
     var sendForm: String,
     var sendTo: String,
     var content: String,
-    var status: Int
+    var status: Int,
+    var totalSize: Int
 )

@@ -113,11 +113,11 @@ internal class UserControllerTest {
     @WithMockTeacher
     fun queryStudentList() {
         val test = ArrayList<StudentListItem>()
-        test.add(StudentListItem("1593439666370023425", "test", "123456", 300, 1, "2020级"))
-        test.add(StudentListItem("1598636048336887810", "阿庆1", "1", 0, 1, "2020级"))
-        test.add(StudentListItem("1598636048697597953", "阿庆2", "2", 0, 1, "2020级"))
-        test.add(StudentListItem("1598636048961839106", "阿庆3", "3", 0, 1, "2020级"))
-        test.add(StudentListItem("1598636049230274561", "阿庆4", "4", 0, 1, "2020级"))
+        test.add(StudentListItem("1593439666370023425", "test", "123456", 300, 1, "2020级", 7))
+        test.add(StudentListItem("1598636048336887810", "阿庆1", "1", 0, 1, "2020级", 7))
+        test.add(StudentListItem("1598636048697597953", "阿庆2", "2", 0, 1, "2020级", 7))
+        test.add(StudentListItem("1598636048961839106", "阿庆3", "3", 0, 1, "2020级", 7))
+        test.add(StudentListItem("1598636049230274561", "阿庆4", "4", 0, 1, "2020级", 7))
         mvc.perform(get("/student/list/0/5"))
             .andExpect(content().json(Gson().toJson(Result.success(test))))
             .andDo(print())
@@ -136,10 +136,10 @@ internal class UserControllerTest {
     @WithMockTeacher
     fun filterStudentList() {
         val test = ArrayList<StudentListItem>()
-        test.add(StudentListItem("1598636048336887810", "阿庆1", "1", 0, 1, "2020级"))
-        test.add(StudentListItem("1598636048697597953", "阿庆2", "2", 0, 1, "2020级"))
-        test.add(StudentListItem("1598636048961839106", "阿庆3", "3", 0, 1, "2020级"))
-        test.add(StudentListItem("1598636049230274561", "阿庆4", "4", 0, 1, "2020级"))
+        test.add(StudentListItem("1598636048336887810", "阿庆1", "1", 0, 1, "2020级", 4))
+        test.add(StudentListItem("1598636048697597953", "阿庆2", "2", 0, 1, "2020级", 4))
+        test.add(StudentListItem("1598636048961839106", "阿庆3", "3", 0, 1, "2020级", 4))
+        test.add(StudentListItem("1598636049230274561", "阿庆4", "4", 0, 1, "2020级", 4))
         mvc.perform(get("/student/filter/0/4/null/null/0/4"))
             .andExpect(content().json(Gson().toJson(Result.success(test))))
     }
@@ -158,7 +158,8 @@ internal class UserControllerTest {
                                 "123456",
                                 300,
                                 1,
-                                "2020级"
+                                "2020级",
+                                1
                             )
                         )
                     )
