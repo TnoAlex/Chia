@@ -30,6 +30,11 @@ const router = createRouter({
                 component: ()=>import('@/components/personal_info')
             },
 
+            {
+                path: '/message',
+                name: 'message',
+                component: ()=>import('@/components/message')
+            },
         ],
     }
 )

@@ -163,47 +163,37 @@
           </div>
         </li>
         <li class="dropdown notification-list">
-          <a style="display: inline-block;width: 300px" class="nav-link dropdown-toggle nav-user arrow-none me-0" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
-                                <div class="account-user-avatar" style="display: flex; justify-content: center; align-items: center;margin-left: 0;margin-right: 0">
-                                    <img src="../../assets/picture/avatar-1.jpg" alt="user-image" class="rounded-circle">
-                                    <span style="margin-left: 5px" >
-                                    {{userInfo.userName}}
-                                    </span>
-                                </div>
-
-          </a>
-          <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated topbar-dropdown-menu profile-dropdown">
-            <!-- item-->
-            <div class=" dropdown-header noti-title">
-              <h6 class="text-overflow m-0">欢 迎 !</h6>
-            </div>
-
-            <!-- item-->
-<!--            <a href="javascript:void(0);" class="dropdown-item notify-item">-->
-<!--              <i class="mdi mdi-account-circle me-1"></i>-->
-<!--              <span>我的账号</span>-->
-
-<!--            </a>-->
-            <router-link :to="{path:'/personal_info'}" class="dropdown-item notify-item">
-              <i class="mdi mdi-account-circle me-1"></i>
-              <span>我的账号</span>
-
-            </router-link>
-
-
-            <!-- item-->
-            <a href="javascript:void(0);" class="dropdown-item notify-item">
-              <i class="mdi mdi-account-edit me-1"></i>
-              <span>设置</span>
-
-            </a>
-
-            <a href="javascript:void(0);" class="dropdown-item notify-item">
-              <i class="mdi mdi-logout me-1"></i>
-              <span>登出</span>
-
-            </a>
-          </div>
+          
+          <el-dropdown placement="bottom-start" >
+            <span  style="display: inline-block;width: 300px" class="nav-link  nav-user ">
+              <div class="account-user-avatar" style="display: flex; justify-content: center; align-items: center;margin-left: 0;margin-right: 0">
+                <img src="../../assets/picture/avatar-1.jpg"  class="rounded-circle">
+                <span style="margin-left: 5px" >{{userInfo.userName}}</span>
+              </div>
+            </span>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item>
+                  <router-link :to="{path:'/personal_info'}" class="dropdown-item notify-item">
+                    <i class="mdi mdi-account-circle me-1"></i>
+                    <span>我的账号</span>
+                  </router-link>
+                </el-dropdown-item>
+                <el-dropdown-item>
+                  <span  class="dropdown-item notify-item">
+                    <i class="mdi mdi-account-edit me-1"></i>
+                    <span>设置</span>
+                  </span>
+                </el-dropdown-item>
+                <el-dropdown-item>
+                  <span  class="dropdown-item notify-item">
+                    <i class="mdi mdi-logout me-1"></i>
+                    <span>登出</span>
+                  </span>
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
         </li>
       </ul>
       <!-- Topbar Search Form -->

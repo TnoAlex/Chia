@@ -9,12 +9,7 @@
     </LeftNav>
     <div class="content-page">
       <div class="content">
-
-        <!-- Start Content-->
         <div class="container-fluid">
-
-
-          <!-- start page title -->
           <div class="row">
 
             <div class="col-12">
@@ -30,8 +25,6 @@
               </div>
             </div>
           </div>
-          <!-- end page title -->
-
           <div class="row">
             <div class="col-12">
               <div class="card">
@@ -88,7 +81,7 @@
                       <el-input v-model="searchInfo.score" placeholder="输入分数如：300"
                                 style="display: inline-block; width: 200px;" />
                       <div style="display: inline-block; text-align: center; align-items: center">
-                        <el-button :icon="Search" circle @click="otherSearch" />
+                        <el-button :icon="Search" circle @click="otherSearch(this.currentPage,this.pageSize)" />
                       </div>
                        <div style="display: inline-block; margin-left: 20px;text-align: center; align-items: center" >
                       <el-button type="danger" :icon="Delete" circle @click="resetAll" />
@@ -104,7 +97,7 @@
                       <template #footer>
                         <span class="dialog-footer">
                           <el-button @click="bulkDeletionVisible = false">取消</el-button>
-                          <el-button type="primary" @click="bulkDeletionVisible = false">
+                          <el-button type="primary" @click="bulkDeletion">
                             确认删除
                           </el-button>
                         </span>
@@ -237,13 +230,8 @@
               </div> <!-- end card-->
             </div> <!-- end col -->
           </div>
-          <!-- end row -->
-
-        </div> <!-- container -->
-
-      </div> <!-- content -->
-
-
+        </div>
+      </div> 
     </div>
   </div>
   </body>
@@ -255,6 +243,7 @@ import leftNav from "@/components/index/leftNav";
 import {Search,Delete,Edit } from '@element-plus/icons-vue';
 import util from '@/utils/commonUtil'
 import axios from "axios";
+import { forEach } from "lodash";
 export default {
   name: "studentList.vue",
   components:{
@@ -296,20 +285,117 @@ export default {
     }
   },
   methods:{
-    bulkDeletion()
+    async singleDelete(uidList)
+    {
+      await axios({
+        headers: {'content-Type': 'application/json'},
+        method: 'post',
+        url: '/teacher/admin/remove',
+        data: uidList
+      }).then(()=>{
+        util.messageBox('删除成功','success')
+        this.getInitTableData(this.currentPage,this.pageSize)
+      }).catch(()=>{
+        util.messageBox('删除失败','success')
+      })
+    },
+    async getSearchUrl()
+    {
+      if(this.searchInfo.grade.toString()===''&&this.searchInfo.score===''
+          &&this.searchInfo.scoreFilter===''&&this.searchInfo.freeTime==='')
+      {
+        return ''
+      }
+      if((this.searchInfo.grade.length>0)&&(this.searchInfo.grade.length!==4||
+          util.judgeInputIsNumber(this.searchInfo.grade)===false))
+      {
+        util.messageBox('年级格式错误','error')
+        return ''
+      }
+      if(this.searchInfo.score.length>0&&util.judgeInputIsNumber(this.searchInfo.score)===false)
+      {
+        util.messageBox('分数格式输入错误','error')
+        return ''
+      }
+      if(this.searchInfo.scoreFilter===''&&this.searchInfo.score!==''||
+          this.searchInfo.scoreFilter!==''&&this.searchInfo.score==='')
+      {
+        util.messageBox('分数条件与分数必须同时选择一个值','error')
+        return ''
+      }
+      let score = this.searchInfo.score===''?null:this.searchInfo.score
+      let filter = this.searchInfo.scoreFilter===''?null:this.searchInfo.scoreFilter
+      let grade = (this.searchInfo.grade===''?null:this.searchInfo.grade+'-09-01')
+      let freeTime= this.searchInfo.freeTime===''?null:this.searchInfo.freeTime-1
+      let url  =`teacher/filter/${score}/${filter}/${grade}/${freeTime}/`
+      //${1}/${this.pageSize}`
+      return url
+    },
+    async bulkDeletion()
     {
       if(this.selection.length===0)
       {
         //如果没有选中某些内容删除该搜索全部信息
-        let pages = 0
-        if(this.totalDataNum%this.pageSize===0)
+        let url = await this.getSearchUrl()
+        if(url==='')
         {
-          pages = this.totalDataNum/this.pageSize
+          util.messageBox('批量删除需要选择字段','warning')
+          // let loading = util.loadingWait('删除中')
+          // url = `teacher/filter/null/null/null/null`
+          // await axios({
+          //   url:url,
+          //   headers:{'content-type':'application/x-www-form-urlencoded;charset=UTF-8'},
+          //   method:'GET'
+          // }).then((res)=>{
+            
+          // }).catch(()=>{
+            
+          // })
         }
         else
         {
-          pages = this.totalDataNum/this.pageSize+1
+          
+          url =url.slice(0,url.length-1)
+          let loading = util.loadingWait('删除中')
+          util.delay(100)
+          await axios({
+            url:url,
+            headers:{'content-type':'application/x-www-form-urlencoded;charset=UTF-8'},
+            method:'POST'
+          }).then((res)=>{
+            loading.close()
+            util.delay(100)
+            util.messageBox('删除成功','success')
+            this.bulkDeletionVisible = false
+            this.getInitTableData(1,this.pageSize)
+          }).catch((err)=>{
+            loading.close()
+            util.delay(100)
+            console.log(err)
+            util.messageBox('删除失败','error')
+          })
         }
+      }
+      else
+      {
+        let uidList = []
+        this.selection.forEach((element)=>{
+          uidList.push(element.id)
+        })
+        await axios({
+        headers: {'content-Type': 'application/json'},
+        method: 'post',
+        url: '/teacher/admin/remove',
+        data: uidList
+        }).then(()=>{
+          util.messageBox('删除成功','success')
+          this.bulkDeletionVisible = false
+          this.getInitTableData(this.currentPage,this.pageSize)
+        }).catch(()=>{
+          util.messageBox('删除失败','success')
+        })
+
+
       }
     },
     bulkDeletionConfirm()
@@ -322,39 +408,17 @@ export default {
       this.searchInfo.nameOrStudentNumber=''
       this.searchInfo.scoreFilter=''
     },
-    async otherSearch()
+    async otherSearch(pageNum,pageSize)
     {
-      if(this.searchInfo.grade.toString()===''&&this.searchInfo.score===''
-          &&this.searchInfo.scoreFilter===''&&this.searchInfo.freeTime==='')
+      let url = await this.getSearchUrl()
+      if(url==='')
       {
         await this.getInitTableData(1,this.pageSize)
+        console.log("ddd")
         return
       }
-
-      if((this.searchInfo.grade.length>0)&&(this.searchInfo.grade.length!==4||
-          util.judgeInputIsNumber(this.searchInfo.grade)===false))
-      {
-        util.messageBox('年级格式错误','error')
-        return
-      }
-      if(this.searchInfo.score.length>0&&util.judgeInputIsNumber(this.searchInfo.score)===false)
-      {
-        util.messageBox('分数格式输入错误','error')
-        return
-      }
-      util.print(this.searchInfo.score)
-      util.print(this.searchInfo.scoreFilter)
-      if(this.searchInfo.scoreFilter===''&&this.searchInfo.score!==''||
-          this.searchInfo.scoreFilter!==''&&this.searchInfo.score==='')
-      {
-        util.messageBox('分数条件与分数必须同时选择一个值','error')
-        return
-      }
-      let score = this.searchInfo.score===''?null:this.searchInfo.score
-      let filter = this.searchInfo.scoreFilter===''?null:this.searchInfo.scoreFilter
-      let grade = (this.searchInfo.grade===''?null:this.searchInfo.grade+'-09-01')
-      let freeTime= this.searchInfo.freeTime===''?null:this.searchInfo.freeTime-1
-      let url  =`student/filter/${score}/${filter}/${grade}/${freeTime}/${1}/${this.pageSize}`
+      else
+        url = url + `${pageNum}/${pageSize}`
       let loading = util.loadingWait('搜索中','table_studentList')
       await util.delay(100)
       await axios({
@@ -417,7 +481,7 @@ export default {
       else
       {
         //输入数字，搜索学号
-        let url = `student/filter/null/${searchText}`
+        let url = `teacher/filter/null/${searchText}`
         await axios.get(url).then(async (res) => {
           await util.delay(50)
           util.print(res)
@@ -524,7 +588,7 @@ export default {
     },
     async getInitTableData(pageNum,pageSize)
     {
-      let url = `student/list/${pageNum}/${pageSize}`
+      let url = `teacher/list/${pageNum}/${pageSize}`
       let loading = util.loadingWait('获取学生信息中。。。','table_studentList')
       await util.delay(50)
       await axios.get(url
@@ -538,7 +602,7 @@ export default {
           this.totalDataNum = 0
           return
         }
-        util.print(res.data.data)
+        this.currentPage = pageNum
         this.tableData = res.data.data
         this.totalDataNum = res.data.data[0].totalSize
         util.messageBox('获取学生信息成功', 'success')
@@ -549,16 +613,33 @@ export default {
       })
 
     },
-    handleSizeChange(size)
+    async handleSizeChange(size)
     {
       this.pageSize = size
-      this.currentPage = 1
-      this.getInitTableData(1,size)
+      this.currentPage = 1 
+      let url = await this.getSearchUrl()
+      if(url==='')
+      {
+        await this.getInitTableData(this.currentPage,size)
+      }
+      else
+      {
+        await this.otherSearch(this.currentPage,size)
+        console.log('size更新')
+      }
     },
-    handleCurrentChange(index)
+     async handleCurrentChange(index)
     {
       this.currentPage = index
-      this.getInitTableData(index,this.pageSize)
+      let url = await this.getSearchUrl()
+      if(url==='')
+      {
+        this.getInitTableData(index,this.pageSize)
+      }
+      else
+      {
+        await this.otherSearch(index,this.pageSize) 
+      }
     },
     async handleExcel(ev)
     {
