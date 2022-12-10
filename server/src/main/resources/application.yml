@@ -27,9 +27,9 @@ spring:
       content-type: text/html
   mail:
     default-encoding: utf-8
-    host: None
-    username: None
-    password: None
+    host: smtp.163.com
+    username: lxd41691446@163.com
+    password: TQAQGWAGYJMXMTPH
     protocol: smtp
     test-connection: false
     properties:

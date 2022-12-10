@@ -55,7 +55,7 @@
                           <i class="mdi mdi-circle bg-info-lighten text-info timeline-icon"></i>
                           <div class="timeline-item-info">
                             <h5 class="mt-0 mb-1">姓名</h5>
-                            <p class="text-muted mt-2 mb-0 pb-3">{{getinfoObject.name}}</p>
+                            <p class="text-muted mt-2 mb-0 pb-3">{{getinfoObject.userName}}</p>
                           </div>
                         </div>
 
@@ -63,7 +63,7 @@
                           <i class="mdi mdi-circle bg-primary-lighten text-primary timeline-icon"></i>
                           <div class="timeline-item-info">
                             <h5 class="mt-0 mb-1">学号</h5>
-                            <p class="text-muted mt-2 mb-0 pb-3">{{ getinfoObject.studentID }}</p>
+                            <p class="text-muted mt-2 mb-0 pb-3">{{ getinfoObject.studentNum }}</p>
                           </div>
                         </div>
 
@@ -71,7 +71,7 @@
                           <i class="mdi mdi-circle bg-info-lighten text-info timeline-icon"></i>
                           <div class="timeline-item-info">
                             <h5 class="mt-0 mb-1">身份证号</h5>
-                            <p class="text-muted mt-2 mb-0 pb-2">{{ getinfoObject.idNumber }}</p>
+                            <p class="text-muted mt-2 mb-0 pb-2">等待身份证号被cookie存入</p>
                           </div>
                         </div>
 
@@ -79,7 +79,7 @@
                           <i class="mdi mdi-circle bg-info-lighten text-primary timeline-icon"></i>
                           <div class="timeline-item-info">
                             <h5 class="mt-0 mb-1">邮箱</h5>
-                            <p class="text-muted mt-2 mb-0 pb-2">{{ getinfoObject.email }}</p>
+                            <p class="text-muted mt-2 mb-0 pb-2">等待邮箱在cookie中被存入</p>
                           </div>
                         </div>
 
@@ -112,15 +112,24 @@
                           <div class="col-md-6">
                             <div class="mb-3">
                               <label for="password" class="form-label">密码</label>
-                              <input type="text" class="form-control" id="password" placeholder="输入密码">
-                              <span class="form-text text-muted"><small>如果需要修改请<a
-                                  href="javascript: void(0);">点击</a>这里</small></span>
+                              <input type="text" class="form-control" id="password" v-model="pwdchangeObject.newPassword" placeholder="输入密码">
+                            </div>
+                          </div> <!-- end col -->
+                          <div class="col-md-6">
+                            <div class="mb-3">
+                              <label for="code" class="form-label">验证码</label>
+                              <input type="text" class="form-control" id="code" v-model="pwdchangeObject.code" placeholder="输入验证码">
                             </div>
                           </div> <!-- end col -->
                         </div> <!-- end row -->
 
                         <div class="text-end">
-                          <span type="submit" class="btn btn-success mt-2"><i class="mdi mdi-content-save"></i>保存并提交
+                          <span type="submit" class="btn btn-success mt-2" @click="getCode()"><i class="mdi mdi-content-save"></i>获取验证码
+                          </span>
+                        </div>
+
+                        <div class="text-end">
+                          <span type="submit" class="btn btn-success mt-2" @click="changePwd()"><i class="mdi mdi-content-save"></i>保存并提交
                           </span>
                         </div>
                       </form>
@@ -142,12 +151,18 @@
   </div>
   </body>
 
+  <el-dialog title="弹窗" v-model="resObject.ifOut" width="35%">
+    {{this.resObject.msg}}
+  </el-dialog>
 
 </template>
 
 <script>
 import topNav from "@/components/index/topNav";
 import leftNav from "@/components/index/leftNav";
+
+import util from '../utils/commonUtil'
+import cookies from "vue-cookies";
 
 import '../utils/commonUtil'
 import '../assets/js/hyper-config'
@@ -167,34 +182,81 @@ export default {
     LeftNav: leftNav
   },
   beforeMount() {
-    this.getinfo()
+
     console.log(1)
   },
   data(){
     return {
-      getinfoObject:{
-        name: '',
-        studentID: '',
-        idNumber: '',
-        maxScore: '',
-        freeTime: '',
-        email: '',
-      },
+      getinfoObject:{},
       pwdchangeObject:{
-        newPwd: ''
+        newPassword: '',
+        code: '',
+        type: ''
+      },
+      resObject:{
+        code: '',
+        msg: '',
+        ifOut: false,
+        codeIsTrue: false
       }
     }
   },
+  mounted() {
+    let userInfo = cookies.get('userInfo')
+    this.getinfoObject = userInfo
+  },
   methods:{
-    async getinfo(){
-      await this.$axios.get('/student/query/details')
-          .then((res) => {
-            this.getinfoObject = res.data.data
-            console.log(res.data)
+
+    async checkCode(){
+      this.$axios.post('/verify/reset_code/validate/'+this.pwdchangeObject.code)
+          .then((res)=>{
+            console.log(res)
+            this.resObject.codeIsTrue = res.data.code === 200;
+            console.log(this.resObject.codeIsTrue)
           })
     },
     async changePwd(){
-
+      console.log(this.pwdchangeObject)
+      const _this=this
+      await this.checkCode()
+      if(this.resObject.codeIsTrue === true)
+      {
+        console.log(this.getinfoObject.type)
+        await this.$axios.post(
+            '/user/reset/password',
+            {
+              "code": _this.pwdchangeObject.code,
+              "type": this.getinfoObject.type,
+              "newPassword": _this.pwdchangeObject.newPassword
+            })
+            .then((res)=>{
+              if(res.data.msg === 'ok')
+                this.resObject.msg = '修改成功！'
+              else
+                this.resObject.msg = res.data.msg
+              this.resObject.code = res.data.code
+              this.resObject.ifOut = true
+            })
+      }
+      else{
+        this.resObject.msg = '验证码错误'
+        this.resObject.ifOut = true
+      }
+    },
+    async getCode(){
+      let sending = util.loadingWait('发送验证码中')
+      await util.delay(100)
+      await this.$axios.get('/verify/reset_code')
+          .then(async (res) => {
+            await util.delay(100)
+            sending.close()
+            if (res.data.code !== 200) {
+              this.resObject.msg = '验证码发送失败！'
+            } else {
+              this.resObject.msg = '验证码已经发送'
+            }
+            this.resObject.ifOut = true
+          })
     }
   }
 
