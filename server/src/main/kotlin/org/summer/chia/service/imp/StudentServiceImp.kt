@@ -28,6 +28,7 @@ import org.summer.chia.utils.verificationCode
 import java.sql.Timestamp
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.CompletableFuture
 
 @Service
 @EnableAspectJAutoProxy(exposeProxy = true)
@@ -75,8 +76,8 @@ class StudentServiceImp : ServiceImpl<StudentMapper, Student>(), StudentService 
 
     @Async
     @Transactional
-    override fun enableAccount(mailAddress: String): Result {
-        val uid = (SecurityContextHolder.getContext().authentication.principal as UserDetailsAdapter).getPayLoad().id!!
+    override fun enableAccount(mailAddress: String, user: UserDetails): CompletableFuture<Result> {
+        val uid = (user as UserDetailsAdapter).getPayLoad().id!!
         val code = verificationCode(System.currentTimeMillis())
         try {
             captchaMapper.insert(Captcha(null, uid, code, Timestamp(Date().time), 0))
@@ -98,7 +99,7 @@ class StudentServiceImp : ServiceImpl<StudentMapper, Student>(), StudentService 
             }
 
         }
-        return Result.success()
+        return CompletableFuture.completedFuture(Result.success())
     }
 
     @Transactional

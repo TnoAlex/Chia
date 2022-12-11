@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.EnableAspectJAutoProxy
 import org.springframework.scheduling.annotation.Async
-import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.summer.chia.adapter.UserDetailsAdapter
@@ -127,8 +127,8 @@ class RegistrationServiceImp : ServiceImpl<RegistrationMapper, Registration>(), 
     }
 
     @Async
-    override fun noticeStudent(list: List<String>, cid: String): Result {
-        val uid = (SecurityContextHolder.getContext().authentication.principal as UserDetailsAdapter).getPayLoad().id!!
+    override fun noticeStudent(list: List<String>, cid: String, user: UserDetails): Result {
+        val uid = (user as UserDetailsAdapter).getPayLoad().id!!
         val csp = cspInfoMapper.selectOne(KtQueryWrapper(CspInfo::class.java).eq(CspInfo::id, cid))
         val data = mapOf("cspName" to csp.name)
         var successNumber = 0

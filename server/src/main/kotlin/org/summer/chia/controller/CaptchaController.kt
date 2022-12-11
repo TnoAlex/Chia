@@ -1,6 +1,8 @@
 package org.summer.chia.controller
 
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -20,8 +22,9 @@ class CaptchaController {
     }
 
     @GetMapping("/verify/reset_code")
-    fun getRestPasswordCode(): Result {
-        return captchaService.genRestPasswordCode()
+    fun getRestPasswordCode(@AuthenticationPrincipal user: UserDetails): Result {
+        val task = captchaService.genRestPasswordCode(user)
+        return task.get()
     }
 
     @PostMapping("/verify/reset_code/validate/{code}")

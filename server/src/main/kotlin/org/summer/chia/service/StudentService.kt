@@ -5,11 +5,12 @@ import org.springframework.security.core.userdetails.UserDetails
 import org.summer.chia.pojo.ao.FreshmanInfo
 import org.summer.chia.pojo.ao.Result
 import org.summer.chia.pojo.dto.Student
+import java.util.concurrent.CompletableFuture
 
 interface StudentService : IService<Student> {
     fun loadUserByUsername(username: String): UserDetails?
     fun getBriefInfo(): Result
-    fun enableAccount(mailAddress: String): Result
+    fun enableAccount(mailAddress: String, user: UserDetails): CompletableFuture<Result>
     fun importStudent(infos: List<FreshmanInfo>): Result
     fun queryStudentList(pageNum: String, pageSize: String): Result
     fun queryStudentTotalNumber(): Result

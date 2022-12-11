@@ -8,7 +8,6 @@ import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.context.ApplicationContext
-import org.springframework.scheduling.annotation.EnableAsync
 import org.springframework.transaction.annotation.EnableTransactionManagement
 import org.summer.chia.mapper.TeacherMapper
 import org.summer.chia.pojo.dto.Teacher
@@ -18,7 +17,6 @@ import java.util.*
 
 @SpringBootApplication
 @EnableTransactionManagement
-@EnableAsync
 //class ChiaApplication
 
 class ChiaApplication : ApplicationRunner {

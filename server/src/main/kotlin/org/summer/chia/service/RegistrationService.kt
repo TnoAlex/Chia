@@ -1,6 +1,7 @@
 package org.summer.chia.service
 
 import com.baomidou.mybatisplus.extension.service.IService
+import org.springframework.security.core.userdetails.UserDetails
 import org.summer.chia.pojo.ao.RegistrationListItem
 import org.summer.chia.pojo.ao.Result
 import org.summer.chia.pojo.dto.Registration
@@ -10,5 +11,5 @@ interface RegistrationService : IService<Registration> {
     fun transcriptsList(objList: List<RegistrationListItem>): Result
     fun doQueryAbsentOfficialRegistration(cid: String): Result
     fun doQueryAbsentExam(cid: String): Result
-    fun noticeStudent(list: List<String>, cid: String): Result
+    fun noticeStudent(list: List<String>, cid: String, user: UserDetails): Result
 }
