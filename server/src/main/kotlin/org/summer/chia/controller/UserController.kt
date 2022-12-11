@@ -1,6 +1,8 @@
 package org.summer.chia.controller
 
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.web.bind.annotation.*
 import org.summer.chia.pojo.ao.FreshmanInfo
 import org.summer.chia.pojo.ao.RestPassword
@@ -34,8 +36,9 @@ class UserController {
     }
 
     @PostMapping("/student/enable/{mail}")
-    fun enableAccount(@PathVariable mail: String): Result {
-        return studentService.enableAccount(mail)
+    fun enableAccount(@PathVariable mail: String, @AuthenticationPrincipal user: UserDetails): Result {
+        val task = studentService.enableAccount(mail, user)
+        return task.get()
     }
 
     @PostMapping("/teacher/import/freshman")

@@ -1,6 +1,8 @@
 package org.summer.chia.controller
 
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.web.bind.annotation.*
 import org.summer.chia.pojo.ao.RegistrationListItem
 import org.summer.chia.pojo.ao.Result
@@ -32,7 +34,11 @@ class CspRegistrationController {
     }
 
     @PostMapping("/teacher/notice/official/{cid}")
-    fun noticeStudent(@RequestBody list: List<String>, @PathVariable cid: String): Result {
-        return registrationService.noticeStudent(list, cid)
+    fun noticeStudent(
+        @RequestBody list: List<String>,
+        @PathVariable cid: String,
+        @AuthenticationPrincipal user: UserDetails
+    ): Result {
+        return registrationService.noticeStudent(list, cid, user)
     }
 }

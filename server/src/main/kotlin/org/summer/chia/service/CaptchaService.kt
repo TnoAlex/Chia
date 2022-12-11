@@ -1,12 +1,14 @@
 package org.summer.chia.service
 
 import com.baomidou.mybatisplus.extension.service.IService
+import org.springframework.security.core.userdetails.UserDetails
 import org.summer.chia.pojo.ao.Result
 import org.summer.chia.pojo.dto.Captcha
+import java.util.concurrent.CompletableFuture
 
 interface CaptchaService:IService<Captcha> {
-    fun doActivateAccount(code:String): Result
-    fun genRestPasswordCode():Result
-    fun doValidateRestPasswordCode(code: String):Result
+    fun doActivateAccount(code: String): Result
+    fun genRestPasswordCode(user: UserDetails): CompletableFuture<Result>
+    fun doValidateRestPasswordCode(code: String): Result
     fun evalCode(code: String):Boolean
 }

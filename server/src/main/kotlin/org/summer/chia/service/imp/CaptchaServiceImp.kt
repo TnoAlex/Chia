@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.EnableAspectJAutoProxy
 import org.springframework.scheduling.annotation.Async
-import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.summer.chia.adapter.UserDetailsAdapter
@@ -23,6 +23,7 @@ import org.summer.chia.utils.MailSendUtil
 import org.summer.chia.utils.verificationCode
 import java.sql.Timestamp
 import java.util.*
+import java.util.concurrent.CompletableFuture
 
 @Service
 @EnableAspectJAutoProxy(exposeProxy = true)
@@ -65,19 +66,23 @@ class CaptchaServiceImp : ServiceImpl<CaptchaMapper, Captcha>(), CaptchaService 
 
     @Async
     @Transactional
-    override fun genRestPasswordCode(): Result {
+    override fun genRestPasswordCode(user: UserDetails): CompletableFuture<Result> {
         val code = verificationCode(System.currentTimeMillis())
-        val user = (SecurityContextHolder.getContext().authentication.principal as UserDetailsAdapter).getPayLoad()
-        return try{
-            baseMapper.insert(Captcha(null,user.id!!,code, Timestamp(Date().time),0))
+        val account = (user as UserDetailsAdapter).getPayLoad()
+        val history = baseMapper.selectList(KtQueryWrapper(Captcha::class.java).eq(Captcha::uid, account.id!!))
+        if (history.isNullOrEmpty()) {
+            baseMapper.delete(KtQueryWrapper(Captcha::class.java).eq(Captcha::uid, account.id!!))
+        }
+        return try {
+            baseMapper.insert(Captcha(null, account.id!!, code, Timestamp(Date().time), 0))
             val data = mapOf("code" to code)
-            mailSendUtils.sendTemplateMail(user.email!!, "您正在修改您的密码", "forget_password.html", data)
-            Result.success()
-        }catch (e:Exception){
+            mailSendUtils.sendTemplateMail(account.email!!, "您正在修改您的密码", "forget_password.html", data)
+            CompletableFuture.completedFuture(Result.success())
+        } catch (e: Exception) {
             Log.error(this.javaClass, this::genRestPasswordCode.name + " Insert Exception", e.suppressed)
-            when (e){
-                is MailSendException-> throw e
-                else -> throw SqlException("Insert Exception",this::genRestPasswordCode.name)
+            when (e) {
+                is MailSendException -> throw e
+                else -> throw SqlException("Insert Exception", this::genRestPasswordCode.name)
             }
         }
     }
@@ -97,8 +102,10 @@ class CaptchaServiceImp : ServiceImpl<CaptchaMapper, Captcha>(), CaptchaService 
         }
     }
 
+    @Transactional
     override fun evalCode(code: String):Boolean{
         val captcha = baseMapper.selectOne(KtQueryWrapper(Captcha::class.java).eq(Captcha::code,code)) ?: return false
+        baseMapper.delete(KtQueryWrapper(Captcha::class.java).eq(Captcha::code, code))
         return captcha.status == 1
     }
 

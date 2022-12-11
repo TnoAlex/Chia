@@ -2,6 +2,7 @@ package org.summer.chia.utils
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.context.annotation.EnableAspectJAutoProxy
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.MimeMessageHelper
 import org.springframework.stereotype.Component
@@ -10,6 +11,7 @@ import org.thymeleaf.TemplateEngine
 import org.thymeleaf.context.Context
 
 @Component
+@EnableAspectJAutoProxy(exposeProxy = true)
 class MailSendUtil {
 
     @Value("\${spring.mail.username}")
