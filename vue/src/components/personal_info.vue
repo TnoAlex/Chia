@@ -129,7 +129,7 @@
                         </div>
 
                         <div class="text-end">
-                          <span type="submit" class="btn btn-success mt-2" @click="changePwd()"><i class="mdi mdi-content-save"></i>保存并提交
+                          <span type="submit" class="btn btn-success mt-2" @click="checkCode()"><i class="mdi mdi-content-save"></i>保存并提交
                           </span>
                         </div>
                       </form>
@@ -151,7 +151,7 @@
   </div>
   </body>
 
-  <el-dialog title="弹窗" v-model="resObject.ifOut" width="35%">
+  <el-dialog title="提示" v-model="resObject.ifOut" width="35%">
     {{this.resObject.msg}}
   </el-dialog>
 
@@ -182,7 +182,8 @@ export default {
     LeftNav: leftNav
   },
   beforeMount() {
-
+    let userInfo = cookies.get('userInfo')
+    this.getinfoObject = userInfo
     console.log(1)
   },
   data(){
@@ -201,47 +202,36 @@ export default {
       }
     }
   },
-  mounted() {
-    let userInfo = cookies.get('userInfo')
-    this.getinfoObject = userInfo
-  },
   methods:{
-
     async checkCode(){
+      const _this = this
       this.$axios.post('/verify/reset_code/validate/'+this.pwdchangeObject.code)
-          .then((res)=>{
+          .then((res) => {
             console.log(res)
             this.resObject.codeIsTrue = res.data.code === 200;
-            console.log(this.resObject.codeIsTrue)
-          })
-    },
-    async changePwd(){
-      console.log(this.pwdchangeObject)
-      const _this=this
-      await this.checkCode()
-      if(this.resObject.codeIsTrue === true)
-      {
-        console.log(this.getinfoObject.type)
-        await this.$axios.post(
-            '/user/reset/password',
-            {
-              "code": _this.pwdchangeObject.code,
-              "type": this.getinfoObject.type,
-              "newPassword": _this.pwdchangeObject.newPassword
-            })
-            .then((res)=>{
-              if(res.data.msg === 'ok')
-                this.resObject.msg = '修改成功！'
-              else
-                this.resObject.msg = res.data.msg
-              this.resObject.code = res.data.code
+            this.resObject.msg = res.data.msg
+            // console.log(this.resObject.codeIsTrue)
+            if (this.resObject.codeIsTrue === true) {
+              // console.log(this.getinfoObject.type)
+              this.$axios.post(
+                  '/user/reset/password',
+                  {
+                    "code": _this.pwdchangeObject.code,
+                    "type": this.getinfoObject.type,
+                    "newPassword": _this.pwdchangeObject.newPassword
+                  })
+                  .then((res) => {
+                    if (res.data.msg === 'ok')
+                      this.resObject.msg = '修改成功！'
+                    else
+                      this.resObject.msg = res.data.msg
+                    this.resObject.code = res.data.code
+                    this.resObject.ifOut = true
+                  })
+            } else {
               this.resObject.ifOut = true
-            })
-      }
-      else{
-        this.resObject.msg = '验证码错误'
-        this.resObject.ifOut = true
-      }
+            }
+          })
     },
     async getCode(){
       let sending = util.loadingWait('发送验证码中')
