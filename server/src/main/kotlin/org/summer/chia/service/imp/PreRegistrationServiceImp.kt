@@ -2,7 +2,7 @@ package org.summer.chia.service.imp
 
 import com.baomidou.mybatisplus.extension.kotlin.KtQueryWrapper
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl
-import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.summer.chia.adapter.UserDetailsAdapter
@@ -18,9 +18,9 @@ import org.summer.chia.utils.Log
 class PreRegistrationServiceImp : ServiceImpl<PreRegistrationMapper, PreRegistration>(), PreRegistrationService {
 
     @Transactional
-    override fun doPreRegistration(obj: PreRegistration): Result {
+    override fun doPreRegistration(obj: PreRegistration, user: UserDetails): Result {
         val account =
-            ((SecurityContextHolder.getContext().authentication.principal as UserDetailsAdapter).getPayLoad()) as Student
+            ((user as UserDetailsAdapter).getPayLoad()) as Student
         obj.studentId = account.id
         try {
             return if (baseMapper.selectOne(
@@ -40,9 +40,9 @@ class PreRegistrationServiceImp : ServiceImpl<PreRegistrationMapper, PreRegistra
     }
 
     @Transactional
-    override fun doCancelPreRegistration(pid: String): Result {
+    override fun doCancelPreRegistration(pid: String, user: UserDetails): Result {
         val uid =
-            ((SecurityContextHolder.getContext().authentication.principal as UserDetailsAdapter).getPayLoad()).id!!
+            ((user as UserDetailsAdapter).getPayLoad()).id!!
         try {
             val info = baseMapper.queryOne(pid, uid) ?: return Result.error("查询错误")
             return if (info.cspState == -1)

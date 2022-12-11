@@ -2,7 +2,6 @@ package org.summer.chia.service.imp
 
 import com.baomidou.mybatisplus.extension.kotlin.KtUpdateWrapper
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
@@ -30,15 +29,16 @@ class UserServiceImp : UserService {
 
     @Autowired
     private lateinit var captchaService: CaptchaService
-    override fun resetUserPassword(obj: RestPassword): Result {
+    override fun resetUserPassword(obj: RestPassword, user: UserDetails): Result {
         val bCryptPasswordEncoder = BCryptPasswordEncoder()
-        val uid = (SecurityContextHolder.getContext().authentication.principal as UserDetailsAdapter).getPayLoad().id!!
+        val uid = (user as UserDetailsAdapter).getPayLoad().id!!
         val res = captchaService.evalCode(obj.code)
-        try{
+        try {
             when (obj.type) {
                 0 -> {
                     if (res) {
-                        studentService.baseMapper.update(null,
+                        studentService.baseMapper.update(
+                            null,
                             KtUpdateWrapper(Student::class.java).eq(Student::id, uid)
                                 .set(Student::password, bCryptPasswordEncoder.encode(obj.newPassword))
                         )

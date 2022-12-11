@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.extension.kotlin.KtUpdateWrapper
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.summer.chia.adapter.UserDetailsAdapter
@@ -30,14 +30,15 @@ class MessageServiceImp : ServiceImpl<MessageMapper, Message>(), MessageService 
     private lateinit var teacherMapper: TeacherMapper
 
     @Transactional
-    override fun doPostMessage(message: MessageObject): Result {
+    override fun doPostMessage(message: MessageObject, user: UserDetails): Result {
+        val uid = (user as UserDetailsAdapter).getPayLoad().id!!
         try {
             baseMapper.insert(
                 Message(
                     null,
                     Timestamp(System.currentTimeMillis()),
                     message.content,
-                    message.deliId,
+                    uid,
                     message.reciId,
                     null
                 )
@@ -64,18 +65,18 @@ class MessageServiceImp : ServiceImpl<MessageMapper, Message>(), MessageService 
         }
     }
 
-    override fun doQueryMessageList(pageNum: String, pageSize: String): Result {
-        val user = (SecurityContextHolder.getContext().authentication.principal as UserDetailsAdapter).getPayLoad()
+    override fun doQueryMessageList(pageNum: String, pageSize: String, user: UserDetails): Result {
+        val account = (user as UserDetailsAdapter).getPayLoad()
         val page = Page<MessageListItem>(pageNum.toLong(), pageSize.toLong())
         try {
-            return when (user) {
+            return when (account) {
                 is Student -> {
-                    val res = baseMapper.queryStudentMessage(page, user.id!!)
+                    val res = baseMapper.queryStudentMessage(page, account.id!!)
                     Result.success(res.records)
                 }
 
                 is Teacher -> {
-                    val res = baseMapper.queryTeacherMessage(page, user.id!!)
+                    val res = baseMapper.queryTeacherMessage(page, account.id!!)
                     Result.success(res.records)
                 }
 
@@ -90,11 +91,11 @@ class MessageServiceImp : ServiceImpl<MessageMapper, Message>(), MessageService 
 
     }
 
-    override fun doQuerySystemMessage(pageNum: String, pageSize: String): Result {
-        val user = (SecurityContextHolder.getContext().authentication.principal as UserDetailsAdapter).getPayLoad()
+    override fun doQuerySystemMessage(pageNum: String, pageSize: String, user: UserDetails): Result {
+        val account = (user as UserDetailsAdapter).getPayLoad()
         val page = Page<MessageListItem>(pageNum.toLong(), pageSize.toLong())
         try {
-            val res = baseMapper.querySystemMessage(page, user.id!!)
+            val res = baseMapper.querySystemMessage(page, account.id!!)
             return Result.success(res.records)
         } catch (e: Exception) {
             throw SqlException("Query Exception", this::doQuerySystemMessage.name)

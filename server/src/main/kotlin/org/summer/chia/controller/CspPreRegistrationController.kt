@@ -1,6 +1,8 @@
 package org.summer.chia.controller
 
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -16,12 +18,15 @@ class CspPreRegistrationController {
     private lateinit var preRegistrationService: PreRegistrationService
 
     @PostMapping("/pre/reg")
-    fun preRegistration(@RequestBody preRegistration: PreRegistration): Result {
-        return preRegistrationService.doPreRegistration(preRegistration)
+    fun preRegistration(
+        @RequestBody preRegistration: PreRegistration,
+        @AuthenticationPrincipal user: UserDetails
+    ): Result {
+        return preRegistrationService.doPreRegistration(preRegistration, user)
     }
 
     @PostMapping("/pre/reg/cancel/{pid}")
-    fun cancelPreRegistration(@PathVariable pid: String): Result {
-        return preRegistrationService.doCancelPreRegistration(pid)
+    fun cancelPreRegistration(@PathVariable pid: String, @AuthenticationPrincipal user: UserDetails): Result {
+        return preRegistrationService.doCancelPreRegistration(pid, user)
     }
 }
