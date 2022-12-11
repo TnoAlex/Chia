@@ -26,13 +26,13 @@ class UserController {
 
 
     @GetMapping("/teacher/brief_info")
-    fun teacherInfo(): Result {
-        return teacherService.getUserNameByAccount()
+    fun teacherInfo(@AuthenticationPrincipal user: UserDetails): Result {
+        return teacherService.getUserNameByAccount(user)
     }
 
     @GetMapping("/student/brief_info")
-    fun studentBriefInfo(): Result {
-        return studentService.getBriefInfo()
+    fun studentBriefInfo(@AuthenticationPrincipal user: UserDetails): Result {
+        return studentService.getBriefInfo(user)
     }
 
     @PostMapping("/student/enable/{mail}")
@@ -47,8 +47,8 @@ class UserController {
     }
 
     @PostMapping("/user/reset/password")
-    fun resetPassword(@RequestBody obj: RestPassword): Result {
-        return userService.resetUserPassword(obj)
+    fun resetPassword(@RequestBody obj: RestPassword, @AuthenticationPrincipal user: UserDetails): Result {
+        return userService.resetUserPassword(obj, user)
     }
 
     @GetMapping("/teacher/list/{pageNum}/{pageSize}")
@@ -88,7 +88,7 @@ class UserController {
     }
 
     @GetMapping("/student/query/details")
-    fun queryStudentDetails(): Result {
-        return studentService.doQueryDetails()
+    fun queryStudentDetails(@AuthenticationPrincipal user: UserDetails): Result {
+        return studentService.doQueryDetails(user)
     }
 }

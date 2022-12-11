@@ -7,7 +7,6 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.EnableAspectJAutoProxy
 import org.springframework.scheduling.annotation.Async
-import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
@@ -51,9 +50,9 @@ class StudentServiceImp : ServiceImpl<StudentMapper, Student>(), StudentService 
             null
     }
 
-    override fun getBriefInfo(): Result {
+    override fun getBriefInfo(user: UserDetails): Result {
         val account =
-            ((SecurityContextHolder.getContext().authentication.principal as UserDetailsAdapter).getPayLoad() as Student).studentNumber
+            ((user as UserDetailsAdapter).getPayLoad() as Student).studentNumber
         val query = KtQueryWrapper(Student::class.java)
         query.eq(Student::studentNumber, account)
         val res = baseMapper.selectOne(query)
@@ -253,9 +252,9 @@ class StudentServiceImp : ServiceImpl<StudentMapper, Student>(), StudentService 
         }
     }
 
-    override fun doQueryDetails(): Result {
+    override fun doQueryDetails(user: UserDetails): Result {
         val account =
-            ((SecurityContextHolder.getContext().authentication.principal as UserDetailsAdapter).getPayLoad()) as Student
+            ((user as UserDetailsAdapter).getPayLoad()) as Student
         val email = "****@" + account.email!!.split("@")[1]
         val idNumber = account.idNumber.replace(Regex("(?<=\\w{3})\\w(?=\\w{4})"), "*")
         return Result.success(

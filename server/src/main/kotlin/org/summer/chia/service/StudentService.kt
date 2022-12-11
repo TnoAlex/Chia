@@ -9,7 +9,7 @@ import java.util.concurrent.CompletableFuture
 
 interface StudentService : IService<Student> {
     fun loadUserByUsername(username: String): UserDetails?
-    fun getBriefInfo(): Result
+    fun getBriefInfo(user: UserDetails): Result
     fun enableAccount(mailAddress: String, user: UserDetails): CompletableFuture<Result>
     fun importStudent(infos: List<FreshmanInfo>): Result
     fun queryStudentList(pageNum: String, pageSize: String): Result
@@ -23,7 +23,7 @@ interface StudentService : IService<Student> {
     ): Result
 
     fun queryStudentByNameOrNumber(name: String, number: String): Result
-    fun doQueryDetails(): Result
+    fun doQueryDetails(user: UserDetails): Result
     fun doFilterStudentDelete(
         score: String, score_filter: String, grade: String,
         free_time: String
