@@ -2,21 +2,42 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.summer.chia.mapper.MessageMapper">
     <select id="queryStudentMessage" resultMap="MessageListItem">
-        select m.content, m.id, s.name as send_form, t.name as send_to, m.status, count(m.content) as total
+        select m.content,
+               m.id,
+               t.name           as send_from,
+               t.id             as send_from_id,
+               s.name           as send_to,
+               s.id             as send_to_id,
+               m.status,
+               count(m.content) as total
         from message as m
                  left join student as s on m.reci_id = s.id
                  left join teacher as t on m.deli_id = t.id
         where s.id = #{sid}
     </select>
     <select id="queryTeacherMessage" resultMap="MessageListItem">
-        select m.content, m.id, s.name as send_form, t.name as send_to, m.status, count(m.content) as total
+        select m.content,
+               m.id,
+               s.name           as send_from,
+               s.id             as send_from_id,
+               t.id             as send_to_id,
+               t.name           as send_to,
+               m.status,
+               count(m.content) as total
         from message as m
                  left join student as s on m.deli_id = s.id
                  left join teacher as t on m.reci_id = t.id
         where t.id = #{tid}
     </select>
     <select id="querySystemMessage" resultMap="MessageListItem">
-        select m.content, m.id, 'System' as send_form, t.name as send_to, m.status, count(m.content) as total
+        select m.content,
+               m.id,
+               'System'         as send_from,
+               'System'         as send_from_id,
+               t.name           as send_to,
+               t.id             as send_to_id,
+               m.status,
+               count(m.content) as total
         from message as m
                  left join teacher as t on m.reci_id = t.id
         where t.id = #{tid}
@@ -24,8 +45,10 @@
     </select>
     <resultMap id="MessageListItem" type="org.summer.chia.pojo.ao.MessageListItem">
         <result property="id" column="id"/>
-        <result property="sendForm" column="send_form"/>
+        <result property="sendFrom" column="send_from"/>
+        <result property="sendFromId" column="send_from_id"/>
         <result property="sendTo" column="send_to"/>
+        <result property="sendToId" column="send_to_id"/>
         <result property="content" column="content"/>
         <result property="status" column="status"/>
         <result property="totalSize" column="total"/>
