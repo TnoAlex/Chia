@@ -6,10 +6,10 @@ import org.summer.chia.annotation.NoArg
 data class MessageListItem(
     var id: String,
     var sendFrom: String,
-    var senFromId: String,
+    var sendFromId: String,
     var sendTo: String,
     var sendToId: String,
     var content: String,
     var status: Int,
-    var totalSize: Int
+    var totalSize: Int?
 )
