@@ -111,7 +111,7 @@ class StudentServiceImp : ServiceImpl<StudentMapper, Student>(), StudentService 
                 baseMapper.insert(
                     Student(
                         null, it.name, bCryptPasswordEncoder.encode(password), it.studentNumber, it.idNumber,
-                        0, 1, null, 0, java.sql.Date(date.time), null
+                        0, it.freeTime, null, 0, java.sql.Date(date.time), null
                     )
                 )
             }
