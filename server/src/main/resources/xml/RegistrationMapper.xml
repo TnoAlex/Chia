@@ -26,11 +26,17 @@
         where r.miss = 0
     </select>
     <select id="absentExamNumber" resultType="java.lang.Long">
-         select count(s.id)
+        select count(s.id)
         from registration as r
                  left join student s on s.id = r.student_id
         where r.miss = 0
     </select>
+    <insert id="insertRegistrationInfo" keyColumn="id">
+        insert into registration(id, csp_id, student_id)
+        values (replace(UUID(), '-', ''), #{obj.cspId}, #{obj.studentId})
+        on duplicate key update csp_id     = values(csp_id),
+                                student_id = values(student_id)
+    </insert>
     <resultMap id="studentListItem" type="org.summer.chia.pojo.ao.StudentListItem">
         <result property="id" column="id"/>
         <result property="name" column="name"/>
