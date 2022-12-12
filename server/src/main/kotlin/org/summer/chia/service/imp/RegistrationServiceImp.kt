@@ -48,12 +48,14 @@ class RegistrationServiceImp : ServiceImpl<RegistrationMapper, Registration>(), 
     override fun registrationList(objList: List<RegistrationListItem>): Result {
         val studentId = studentMapper.selectList(
             KtQueryWrapper(Student::class.java).`in`(
-                Student::idNumber,
+                Student::studentNumber,
                 objList.map { it.studentIdNumber })
-        ).associate { it.idNumber to it.id }
+        ).associate { it.studentNumber to it.id }
         try {
             objList.forEach {
-                baseMapper.insert(Registration(null, it.cspId, studentId[it.studentIdNumber]!!, null, it.type, null))
+                studentId[it.studentIdNumber]?.let { id ->
+                    baseMapper.insertRegistrationInfo(Registration(null, it.cspId, id, null, it.type, null))
+                }
             }
             val cspId = objList.map { it.cspId }.toSet()
             cspId.forEach {
@@ -73,18 +75,20 @@ class RegistrationServiceImp : ServiceImpl<RegistrationMapper, Registration>(), 
     override fun transcriptsList(objList: List<RegistrationListItem>): Result {
         val studentId = studentMapper.selectList(
             KtQueryWrapper(Student::class.java).`in`(
-                Student::idNumber,
+                Student::studentNumber,
                 objList.map { it.studentIdNumber })
-        ).associate { it.idNumber to it.id }
+        ).associate { it.studentNumber to it.id }
         try {
             objList.forEach {
-                baseMapper.update(
-                    null,
-                    KtUpdateWrapper(Registration::class.java).eq(Registration::cspId, it.cspId)
-                        .eq(Registration::studentId, studentId[it.studentIdNumber]!!)
-                        .set(Registration::miss, 0)
-                        .set(Registration::score, it.socre!!)
-                )
+                studentId[it.studentIdNumber]?.let { id ->
+                    baseMapper.update(
+                        null,
+                        KtUpdateWrapper(Registration::class.java).eq(Registration::cspId, it.cspId)
+                            .eq(Registration::studentId, id)
+                            .set(Registration::miss, 0)
+                            .set(Registration::score, it.socre!!)
+                    )
+                }
             }
             val cspId = objList.map { it.cspId }.toSet()
             cspId.forEach {
