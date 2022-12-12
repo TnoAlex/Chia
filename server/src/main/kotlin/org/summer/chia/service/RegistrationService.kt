@@ -11,5 +11,5 @@ interface RegistrationService : IService<Registration> {
     fun transcriptsList(objList: List<RegistrationListItem>): Result
     fun doQueryAbsentOfficialRegistration(cid: String, pageNum: String, pageSize: String): Result
     fun doQueryAbsentExam(cid: String, pageNum: String, pageSize: String): Result
-    fun noticeStudent(list: List<String>, cid: String, user: UserDetails): Result
+    fun noticeStudent(cid: String, user: UserDetails): Result
 }

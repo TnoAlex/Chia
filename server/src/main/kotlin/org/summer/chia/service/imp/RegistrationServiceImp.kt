@@ -139,11 +139,12 @@ class RegistrationServiceImp : ServiceImpl<RegistrationMapper, Registration>(), 
     }
 
     @Async
-    override fun noticeStudent(list: List<String>, cid: String, user: UserDetails): Result {
+    override fun noticeStudent(cid: String, user: UserDetails): Result {
         val uid = (user as UserDetailsAdapter).getPayLoad().id!!
         val csp = cspInfoMapper.selectOne(KtQueryWrapper(CspInfo::class.java).eq(CspInfo::id, cid))
         val data = mapOf("cspName" to csp.name)
         var successNumber = 0
+        val list = (doQueryAbsentOfficialRegistration(cid, "0", "1000").data as List<StudentListItem>).map { it.id }
         val errorStudentName = ArrayList<String>()
         return try {
             list.forEach {
