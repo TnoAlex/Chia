@@ -2,6 +2,7 @@ package org.summer.chia.service.imp
 
 import com.baomidou.mybatisplus.extension.kotlin.KtQueryWrapper
 import com.baomidou.mybatisplus.extension.kotlin.KtUpdateWrapper
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.EnableAspectJAutoProxy
@@ -17,6 +18,7 @@ import org.summer.chia.mapper.RegistrationMapper
 import org.summer.chia.mapper.StudentMapper
 import org.summer.chia.pojo.ao.RegistrationListItem
 import org.summer.chia.pojo.ao.Result
+import org.summer.chia.pojo.ao.StudentListItem
 import org.summer.chia.pojo.dto.CspInfo
 import org.summer.chia.pojo.dto.Message
 import org.summer.chia.pojo.dto.Registration
@@ -98,28 +100,34 @@ class RegistrationServiceImp : ServiceImpl<RegistrationMapper, Registration>(), 
         return Result.success()
     }
 
-    override fun doQueryAbsentOfficialRegistration(cid: String): Result {
+    override fun doQueryAbsentOfficialRegistration(cid: String, pageNum: String, pageSize: String): Result {
         val cspStage = cspInfoMapper.selectOne(KtQueryWrapper(CspInfo::class.java).eq(CspInfo::id, cid)).stage!!
         if (cspStage < 1) {
             return Result.error("正式报名名单未导入")
         }
         return try {
-            val students = baseMapper.absentOfficialRegistration(cid)
-            Result.success(students)
+            val page = Page<StudentListItem>(pageNum.toLong(), pageSize.toLong())
+            val students = baseMapper.absentOfficialRegistration(page, cid)
+            val size = baseMapper.absentOfficialRegistrationNumber(cid)
+            students.records.forEach { it.totalSize = size }
+            Result.success(students.records)
         } catch (e: Exception) {
             Log.error(this.javaClass, this::doQueryAbsentOfficialRegistration.name + " Query Exception", e.suppressed)
             throw SqlException("Query Exception", this::doQueryAbsentOfficialRegistration.name)
         }
     }
 
-    override fun doQueryAbsentExam(cid: String): Result {
+    override fun doQueryAbsentExam(cid: String, pageNum: String, pageSize: String): Result {
         val cspStage = cspInfoMapper.selectOne(KtQueryWrapper(CspInfo::class.java).eq(CspInfo::id, cid)).stage!!
         if (cspStage < 2) {
             return Result.error("成绩单未导入")
         }
         return try {
-            val students = baseMapper.absentExam(cid)
-            Result.success(students)
+            val page = Page<StudentListItem>(pageNum.toLong(), pageSize.toLong())
+            val students = baseMapper.absentExam(page, cid)
+            val size = baseMapper.absentExamNumber(cid)
+            students.records.forEach { it.totalSize = size }
+            Result.success(students.records)
         } catch (e: Exception) {
             Log.error(this.javaClass, this::doQueryAbsentOfficialRegistration.name + " Query Exception", e.suppressed)
             throw SqlException("Query Exception", this::doQueryAbsentOfficialRegistration.name)

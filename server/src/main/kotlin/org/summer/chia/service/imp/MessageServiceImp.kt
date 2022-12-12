@@ -72,12 +72,14 @@ class MessageServiceImp : ServiceImpl<MessageMapper, Message>(), MessageService 
             return when (account) {
                 is Student -> {
                     val res = baseMapper.queryStudentMessage(page, account.id!!)
-                    Result.success(res.records)
+                    val size = baseMapper.queryStudentMessageNumber(account.id!!)
+                    Result.success(res.records.forEach { it.totalSize = size.toInt() })
                 }
 
                 is Teacher -> {
                     val res = baseMapper.queryTeacherMessage(page, account.id!!)
-                    Result.success(res.records)
+                    val size = baseMapper.queryTeacherMessageNumber(account.id!!)
+                    Result.success(res.records.forEach { it.totalSize = size.toInt() })
                 }
 
                 else -> {
@@ -96,7 +98,8 @@ class MessageServiceImp : ServiceImpl<MessageMapper, Message>(), MessageService 
         val page = Page<MessageListItem>(pageNum.toLong(), pageSize.toLong())
         try {
             val res = baseMapper.querySystemMessage(page, account.id!!)
-            return Result.success(res.records)
+            val size = baseMapper.querySystemMessageNumber(account.id!!)
+            return Result.success(res.records.forEach { it.totalSize = size.toInt() })
         } catch (e: Exception) {
             throw SqlException("Query Exception", this::doQuerySystemMessage.name)
         }

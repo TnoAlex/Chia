@@ -23,14 +23,21 @@ class CspRegistrationController {
         return registrationService.registrationList(objList)
     }
 
-    @GetMapping("/teacher/query/absent/official/{cid}")
-    fun queryAbsentOfficialRegistration(@PathVariable cid: String): Result {
-        return registrationService.doQueryAbsentOfficialRegistration(cid)
+    @GetMapping("/teacher/query/absent/official/{cid}/{pageNum}/{pageSize}")
+    fun queryAbsentOfficialRegistration(
+        @PathVariable cid: String, @PathVariable pageNum: String,
+        @PathVariable pageSize: String
+    ): Result {
+        return registrationService.doQueryAbsentOfficialRegistration(cid, pageNum, pageSize)
     }
 
-    @GetMapping("/teacher/query/absent/exam/{cid}")
-    fun queryAbsentExam(@PathVariable cid: String): Result {
-        return registrationService.doQueryAbsentExam(cid)
+    @GetMapping("/teacher/query/absent/exam/{cid}/{pageNum}/{pageSize}")
+    fun queryAbsentExam(
+        @PathVariable cid: String,
+        @PathVariable pageNum: String,
+        @PathVariable pageSize: String
+    ): Result {
+        return registrationService.doQueryAbsentExam(cid, pageNum, pageSize)
     }
 
     @PostMapping("/teacher/notice/official/{cid}")

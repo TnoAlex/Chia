@@ -10,5 +10,5 @@ data class StudentListItem(
     var maxScore: Int,
     var freeTime: Int,
     var grade: String,
-    var totalSize: Long
+    var totalSize: Long?
 )

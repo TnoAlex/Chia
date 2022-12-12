@@ -4,43 +4,61 @@
     <select id="queryStudentMessage" resultMap="MessageListItem">
         select m.content,
                m.id,
-               t.name           as send_from,
-               t.id             as send_from_id,
-               s.name           as send_to,
-               s.id             as send_to_id,
-               m.status,
-               count(m.content) as total
+               t.name as send_from,
+               t.id   as send_from_id,
+               s.name as send_to,
+               s.id   as send_to_id,
+               m.status
         from message as m
                  left join student as s on m.reci_id = s.id
                  left join teacher as t on m.deli_id = t.id
-        where s.id = #{sid}
+        where m.reci_id = #{sid}
+    </select>
+    <select id="queryStudentMessageNumber" resultType="java.lang.Long">
+        select count(m.content) as total
+        from message as m
+                 left join student as s on m.reci_id = s.id
+                 left join teacher as t on m.deli_id = t.id
+        where m.reci_id = #{sid}
     </select>
     <select id="queryTeacherMessage" resultMap="MessageListItem">
         select m.content,
                m.id,
-               s.name           as send_from,
-               s.id             as send_from_id,
-               t.id             as send_to_id,
-               t.name           as send_to,
-               m.status,
-               count(m.content) as total
+               s.name as send_from,
+               s.id   as send_from_id,
+               t.id   as send_to_id,
+               t.name as send_to,
+               m.status
         from message as m
                  left join student as s on m.deli_id = s.id
                  left join teacher as t on m.reci_id = t.id
-        where t.id = #{tid}
+        where m.reci_id = #{tid}
+    </select>
+    <select id="queryTeacherMessageNumber" resultType="java.lang.Long">
+        select count(m.content) as total
+        from message as m
+                 left join student as s on m.deli_id = s.id
+                 left join teacher as t on m.reci_id = t.id
+        where m.reci_id = #{tid}
     </select>
     <select id="querySystemMessage" resultMap="MessageListItem">
         select m.content,
                m.id,
-               'System'         as send_from,
-               'System'         as send_from_id,
-               t.name           as send_to,
-               t.id             as send_to_id,
-               m.status,
-               count(m.content) as total
+               'System' as send_from,
+               'System' as send_from_id,
+               t.name   as send_to,
+               t.id     as send_to_id,
+               m.status
         from message as m
                  left join teacher as t on m.reci_id = t.id
-        where t.id = #{tid}
+        where m.reci_id = #{tid}
+          and m.deli_id = 'System'
+    </select>
+    <select id="querySystemMessageNumber" resultType="java.lang.Long">
+        select count(m.content) as total
+        from message as m
+                 left join teacher as t on m.reci_id = t.id
+        where m.reci_id = #{tid}
           and m.deli_id = 'System'
     </select>
     <resultMap id="MessageListItem" type="org.summer.chia.pojo.ao.MessageListItem">
@@ -51,6 +69,5 @@
         <result property="sendToId" column="send_to_id"/>
         <result property="content" column="content"/>
         <result property="status" column="status"/>
-        <result property="totalSize" column="total"/>
     </resultMap>
 </mapper>
