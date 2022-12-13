@@ -3,7 +3,9 @@ package org.summer.chia.service.imp
 import com.baomidou.mybatisplus.extension.kotlin.KtQueryWrapper
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl
 import org.springframework.security.core.userdetails.UserDetails
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import org.summer.chia.adapter.UserDetailsAdapter
 import org.summer.chia.exception.SqlException
 import org.summer.chia.mapper.TeacherMapper
@@ -34,6 +36,17 @@ class TeacherServiceImp : ServiceImpl<TeacherMapper, Teacher>(), TeacherService 
             Result.success(res.name)
         } else {
             throw SqlException("Query Exceptions", this::getUserNameByAccount.name)
+        }
+    }
+
+    @Transactional
+    override fun addTeacher(obj: Teacher, user: UserDetails): Result {
+        try {
+            obj.password = BCryptPasswordEncoder().encode(obj.password)
+            baseMapper.insert(obj)
+            return Result.success()
+        } catch (e: Exception) {
+            throw SqlException("Insert Exception", this::addTeacher.name)
         }
     }
 }

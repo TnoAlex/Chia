@@ -8,6 +8,7 @@ import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.context.ApplicationContext
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.transaction.annotation.EnableTransactionManagement
 import org.summer.chia.mapper.TeacherMapper
 import org.summer.chia.pojo.dto.Teacher
@@ -40,7 +41,25 @@ class ChiaApplication : ApplicationRunner {
                 SpringApplication.exit(applicationContext)
             }
             Log.info(this.javaClass, "邮件模块初始化成功", null)
-
+            val accounts = teacherMapper.selectList(null)
+            if (accounts.isNullOrEmpty()) {
+                val scanner = Scanner(System.`in`)
+                Log.info(javaClass, "请输入初始化教师姓名", null)
+                val teacherName = scanner.next()
+                Log.info(javaClass, "请输入此用户密码", null)
+                val teacherPassword = scanner.next()
+                Log.info(javaClass, "请输入此用户邮箱", null)
+                val teacherEmail = scanner.next()
+                teacherMapper.insert(
+                    Teacher(
+                        null,
+                        teacherName,
+                        BCryptPasswordEncoder().encode(teacherPassword),
+                        teacherEmail,
+                        null
+                    )
+                )
+            }
             val systemAccount =
                 teacherMapper.selectOne(KtQueryWrapper(Teacher::class.java).eq(Teacher::id, "System"))
             if (systemAccount == null) {
@@ -53,7 +72,6 @@ class ChiaApplication : ApplicationRunner {
             SpringApplication.exit(applicationContext)
         }
     }
-
 
 }
 

@@ -255,7 +255,10 @@ class StudentServiceImp : ServiceImpl<StudentMapper, Student>(), StudentService 
     override fun doQueryDetails(user: UserDetails): Result {
         val account =
             ((user as UserDetailsAdapter).getPayLoad()) as Student
-        val email = "****@" + account.email!!.split("@")[1]
+        var email = ""
+        if (account.email != null) {
+            email = "****@" + account.email!!.split("@")[1]
+        }
         val idNumber = account.idNumber.replace(Regex("(?<=\\w{3})\\w(?=\\w{4})"), "*")
         return Result.success(
             StudentDetails(

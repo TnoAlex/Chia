@@ -20,4 +20,5 @@ data class CspInfo(
     var scoreH: Int?,
     var scoreA: Int?,
     var stage: Int?,
+    var freeThreshold: Int
 )

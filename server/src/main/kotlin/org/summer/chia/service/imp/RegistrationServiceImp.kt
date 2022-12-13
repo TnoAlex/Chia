@@ -53,8 +53,13 @@ class RegistrationServiceImp : ServiceImpl<RegistrationMapper, Registration>(), 
         ).associate { it.studentNumber to it.id }
         try {
             objList.forEach {
-                studentId[it.studentIdNumber]?.let { id ->
-                    baseMapper.insertRegistrationInfo(Registration(null, it.cspId, id, null, it.type, null))
+                studentId[it.studentIdNumber]?.let { p ->
+                    baseMapper.insertRegistrationInfo(Registration(null, it.cspId, p, null, it.type, null))
+                    if (it.type == 1)
+                        studentMapper.update(
+                            null,
+                            KtUpdateWrapper(Student::class.java).eq(Student::id, p).setSql("free_time = free_time - 1")
+                        )
                 }
             }
             val cspId = objList.map { it.cspId }.toSet()
@@ -79,8 +84,22 @@ class RegistrationServiceImp : ServiceImpl<RegistrationMapper, Registration>(), 
                 objList.map { it.studentIdNumber })
         ).associate { it.studentNumber to it.id }
         try {
+            val cspId = objList.map { it.cspId }.toSet()
+            val cspInfo = cspInfoMapper.selectList(KtQueryWrapper(CspInfo::class.java).`in`(CspInfo::id, cspId))
+                .associate { it.id to it.freeThreshold }
+            cspId.forEach {
+                cspInfoMapper.update(
+                    null,
+                    KtUpdateWrapper(CspInfo::class.java).eq(CspInfo::id, it).set(CspInfo::stage, 2)
+                )
+            }
             objList.forEach {
                 studentId[it.studentIdNumber]?.let { id ->
+                    if (it.socre!! >= cspInfo[it.cspId]!!)
+                        studentMapper.update(
+                            null,
+                            KtUpdateWrapper(Student::class.java).eq(Student::id, id).setSql("free_time = free_time +1")
+                        )
                     baseMapper.update(
                         null,
                         KtUpdateWrapper(Registration::class.java).eq(Registration::cspId, it.cspId)
@@ -89,13 +108,6 @@ class RegistrationServiceImp : ServiceImpl<RegistrationMapper, Registration>(), 
                             .set(Registration::score, it.socre!!)
                     )
                 }
-            }
-            val cspId = objList.map { it.cspId }.toSet()
-            cspId.forEach {
-                cspInfoMapper.update(
-                    null,
-                    KtUpdateWrapper(CspInfo::class.java).eq(CspInfo::id, it).set(CspInfo::stage, 2)
-                )
             }
         } catch (e: Exception) {
             Log.error(this.javaClass, this::transcriptsList.name + " Update Exception", e.suppressed)

@@ -49,6 +49,7 @@ class CspInfoServiceImp : ServiceImpl<CspInfoMapper, CspInfo>(), CspInfoService 
             null,
             null,
             null,
+            obj.freeThreshold!!
         )
         return try {
             baseMapper.insert(cspInfo)
@@ -66,6 +67,7 @@ class CspInfoServiceImp : ServiceImpl<CspInfoMapper, CspInfo>(), CspInfoService 
         obj.name?.let { query.set(CspInfo::name, it) }
         obj.endTime?.let { query.set(CspInfo::endTime, it) }
         obj.startTime?.let { query.set(CspInfo::startTime, it) }
+        obj.freeThreshold?.let { query.set(CspInfo::freeThreshold, it) }
         return try {
             baseMapper.update(null, query)
             Result.success()

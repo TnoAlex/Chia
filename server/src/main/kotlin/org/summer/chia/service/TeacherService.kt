@@ -8,4 +8,5 @@ import org.summer.chia.pojo.dto.Teacher
 interface TeacherService : IService<Teacher> {
     fun loadUserByUsername(username: String): UserDetails?
     fun getUserNameByAccount(user: UserDetails): Result
+    fun addTeacher(obj: Teacher, user: UserDetails): Result
 }
