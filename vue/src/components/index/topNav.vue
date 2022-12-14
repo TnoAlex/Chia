@@ -36,9 +36,7 @@
       </button>
       <ul class="list-unstyled topbar-menu float-end mb-0">
         <li class="dropdown notification-list d-lg-none">
-          <a class="nav-link dropdown-toggle arrow-none" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
-            <i class="ri-search-line noti-icon"></i>
-          </a>
+
           <div class="dropdown-menu dropdown-menu-animated dropdown-lg p-0">
             <form class="p-3">
               <input type="search" class="form-control" placeholder="搜索 ..." aria-label="Recipient's username">
@@ -46,10 +44,8 @@
           </div>
         </li>
         <li class="dropdown notification-list">
-          <a class="nav-link dropdown-toggle arrow-none" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
-            <i class="ri-notification-3-line noti-icon"></i>
-            <span class="noti-icon-badge"></span>
-          </a>
+
+
           <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated dropdown-lg py-0">
             <div class="p-2 border-top-0 border-start-0 border-end-0 border-dashed border">
               <div class="row align-items-center">
@@ -179,14 +175,8 @@
                     <span>我的账号</span>
                   </router-link>
                 </el-dropdown-item>
-                <el-dropdown-item>
-                  <span  class="dropdown-item notify-item">
-                    <i class="mdi mdi-account-edit me-1"></i>
-                    <span>设置</span>
-                  </span>
-                </el-dropdown-item>
-                <el-dropdown-item>
-                  <span  class="dropdown-item notify-item">
+                <el-dropdown-item >
+                  <span  @click="loginOut" class="dropdown-item notify-item">
                     <i class="mdi mdi-logout me-1"></i>
                     <span>登出</span>
                   </span>
@@ -259,6 +249,7 @@
 <script>
 import util from '../../utils/commonUtil'
 import cookies from "vue-cookies";
+import axios from "axios";
 
 export default {
   name: "topNav.vue",
@@ -269,6 +260,25 @@ export default {
     }
   },
   methods:{
+    async loginOut()
+    {
+      let loading = util.loadingWait('退出登录中。。。')
+      await util.delay(100)
+      await axios({
+        method:'POST',
+        url:'logout'
+      }).then(async(res)=>{
+        loading.close()
+        await util.delay(100)
+        util.messageBox('退出登录成功，回到登录页面','success')
+        this.$router.push('/')
+      }).catch(async (err)=>{
+        loading.close()
+        await util.delay(100)
+        util.messageBox('退出登录失败','error')
+      })
+
+    }
   },
   created() {
     this.userInfo = cookies.get('userInfo')

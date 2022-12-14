@@ -52,205 +52,26 @@
             </ul>
           </div>
         </li>
-        <li class="side-nav-title side-nav-item">学生信息管理</li>
+        <li v-show="userInfo.type===1"
+            class="side-nav-title side-nav-item">学生教师信息管理</li>
         <li class="side-nav-item" v-if="userInfo.type===1">
+          <router-link :to="{path:'/teacherManager'}" class="side-nav-link">
+            <i class="uil-table">
+            </i>
+            <span> 教师账号管理 </span>
+          </router-link>
+
           <router-link :to="{path:'/studentList'}" class="side-nav-link">
             <i class="uil-table">
             </i>
             <span> 学生信息表 </span>
           </router-link>
-        </li>
 
-        <li class="side-nav-title side-nav-item">Custom</li>
-        <li class="side-nav-item">
-          <a data-bs-toggle="collapse" href="#sidebarPages" aria-expanded="false" aria-controls="sidebarPages" class="side-nav-link">
-            <i class="uil-copy-alt"></i>
-            <span> Pages </span>
-            <span class="menu-arrow"></span>
-          </a>
-          <div class="collapse" id="sidebarPages">
-            <ul class="side-nav-second-level">
-              <li>
-                <a href="pages-profile.html">Profile</a>
-              </li>
-              <li>
-                <a href="pages-profile-2.html">Profile 2</a>
-              </li>
-              <li>
-                <a href="pages-invoice.html">Invoice</a>
-              </li>
-              <li>
-                <a href="pages-faq.html">FAQ</a>
-              </li>
-              <li>
-                <a href="pages-pricing.html">Pricing</a>
-              </li>
-              <li>
-                <a href="pages-maintenance.html">Maintenance</a>
-              </li>
-              <li class="side-nav-item">
-                <a data-bs-toggle="collapse" href="#sidebarPagesAuth" aria-expanded="false" aria-controls="sidebarPagesAuth">
-                  <span> Authentication </span>
-                  <span class="menu-arrow"></span>
-                </a>
-                <div class="collapse" id="sidebarPagesAuth">
-                  <ul class="side-nav-third-level">
-                    <li>
-                      <a href="pages-login.html">Login</a>
-                    </li>
-                    <li>
-                      <a href="pages-login-2.html">Login 2</a>
-                    </li>
-                    <li>
-                      <a href="pages-register.html">Register</a>
-                    </li>
-                    <li>
-                      <a href="pages-register-2.html">Register 2</a>
-                    </li>
-                    <li>
-                      <a href="pages-logout.html">Logout</a>
-                    </li>
-                    <li>
-                      <a href="pages-logout-2.html">Logout 2</a>
-                    </li>
-                    <li>
-                      <a href="pages-recoverpw.html">Recover Password</a>
-                    </li>
-                    <li>
-                      <a href="pages-recoverpw-2.html">Recover Password 2</a>
-                    </li>
-                    <li>
-                      <a href="pages-lock-screen.html">Lock Screen</a>
-                    </li>
-                    <li>
-                      <a href="pages-lock-screen-2.html">Lock Screen 2</a>
-                    </li>
-                    <li>
-                      <a href="pages-confirm-mail.html">Confirm Mail</a>
-                    </li>
-                    <li>
-                      <a href="pages-confirm-mail-2.html">Confirm Mail 2</a>
-                    </li>
-                  </ul>
-                </div>
-              </li>
-              <li class="side-nav-item">
-                <a data-bs-toggle="collapse" href="#sidebarPagesError" aria-expanded="false" aria-controls="sidebarPagesError">
-                  <span> Error </span>
-                  <span class="menu-arrow"></span>
-                </a>
-                <div class="collapse" id="sidebarPagesError">
-                  <ul class="side-nav-third-level">
-                    <li>
-                      <a href="pages-404.html">Error 404</a>
-                    </li>
-                    <li>
-                      <a href="pages-404-alt.html">Error 404-alt</a>
-                    </li>
-                    <li>
-                      <a href="pages-500.html">Error 500</a>
-                    </li>
-                  </ul>
-                </div>
-              </li>
-              <li>
-                <a href="pages-starter.html">Starter Page</a>
-              </li>
-              <li>
-                <a href="pages-preloader.html">With Preloader</a>
-              </li>
-              <li>
-                <a href="pages-timeline.html">Timeline</a>
-              </li>
-            </ul>
-          </div>
-        </li>
-        <li class="side-nav-title side-nav-item mt-1">Components</li>
-        <li class="side-nav-item">
-          <a data-bs-toggle="collapse" href="#sidebarBaseUI" aria-expanded="false" aria-controls="sidebarBaseUI" class="side-nav-link">
-            <i class="uil-box"></i>
-            <span> Base UI </span>
-            <span class="menu-arrow"></span>
-          </a>
-          <div class="collapse" id="sidebarBaseUI">
-            <ul class="side-nav-second-level">
-              <li>
-                <a href="ui-accordions.html">Accordions & Collapse</a>
-              </li>
-              <li>
-                <a href="ui-alerts.html">Alerts</a>
-              </li>
-              <li>
-                <a href="ui-avatars.html">Avatars</a>
-              </li>
-              <li>
-                <a href="ui-badges.html">Badges</a>
-              </li>
-              <li>
-                <a href="ui-breadcrumb.html">Breadcrumb</a>
-              </li>
-              <li>
-                <a href="ui-buttons.html">Buttons</a>
-              </li>
-              <li>
-                <a href="ui-cards.html">Cards</a>
-              </li>
-              <li>
-                <a href="ui-carousel.html">Carousel</a>
-              </li>
-              <li>
-                <a href="ui-dropdowns.html">Dropdowns</a>
-              </li>
-              <li>
-                <a href="ui-embed-video.html">Embed Video</a>
-              </li>
-              <li>
-                <a href="ui-grid.html">Grid</a>
-              </li>
-              <li>
-                <a href="ui-list-group.html">List Group</a>
-              </li>
-              <li>
-                <a href="ui-modals.html">Modals</a>
-              </li>
-              <li>
-                <a href="ui-notifications.html">Notifications</a>
-              </li>
-              <li>
-                <a href="ui-offcanvas.html">Offcanvas</a>
-              </li>
-              <li>
-                <a href="ui-placeholders.html">Placeholders</a>
-              </li>
-              <li>
-                <a href="ui-pagination.html">Pagination</a>
-              </li>
-              <li>
-                <a href="ui-popovers.html">Popovers</a>
-              </li>
-              <li>
-                <a href="ui-progress.html">Progress</a>
-              </li>
-              <li>
-                <a href="ui-ribbons.html">Ribbons</a>
-              </li>
-              <li>
-                <a href="ui-spinners.html">Spinners</a>
-              </li>
-              <li>
-                <a href="ui-tabs.html">Tabs</a>
-              </li>
-              <li>
-                <a href="ui-tooltips.html">Tooltips</a>
-              </li>
-              <li>
-                <a href="ui-typography.html">Typography</a>
-              </li>
-              <li>
-                <a href="ui-utilities.html">Utilities</a>
-              </li>
-            </ul>
-          </div>
+          <router-link :to="{path:'/officialEnroll'}" class="side-nav-link">
+            <i class="uil-table">
+            </i>
+            <span> 正式报名比对</span>
+          </router-link>
         </li>
       </ul>
       <div class="clearfix"></div>

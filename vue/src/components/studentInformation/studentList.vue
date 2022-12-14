@@ -181,12 +181,9 @@
 
                       </div>
 
-                    </div><!-- end col-->
-                  </div>
-<!--                  tableData.slice((currentPage-1)*pageSize,currentPage*pageSize)-->
-
-
-                  <el-table
+                    </div>
+                    <el-table
+                            fit
                             stripe="true"
                             id = "table_studentList"
                             v-loading="tableLoading"
@@ -196,11 +193,11 @@
                             style="width: 100%"
                             @selection-change="handleSelectionChange"
                   >
-                    <el-table-column type="selection" width="55" />
-                    <el-table-column property="studentNumber" label="学号" width="200" show-overflow-tooltip />
-                    <el-table-column property="name" label="姓名" width="120" show-overflow-tooltip />
-                    <el-table-column property="grade" label="年级" width="80" show-overflow-tooltip />
-                    <el-table-column property="maxScore" label="最高分" width="80"  show-overflow-tooltip/>
+                    <el-table-column type="selection" width="55px" />
+                    <el-table-column property="studentNumber" label="学号" width="200px" show-overflow-tooltip />
+                    <el-table-column property="name" label="姓名" width="150px" show-overflow-tooltip />
+                    <el-table-column property="grade" label="年级" width="80px" show-overflow-tooltip />
+                    <el-table-column property="maxScore" label="最高分" width="80px"  show-overflow-tooltip/>
 
                     <el-table-column property="freeTime" label="免费次数" show-overflow-tooltip />
                     <el-table-column  label="操作" width="120px">
@@ -212,26 +209,29 @@
                       </template>
                     </el-table-column>
                   </el-table>
-                  <div style="float: right">
-                    <el-pagination style="margin-top: 20px;"
-                                   v-model:current-page="currentPage"
-                                   v-model:page-size="pageSize"
-                                   :page-sizes="[5, 10, 15, 20]"
-                                   :small="small"
-                                   :disabled="disabled"
-                                   :background="background"
-                                   layout="total, sizes, prev, pager, next, jumper,"
-                                   :total="totalDataNum"
-                                   @size-change="handleSizeChange"
-                                   @current-change="handleCurrentChange"
-                    />
+                    <div style="float: right">
+                      <div style="float: right">
+                        <el-pagination style="margin-top: 20px;"
+                                       v-model:current-page="currentPage"
+                                       v-model:page-size="pageSize"
+                                       :page-sizes="[5, 10, 15, 20]"
+                                       :small="small"
+                                       :disabled="disabled"
+                                       :background="background"
+                                       layout="total, sizes, prev, pager, next, jumper,"
+                                       :total="totalDataNum"
+                                       @size-change="handleSizeChange"
+                                       @current-change="handleCurrentChange"
+                        />
+                      </div>
+                    </div>
                   </div>
                 </div> <!-- end card-body-->
               </div> <!-- end card-->
             </div> <!-- end col -->
           </div>
         </div>
-      </div> 
+      </div>
     </div>
   </div>
   </body>
@@ -347,17 +347,17 @@ export default {
           //   headers:{'content-type':'application/x-www-form-urlencoded;charset=UTF-8'},
           //   method:'GET'
           // }).then((res)=>{
-            
+
           // }).catch(()=>{
-            
+
           // })
         }
         else
         {
-          
+
           url =url.slice(0,url.length-1)
           let loading = util.loadingWait('删除中')
-          util.delay(100)
+          await util.delay(100)
           await axios({
             url:url,
             headers:{'content-type':'application/x-www-form-urlencoded;charset=UTF-8'},
@@ -458,7 +458,7 @@ export default {
       if(util.judgeInputIsNumber(searchText)===false)
       {
         //输入为中文，搜索名字
-          let url = `student/filter/${searchText}/null`
+          let url = `teacher/filter/${searchText}/null`
           await axios({
             method:'GET',
             headers:{'content-type':'application/x-www-form-urlencoded;charset=UTF-8'},
@@ -616,7 +616,7 @@ export default {
     async handleSizeChange(size)
     {
       this.pageSize = size
-      this.currentPage = 1 
+      this.currentPage = 1
       let url = await this.getSearchUrl()
       if(url==='')
       {
@@ -634,11 +634,11 @@ export default {
       let url = await this.getSearchUrl()
       if(url==='')
       {
-        this.getInitTableData(index,this.pageSize)
+        await this.getInitTableData(index, this.pageSize)
       }
       else
       {
-        await this.otherSearch(index,this.pageSize) 
+        await this.otherSearch(index,this.pageSize)
       }
     },
     async handleExcel(ev)

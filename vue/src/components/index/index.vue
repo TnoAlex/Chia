@@ -31,6 +31,12 @@
                   <div>
                     <label class="form-label">届次</label>
                     <el-input style="margin-bottom: 10px" v-model="createCspInfo.number" placeholder="输入届次" />
+
+                    <label class="form-label">大于某分数奖励次数</label>
+                    <el-input style="margin-bottom: 10px" v-model="createCspInfo.gtScore"
+                              placeholder="输入分数" />
+
+
                     <div class="mb-3 position-relative" id="datepicker1">
                       <label class="form-label">开始时间</label>
                       <div class="block">
@@ -65,6 +71,7 @@
                   </template>
                 </el-dialog>
                 <el-dialog
+                    append-to-body="true"
                     v-model="enrollVisible"
                     :title="`第${currentCspInfo.name}次CSP报名`"
                     width="30%"
@@ -80,7 +87,6 @@
                     </el-select>
                     <el-input v-model="enrollInfo.extra" placeholder="输入补充信息" />
                   </div>
-
                   <template #footer>
                               <span class="dialog-footer">
                                 <el-button @click="enrollCancel(enrollVisible = false)">取消</el-button>
@@ -90,8 +96,7 @@
                               </span>
                   </template>
                     </el-dialog>
-
-                    <el-dialog
+                <el-dialog
                     v-model="editCspVisible"
                     title="CSP预报名信息修改"
                     width="30%"
@@ -100,6 +105,11 @@
                   <div>
                     <label class="form-label">届次</label>
                     <el-input style="margin-bottom: 10px" v-model="editCspInfo.number" placeholder="输入届次" />
+
+                    <label class="form-label">大于某分数奖励次数</label>
+                    <el-input style="margin-bottom: 10px" v-model="editCspInfo.gtScore"
+                              placeholder="输入分数" />
+
                     <div class="mb-3 position-relative" id="datepicker1">
                       <label class="form-label">开始时间</label>
                       <div class="block">
@@ -133,13 +143,11 @@
                       </span>
                   </template>
                     </el-dialog>
-
               </div>
-
             </div>
             <!-- end row-->
             <div class="row">
-              <div class="col-md-6 col-xxl-3" style="width: 300px;height: 300px; margin-bottom: 80px;" v-for="(item,index) in cspInfoList" :key="index">               
+              <div class="col-md-6 col-xxl-3" style="width: 300px;height: 300px; margin-bottom: 80px;" v-for="(item,index) in cspInfoList" :key="index">
                 <div class="card d-block">
                   <div class="card-body">
                     <div class="dropdown card-widgets" >
@@ -161,8 +169,8 @@
                       <a href="" class="text-title">第{{item.name}}次CSP</a>
                     </h4>
                     <div class="badge bg-success">{{this.getProcessionStr(item.startTime,item.endTime)}}</div>
-                    
-                    
+
+
 
                     <!-- project detail-->
                     <p class="mb-1">
@@ -175,15 +183,15 @@
                       <label style="display: block" class="form-label">开始时间</label>
                       <span class="text-nowrap mb-2 d-inline-block">
                                                 <i class="mdi mdi-timeline-clock-outline text-muted"></i>
-                                                <b>{{ item.startTime }}</b>
+                                                <b>&nbsp;{{ item.startTime }}</b>
 
                                             </span>
                       <label style="display: block" class="form-label">截止时间</label>
                       <span class="text-nowrap mb-2 d-inline-block">
                                                 <i class="mdi mdi-timeline-clock-outline text-muted"></i>
-                                                <b>{{item.endTime}}</b>
-
-                                            </span>
+                                                <b>&nbsp;{{item.endTime}}</b>
+                      </span>
+                      <label style="display: block" class="form-label">当分数大于等于{{item.freeThreshold}}时可以追加免费次数</label>
                     </p>
 
                   </div> <!-- end card-body-->
@@ -221,6 +229,7 @@ export default {
         number:'',
         startTime:'',
         endTime:'',
+        gtScore:''
 
       },
       enrollVisible:false,
@@ -233,7 +242,8 @@ export default {
         number:'',
         startTime:'',
         endTime:'',
-        id:''
+        id:'',
+        gtScore:''
       },
       enrollInfo:{
         options:[{value: 0, label: '自费'},{value: 1, label: '免费'}],
@@ -244,7 +254,6 @@ export default {
   },
   name: "index.vue",
   mounted() {
-    util.print('haha')
     this.userInfo = cookies.get('userInfo')
     this.getCspInfo()
   },
@@ -252,10 +261,11 @@ export default {
 
     async createCsp()
     {
-      if(this.createCspInfo.endTime===''||this.createCspInfo.startTime===''||this.createCspInfo.number==='')
+      if(this.createCspInfo.endTime===''||this.createCspInfo.startTime===''
+          ||this.createCspInfo.number==='' ||this.createCspInfo.gtScore==='')
       {
         util.messageBox('请将信息填写完整','warning')
-        return 
+        return
       }
       let loading = util.loadingWait('正在发布中。。。')
       await util.delay(100)
@@ -265,14 +275,15 @@ export default {
         headers:{'content-type':'application/json'},
         data:{
           name:this.createCspInfo.number,
-          startTime: util.timeStampToTime(this.createCspInfo.startTime.getTime()),
-          endTime:util.timeStampToTime(this.createCspInfo.endTime.getTime())
+          startTime: util.timeStampToTime(new Date(this.createCspInfo.startTime).getTime()),
+          endTime:util.timeStampToTime(new Date(this.createCspInfo.endTime).getTime()),
+          freeThreshold:this.createCspInfo.gtScore
         }
       }).then(async (res)=>{
         await util.delay(100)
         loading.close()
         util.messageBox('发布成功','success')
-        this.getCspInfo()
+        await this.getCspInfo()
         this.createCspVisible = false
       }).catch(async()=>{
         await util.delay(100)
@@ -298,9 +309,9 @@ export default {
         else
         {
           util.messageBox('删除成功','success')
-          this.getCspInfo()
+          await this.getCspInfo()
         }
-        
+
       }).catch(async ()=>{
         await util.delay(100)
         loading.close()
@@ -309,12 +320,15 @@ export default {
     },
    async editCsp()
     {
-      if(this.editCspInfo.endTime===''||this.editCspInfo.startTime===''||this.editCspInfo.number==='')
+      if(this.editCspInfo.endTime===''||this.editCspInfo.startTime===''
+          ||this.editCspInfo.number===''||this.editCspInfo.gtScore==='')
       {
         util.messageBox('请将信息填写完整','warning')
-        return 
+        return
       }
       let loading = util.loadingWait('修改中。。。')
+      console.log(this.editCspInfo)
+      console.log(new Date(this.editCspInfo.startTime).getTime())
       await util.delay(100)
       axios({
         method:'POST',
@@ -323,14 +337,15 @@ export default {
         data:{
           id:this.editCspInfo.id,
           name:this.editCspInfo.number,
-          startTime:util.timeStampToTime(this.editCspInfo.startTime.getTime()),
-          endTime:util.timeStampToTime(this.editCspInfo.endTime.getTime())
+          startTime:util.timeStampToTime(new Date(this.editCspInfo.startTime).getTime()),
+          endTime:util.timeStampToTime(new Date(this.editCspInfo.endTime).getTime()),
+          freeThreshold:this.editCspInfo.gtScore
         }
       }).then(async (res)=>{
         await util.delay(100)
         loading.close()
         util.messageBox('修改成功','success')
-        this.getCspInfo()
+        await this.getCspInfo()
         this.editCspVisible = false
       }).catch(async ()=>{
         await util.delay(100)
@@ -342,6 +357,10 @@ export default {
     editCspOpen(index)
     {
       this.editCspInfo.id = this.cspInfoList[index].id
+      this.editCspInfo.endTime = this.cspInfoList[index].endTime
+      this.editCspInfo.startTime = this.cspInfoList[index].startTime
+      this.editCspInfo.gtScore = this.cspInfoList[index].freeThreshold
+      this.editCspInfo.number = this.cspInfoList[index].name
       this.editCspVisible = true
     },
     editCspClose()
@@ -349,11 +368,14 @@ export default {
       this.editCspInfo.endTime=''
       this.editCspInfo.startTime=''
       this.editCspInfo.number=''
+      this.editCspInfo.gtScore=''
+
     },
     createCspClose(){
       this.createCspInfo.endTime=''
       this.createCspInfo.startTime=''
       this.createCspInfo.number=''
+      this.createCspInfo.gtScore=''
     },
     getProcessionStr(startTime,endTime)
     {
@@ -403,8 +425,11 @@ export default {
       }
     },
     async uploadEnrollInfo(pid){
-  
-
+      if(this.userInfo.freeOrOwn===0 && this.enrollInfo.freeOrOwn===1)
+      {
+        util.messageBox('您的免费次数不足只能选择自费')
+        return
+      }
       let loading = util.loadingWait('报名中。。。')
       await util.delay(50)
       await axios({
@@ -446,6 +471,7 @@ export default {
             await util.delay(100)
             loading.close()
             util.messageBox('CSP信息拉取成功','success')
+            console.log(res)
             this.cspInfoList = res.data.data
           })
           .catch(async () => {
@@ -454,10 +480,9 @@ export default {
             util.messageBox('拉取CSP信息失败','error')
           })
     },
-
     enroll(index){
       this.enrollVisible = true
-      this.currentCspInfo =this.cspInfoList[index] 
+      this.currentCspInfo =this.cspInfoList[index]
     },
     enrollCancel()
     {
@@ -482,15 +507,15 @@ export default {
         else
         {
           util.messageBox('取消报名成功','success')
-          this.getCspInfo()
+          await this.getCspInfo()
         }
 
-        
+
       }).catch(async ()=>{
         await util.delay(100)
         loading.close()
         util.messageBox('取消报名失败','error')
-      })  
+      })
 
 
     }

@@ -9,6 +9,7 @@ const userInfo = {
     status:1,
     freeTime:0,
     maxScore:500,
+    email:''
 }
 export default{
     messageBox,
