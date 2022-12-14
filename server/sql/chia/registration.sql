@@ -1,12 +1,12 @@
-create table registration
+create table if not exists registration
 (
     id         varchar(128)      not null
         primary key,
     csp_id     varchar(128)      not null,
     student_id varchar(128)      not null,
     score      int     default 0 null,
-    type       tinyint           not null,
     miss       tinyint default 1 null,
+    type       tinyint           not null,
     constraint csp_id
         unique (csp_id, student_id),
     constraint reg_to_csp

@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional
 import org.summer.chia.adapter.UserDetailsAdapter
 import org.summer.chia.exception.SqlException
 import org.summer.chia.mapper.TeacherMapper
+import org.summer.chia.pojo.ao.CommunicativeTarget
 import org.summer.chia.pojo.ao.Result
 import org.summer.chia.pojo.dto.Teacher
 import org.summer.chia.service.TeacherService
@@ -56,6 +57,10 @@ class TeacherServiceImp : ServiceImpl<TeacherMapper, Teacher>(), TeacherService 
     @Transactional
     override fun deleteTeacher(tid: String): Result {
         try {
+            val num = baseMapper.selectCount(KtQueryWrapper(Teacher::class.java).ne(Teacher::id, "System")).toInt()
+            if (num == 0) {
+                return Result.error("系统至少需要一位老师")
+            }
             baseMapper.delete(KtQueryWrapper(Teacher::class.java).eq(Teacher::id, tid))
             return Result.success()
         } catch (e: Exception) {
@@ -66,10 +71,19 @@ class TeacherServiceImp : ServiceImpl<TeacherMapper, Teacher>(), TeacherService 
 
     override fun queryTeacherList(): Result {
         try {
-            val res = baseMapper.selectList(null)
+            val target = baseMapper.selectList(null) ?: return Result.error("暂时无老师")
+            val res = target.filter {
+                it.id!! != "System"
+            }.map {
+                CommunicativeTarget(it.id!!, it.name)
+            }
             return Result.success(res)
         } catch (e: Exception) {
-            Log.error(this.javaClass, this::queryTeacherList.name + "-> Query Exception: " + e.message, e.stackTrace)
+            Log.error(
+                this.javaClass,
+                this::queryTeacherList.name + "-> Query Exception: " + e.message,
+                e.stackTrace
+            )
             throw SqlException("Query Exception", this::queryTeacherList.name)
         }
     }

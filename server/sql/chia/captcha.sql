@@ -1,4 +1,4 @@
-create table captcha
+create table if not exists captcha
 (
     id          varchar(128) not null
         primary key,

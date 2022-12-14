@@ -27,7 +27,16 @@ class CspInfoServiceImp : ServiceImpl<CspInfoMapper, CspInfo>(), CspInfoService 
             baseMapper.selectList(KtQueryWrapper(CspInfo::class.java).orderByDesc(CspInfo::startTime)).forEach {
                 val startTime = pattern.format(it.startTime)
                 val endTime = pattern.format(it.endTime)
-                res.add(CspBriefInfo(it.id!!, it.name.toString(), startTime, endTime, it.preQuantity!!))
+                res.add(
+                    CspBriefInfo(
+                        it.id!!,
+                        it.name.toString(),
+                        startTime,
+                        endTime,
+                        it.preQuantity!!,
+                        it.freeThreshold
+                    )
+                )
             }
             return Result.success(res)
         } catch (e: Exception) {
