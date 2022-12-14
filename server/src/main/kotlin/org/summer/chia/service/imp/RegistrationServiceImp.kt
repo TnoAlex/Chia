@@ -70,7 +70,7 @@ class RegistrationServiceImp : ServiceImpl<RegistrationMapper, Registration>(), 
                 )
             }
         } catch (e: Exception) {
-            Log.error(this.javaClass, this::registrationList.name + " Insert Exception", e.suppressed)
+            Log.error(this.javaClass, this::registrationList.name + "-> Insert Exception: " + e.message, e.stackTrace)
             throw SqlException("Insert Exception", this::registrationList.name)
         }
         return Result.success()
@@ -110,7 +110,7 @@ class RegistrationServiceImp : ServiceImpl<RegistrationMapper, Registration>(), 
                 }
             }
         } catch (e: Exception) {
-            Log.error(this.javaClass, this::transcriptsList.name + " Update Exception", e.suppressed)
+            Log.error(this.javaClass, this::transcriptsList.name + "-> Update Exception: " + e.message, e.stackTrace)
             throw SqlException("Update Exception", this::transcriptsList.name)
         }
         return Result.success()
@@ -128,7 +128,11 @@ class RegistrationServiceImp : ServiceImpl<RegistrationMapper, Registration>(), 
             students.records.forEach { it.totalSize = size }
             Result.success(students.records)
         } catch (e: Exception) {
-            Log.error(this.javaClass, this::doQueryAbsentOfficialRegistration.name + " Query Exception", e.suppressed)
+            Log.error(
+                this.javaClass,
+                this::doQueryAbsentOfficialRegistration.name + "-> Query Exception: " + e.message,
+                e.stackTrace
+            )
             throw SqlException("Query Exception", this::doQueryAbsentOfficialRegistration.name)
         }
     }
@@ -145,7 +149,11 @@ class RegistrationServiceImp : ServiceImpl<RegistrationMapper, Registration>(), 
             students.records.forEach { it.totalSize = size }
             Result.success(students.records)
         } catch (e: Exception) {
-            Log.error(this.javaClass, this::doQueryAbsentOfficialRegistration.name + " Query Exception", e.suppressed)
+            Log.error(
+                this.javaClass,
+                this::doQueryAbsentOfficialRegistration.name + "-> Query Exception: " + e.message,
+                e.stackTrace
+            )
             throw SqlException("Query Exception", this::doQueryAbsentOfficialRegistration.name)
         }
     }
@@ -193,7 +201,7 @@ class RegistrationServiceImp : ServiceImpl<RegistrationMapper, Registration>(), 
             }
             Result.success()
         } catch (e: Exception) {
-            Log.error(this.javaClass, this::noticeStudent.name, e.suppressed)
+            Log.error(this.javaClass, this::noticeStudent.name + "->" + e.message, e.stackTrace)
             Result.error("邮件发送失败")
         }
     }

@@ -46,9 +46,11 @@ class UserServiceImp : UserService {
                         return Result.error("验证码无效，请重新获取")
                     }
                 }
-                1->{
+
+                1 -> {
                     if (res) {
-                        teacherService.baseMapper.update(null,
+                        teacherService.baseMapper.update(
+                            null,
                             KtUpdateWrapper(Teacher::class.java).eq(Teacher::id, uid)
                                 .set(Teacher::password, bCryptPasswordEncoder.encode(obj.newPassword))
                         )
@@ -57,9 +59,9 @@ class UserServiceImp : UserService {
                     }
                 }
             }
-        }catch (e:Exception){
-            Log.error(this.javaClass, e.message!!, e.suppressed)
-            throw SqlException("Update Exception",this::resetUserPassword.name)
+        } catch (e: Exception) {
+            Log.error(this.javaClass, this::resetUserPassword.name + "->" + e.message, e.suppressed)
+            throw SqlException("Update Exception", this::resetUserPassword.name)
         }
         return Result.success()
     }
@@ -77,7 +79,7 @@ class UserServiceImp : UserService {
             }
 
             else -> {
-                Log.error(this.javaClass, "Incorrect Permission Descriptor", null)
+                Log.error(this.javaClass, this::loadUserByUsername.name + "-> Incorrect Permission Descriptor", null)
                 throw RoleTypeErrorException("Incorrect Permission Descriptor")
             }
         }

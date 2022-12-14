@@ -67,7 +67,7 @@ class StudentServiceImp : ServiceImpl<StudentMapper, Student>(), StudentService 
                 )
             )
         } else {
-            Log.warn(this.javaClass, this::getBriefInfo.name + "Query Exceptions", null)
+            Log.error(this.javaClass, this::getBriefInfo.name + "-> Query Exceptions", null)
             throw SqlException("Query Exceptions", this::getBriefInfo.name)
         }
 
@@ -91,7 +91,11 @@ class StudentServiceImp : ServiceImpl<StudentMapper, Student>(), StudentService 
             )
             mailSendUtils.sendTemplateMail(mailAddress, "邮箱绑定确认", "email_binding", data)
         } catch (e: Exception) {
-            Log.error(this.javaClass, this::enableAccount.name + " Insert or Update Exception", e.suppressed)
+            Log.error(
+                this.javaClass,
+                this::enableAccount.name + "-> Insert or Update Exception: " + e.message,
+                e.stackTrace
+            )
             when (e) {
                 is MailSendException -> throw e
                 else -> throw throw SqlException("Insert or Update Exception", this::enableAccount.name)
@@ -116,7 +120,7 @@ class StudentServiceImp : ServiceImpl<StudentMapper, Student>(), StudentService 
                 )
             }
         } catch (e: Exception) {
-            Log.error(this.javaClass, this::importStudent.name + " Insert Exception", e.suppressed)
+            Log.error(this.javaClass, this::importStudent.name + " Insert Exception: " + e.message, e.stackTrace)
             throw SqlException("Insert Exception", this::importStudent.name)
         }
         return Result.success()
@@ -145,7 +149,7 @@ class StudentServiceImp : ServiceImpl<StudentMapper, Student>(), StudentService 
             }
             return Result.success(res)
         } catch (e: Exception) {
-            Log.error(this.javaClass, this::queryStudentList.name, e.suppressed)
+            Log.error(this.javaClass, this::queryStudentList.name + "-> " + e.message, e.stackTrace)
             when (e) {
                 is NumberFormatException -> throw TypeCastException(
                     "Can not cast parameter to 'Long'",
@@ -170,7 +174,7 @@ class StudentServiceImp : ServiceImpl<StudentMapper, Student>(), StudentService 
             baseMapper.delete(query)
             return Result.success()
         } catch (e: Exception) {
-            Log.error(this.javaClass, this::removeStudent.name + " Delete Exception", e.suppressed)
+            Log.error(this.javaClass, this::removeStudent.name + "-> Delete Exception: " + e.message, e.stackTrace)
             throw SqlException("Delete Exception", this::removeStudent.name)
         }
     }
@@ -210,7 +214,7 @@ class StudentServiceImp : ServiceImpl<StudentMapper, Student>(), StudentService 
                 return Result.success(res)
             }
         } catch (e: Exception) {
-            Log.error(this.javaClass, this::queryStudentList.name, e.suppressed)
+            Log.error(this.javaClass, this::queryStudentList.name + "->" + e.message, e.stackTrace)
             when (e) {
                 is NumberFormatException -> throw TypeCastException(
                     "Can not cast parameter to 'Long'",
@@ -281,7 +285,11 @@ class StudentServiceImp : ServiceImpl<StudentMapper, Student>(), StudentService 
             baseMapper.delete(query)
             return Result.success()
         } catch (e: Exception) {
-            Log.error(this.javaClass, this::doFilterStudentDelete.name + " Delete Exception", e.suppressed)
+            Log.error(
+                this.javaClass,
+                this::doFilterStudentDelete.name + "-> Delete Exception: " + e.message,
+                e.stackTrace
+            )
             throw SqlException("Delete Exception", this::doFilterStudentDelete.name)
         }
     }

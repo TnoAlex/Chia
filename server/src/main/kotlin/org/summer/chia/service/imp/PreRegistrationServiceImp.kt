@@ -34,7 +34,7 @@ class PreRegistrationServiceImp : ServiceImpl<PreRegistrationMapper, PreRegistra
                 Result.success()
             }
         } catch (e: RuntimeException) {
-            Log.error(this.javaClass, this::doPreRegistration.name + " Insertion error", e.suppressed)
+            Log.error(this.javaClass, this::doPreRegistration.name + "-> Insertion error: " + e.message, e.stackTrace)
             throw SqlException("Insertion error", this::doPreRegistration.name)
         }
     }
@@ -57,8 +57,8 @@ class PreRegistrationServiceImp : ServiceImpl<PreRegistrationMapper, PreRegistra
         } catch (e: Exception) {
             Log.error(
                 this.javaClass,
-                this::doCancelPreRegistration.name + " An Exception Occurs during query or delete",
-                e.suppressed
+                this::doCancelPreRegistration.name + "-> An Exception Occurs during query or delete: " + e.message,
+                e.stackTrace
             )
             throw SqlException("An Exception Occurs during query or delete", this::doCancelPreRegistration.name)
         }

@@ -21,14 +21,23 @@ import java.util.*
 class CspInfoServiceImp : ServiceImpl<CspInfoMapper, CspInfo>(), CspInfoService {
 
     override fun getAllPreRegistrationBriefInfo(): Result {
-        val pattern = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-        val res = ArrayList<CspBriefInfo>()
-        baseMapper.selectList(KtQueryWrapper(CspInfo::class.java).orderByDesc(CspInfo::startTime)).forEach {
-            val startTime = pattern.format(it.startTime)
-            val endTime = pattern.format(it.endTime)
-            res.add(CspBriefInfo(it.id!!, it.name.toString(), startTime, endTime, it.preQuantity!!))
+        try {
+            val pattern = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+            val res = ArrayList<CspBriefInfo>()
+            baseMapper.selectList(KtQueryWrapper(CspInfo::class.java).orderByDesc(CspInfo::startTime)).forEach {
+                val startTime = pattern.format(it.startTime)
+                val endTime = pattern.format(it.endTime)
+                res.add(CspBriefInfo(it.id!!, it.name.toString(), startTime, endTime, it.preQuantity!!))
+            }
+            return Result.success(res)
+        } catch (e: Exception) {
+            Log.error(
+                javaClass,
+                this::getAllPreRegistrationBriefInfo.name + "-> Query Exception " + e.message,
+                e.stackTrace
+            )
+            throw SqlException("Query Exception", this::getAllPreRegistrationBriefInfo.name)
         }
-        return Result.success(res)
     }
 
     @Transactional
@@ -55,7 +64,7 @@ class CspInfoServiceImp : ServiceImpl<CspInfoMapper, CspInfo>(), CspInfoService 
             baseMapper.insert(cspInfo)
             Result.success()
         } catch (e: Exception) {
-            Log.error(this.javaClass, this::addCsp.name + " Insert Exception", e.suppressed)
+            Log.error(this.javaClass, this::addCsp.name + "-> Insert Exception: " + e.message, e.stackTrace)
             throw SqlException("Insert Exception", this::addCsp.name)
         }
     }
@@ -72,7 +81,7 @@ class CspInfoServiceImp : ServiceImpl<CspInfoMapper, CspInfo>(), CspInfoService 
             baseMapper.update(null, query)
             Result.success()
         } catch (e: Exception) {
-            Log.error(this.javaClass, this::modifyCspInfo.name + " Update Exception", e.suppressed)
+            Log.error(this.javaClass, this::modifyCspInfo.name + "-> Update Exception", e.stackTrace)
             throw SqlException("Update Exception", this::modifyCspInfo.name)
         }
     }
@@ -89,7 +98,10 @@ class CspInfoServiceImp : ServiceImpl<CspInfoMapper, CspInfo>(), CspInfoService 
             }
 
             1 -> Result.error("预报名已开始，无法删除")
-            else -> throw SqlException("Unanticipated results", this::deleteCspInfo.name)
+            else -> {
+                Log.error(javaClass, this::deleteCspInfo.name + "-> Delete Exception: Unanticipated results", null)
+                throw SqlException("Unanticipated results", this::deleteCspInfo.name)
+            }
         }
     }
 
