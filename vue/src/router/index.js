@@ -35,6 +35,17 @@ const router = createRouter({
                 name: 'message',
                 component: ()=>import('@/components/message')
             },
+            {
+                path: '/officialEnroll',
+                name: 'officialEnroll',
+                component: ()=>import('@/components/officialEnroll')
+            },
+            {
+                path:'/teacherManager',
+                name:'teacherManager',
+                component: ()=>import('@/components/teacherManager')
+            }
+
         ],
     }
 )

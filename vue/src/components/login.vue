@@ -95,7 +95,6 @@ export default {
               util.userInfo.userName = res.data.msg
             })
             .catch(reason => {
-
               if (reason.data.data === null) {
                 util.messageBox(reason.data.msg, 'error')
               } else {
@@ -108,13 +107,16 @@ export default {
               }
             })
       } else {
-        await this.$axios.get('student/brief_info')
+        await this.$axios.get('student/query/details')
             .then((res) => {
+              console.log(res)
               util.userInfo.userName = res.data.data.name
-              util.userInfo.studentNum = res.data.data.studentNum
+              util.userInfo.studentNum = res.data.data.studentID
               util.userInfo.maxScore = res.data.data.maxScore
               util.userInfo.freeTime = res.data.data.freeTime
               util.userInfo.status = res.data.data.status
+              util.userInfo.email = res.data.data.email
+              util.userInfo.id = res.data.data.idNumber
             })
             .catch(err => {
               this.$router.push({
