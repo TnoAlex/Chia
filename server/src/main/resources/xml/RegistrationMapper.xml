@@ -2,22 +2,29 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.summer.chia.mapper.RegistrationMapper">
     <select id="absentOfficialRegistration" resultMap="studentListItem">
-        select s.id, s.student_number, s.name, concat(YEAR(s.enrollment_time), '级') as grade, s.free_times, s.max_score
-        from pre_registration as pr
-                 left join student s on pr.student_id = s.id
-        where pr.student_id not in (select s1.id, s1.csp_id, s1.student_id, s1.type
-                                    from ((select * from registration where csp_id = #{cid}) as s1)
-                                             left join pre_registration as pr
-                                                       on s1.csp_id = pr.csp_id and s1.student_id = pr.student_id)
+        SELECT s.id,
+               s.student_number,
+               s.name,
+               concat(YEAR(s.enrollment_time), '级') AS grade,
+               s.free_times,
+               s.max_score
+        FROM pre_registration AS pr
+                 LEFT JOIN student s ON pr.student_id = s.id
+        WHERE pr.student_id NOT IN (SELECT r.student_id
+                                    FROM registration as r
+                                             LEFT JOIN pre_registration AS pr ON r.csp_id = pr.csp_id
+                                    WHERE pr.csp_id = #{cid}
+                                      AND r.student_id = pr.student_id)
     </select>
     <select id="absentOfficialRegistrationNumber" resultType="java.lang.Long">
         select count(s.id)
-        from pre_registration as pr
-                 left join student s on pr.student_id = s.id
-        where pr.student_id not in (select s1.id, s1.csp_id, s1.student_id, s1.type
-                                    from ((select * from registration where csp_id = #{cid}) as s1)
-                                             left join pre_registration as pr
-                                                       on s1.csp_id = pr.csp_id and s1.student_id = pr.student_id)
+        FROM pre_registration AS pr
+                 LEFT JOIN student s ON pr.student_id = s.id
+        WHERE pr.student_id NOT IN (SELECT r.student_id
+                                    FROM registration as r
+                                             LEFT JOIN pre_registration AS pr ON r.csp_id = pr.csp_id
+                                    WHERE pr.csp_id = #{cid}
+                                      AND r.student_id = pr.student_id)
     </select>
     <select id="absentExam" resultMap="studentListItem">
         select s.id, s.student_number, s.name, concat(YEAR(s.enrollment_time), '级') as grade, s.free_times, s.max_score
@@ -26,15 +33,22 @@
         where r.miss = 0
     </select>
     <select id="absentExamNumber" resultType="java.lang.Long">
-         select count(s.id)
+        select count(s.id)
         from registration as r
                  left join student s on s.id = r.student_id
         where r.miss = 0
     </select>
+    <insert id="insertRegistrationInfo" keyColumn="id">
+        insert into registration(id, csp_id, student_id, type)
+        values (replace(UUID(), '-', ''), #{obj.cspId}, #{obj.studentId}, #{obj.type})
+        on duplicate key update csp_id     = values(csp_id),
+                                student_id = values(student_id),
+                                type       = values(type)
+    </insert>
     <resultMap id="studentListItem" type="org.summer.chia.pojo.ao.StudentListItem">
         <result property="id" column="id"/>
         <result property="name" column="name"/>
-        <result property="studentNum" column="student_number"/>
+        <result property="studentNumber" column="student_number"/>
         <result property="maxScore" column="max_score"/>
         <result property="freeTime" column="free_time"/>
         <result property="grade" column="grade"/>

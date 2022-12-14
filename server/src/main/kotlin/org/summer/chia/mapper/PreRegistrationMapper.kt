@@ -7,5 +7,5 @@ import org.summer.chia.pojo.dto.PreRegistration
 
 @Mapper
 interface PreRegistrationMapper : BaseMapper<PreRegistration> {
-    fun queryOne(pid: String, sid: String): CSPPreRegistrationInfo?
+    fun queryOne(cid: String, sid: String): CSPPreRegistrationInfo?
 }

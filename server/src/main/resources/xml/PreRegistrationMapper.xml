@@ -11,8 +11,8 @@
         from csp_info
                  left join pre_registration pr on csp_info.id = pr.csp_id
                  left join student s on pr.student_id = s.id
-        where pr.id = #{pid}
-          and s.id = #{uid}
+        where pr.csp_id = #{cid}
+          and s.id = #{sid}
     </select>
     <resultMap id="CSPPreRegistrationInfo" type="org.summer.chia.pojo.ao.CSPPreRegistrationInfo">
         <result property="cspId" column="csp_id"/>

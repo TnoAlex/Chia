@@ -3,13 +3,16 @@ package org.summer.chia.service.imp
 import com.baomidou.mybatisplus.extension.kotlin.KtQueryWrapper
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl
 import org.springframework.security.core.userdetails.UserDetails
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import org.summer.chia.adapter.UserDetailsAdapter
 import org.summer.chia.exception.SqlException
 import org.summer.chia.mapper.TeacherMapper
 import org.summer.chia.pojo.ao.Result
 import org.summer.chia.pojo.dto.Teacher
 import org.summer.chia.service.TeacherService
+import org.summer.chia.utils.Log
 
 @Service
 class TeacherServiceImp : ServiceImpl<TeacherMapper, Teacher>(), TeacherService {
@@ -33,7 +36,42 @@ class TeacherServiceImp : ServiceImpl<TeacherMapper, Teacher>(), TeacherService 
         return if (res != null) {
             Result.success(res.name)
         } else {
+            Log.error(this.javaClass, this::getUserNameByAccount.name + "-> Query Exception: ", null)
             throw SqlException("Query Exceptions", this::getUserNameByAccount.name)
         }
     }
+
+    @Transactional
+    override fun addTeacher(obj: Teacher, user: UserDetails): Result {
+        try {
+            obj.password = BCryptPasswordEncoder().encode(obj.password)
+            baseMapper.insert(obj)
+            return Result.success()
+        } catch (e: Exception) {
+            Log.error(this.javaClass, this::addTeacher.name + "-> Insert Exception: " + e.message, e.stackTrace)
+            throw SqlException("Insert Exception", this::addTeacher.name)
+        }
+    }
+
+    @Transactional
+    override fun deleteTeacher(tid: String): Result {
+        try {
+            baseMapper.delete(KtQueryWrapper(Teacher::class.java).eq(Teacher::id, tid))
+            return Result.success()
+        } catch (e: Exception) {
+            Log.error(this.javaClass, this::deleteTeacher.name + "-> Delete Exception: " + e.message, e.stackTrace)
+            throw SqlException("Delete Exception", this::deleteTeacher.name)
+        }
+    }
+
+    override fun queryTeacherList(): Result {
+        try {
+            val res = baseMapper.selectList(null)
+            return Result.success(res)
+        } catch (e: Exception) {
+            Log.error(this.javaClass, this::queryTeacherList.name + "-> Query Exception: " + e.message, e.stackTrace)
+            throw SqlException("Query Exception", this::queryTeacherList.name)
+        }
+    }
+
 }

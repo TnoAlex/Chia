@@ -42,10 +42,9 @@ class CspRegistrationController {
 
     @PostMapping("/teacher/notice/official/{cid}")
     fun noticeStudent(
-        @RequestBody list: List<String>,
         @PathVariable cid: String,
         @AuthenticationPrincipal user: UserDetails
     ): Result {
-        return registrationService.noticeStudent(list, cid, user)
+        return registrationService.noticeStudent(cid, user)
     }
 }

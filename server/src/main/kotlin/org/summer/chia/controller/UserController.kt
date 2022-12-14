@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*
 import org.summer.chia.pojo.ao.FreshmanInfo
 import org.summer.chia.pojo.ao.RestPassword
 import org.summer.chia.pojo.ao.Result
+import org.summer.chia.pojo.dto.Teacher
 import org.summer.chia.service.StudentService
 import org.summer.chia.service.TeacherService
 import org.summer.chia.service.UserService
@@ -90,5 +91,20 @@ class UserController {
     @GetMapping("/student/query/details")
     fun queryStudentDetails(@AuthenticationPrincipal user: UserDetails): Result {
         return studentService.doQueryDetails(user)
+    }
+
+    @PostMapping("/teacher/add/teacher")
+    fun addTeacher(@RequestBody obj: Teacher, @AuthenticationPrincipal user: UserDetails): Result {
+        return teacherService.addTeacher(obj, user)
+    }
+
+    @PostMapping("/teacher/delete/teacher/{tid}")
+    fun deleteTeacher(@PathVariable tid: String): Result {
+        return teacherService.deleteTeacher(tid)
+    }
+
+    @GetMapping("/teacher/query/list")
+    fun queryTeacherList(): Result {
+        return teacherService.queryTeacherList()
     }
 }

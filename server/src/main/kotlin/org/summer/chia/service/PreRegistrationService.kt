@@ -8,5 +8,5 @@ import org.summer.chia.pojo.dto.PreRegistration
 interface PreRegistrationService : IService<PreRegistration> {
 
     fun doPreRegistration(obj: PreRegistration, user: UserDetails): Result
-    fun doCancelPreRegistration(pid: String, user: UserDetails): Result
+    fun doCancelPreRegistration(cid: String, user: UserDetails): Result
 }

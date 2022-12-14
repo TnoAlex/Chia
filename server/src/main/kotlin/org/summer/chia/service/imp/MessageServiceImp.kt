@@ -45,7 +45,7 @@ class MessageServiceImp : ServiceImpl<MessageMapper, Message>(), MessageService 
             )
             return Result.success()
         } catch (e: Exception) {
-            Log.error(this.javaClass, this::doPostMessage.name + " Insert Exception", e.suppressed)
+            Log.error(this.javaClass, this::doPostMessage.name + "-> Insert Exception: " + e.message, e.stackTrace)
             throw SqlException("Insert Exception", this::doPostMessage.name)
         }
     }
@@ -60,7 +60,11 @@ class MessageServiceImp : ServiceImpl<MessageMapper, Message>(), MessageService 
             }
             return Result.success(res)
         } catch (e: Exception) {
-            Log.error(this.javaClass, this::doQueryCommunicative.name + " Query Exception", e.suppressed)
+            Log.error(
+                this.javaClass,
+                this::doQueryCommunicative.name + "-> Query Exception: " + e.message,
+                e.stackTrace
+            )
             throw SqlException("Query Exception", this::doQueryCommunicative.name)
         }
     }
@@ -73,13 +77,15 @@ class MessageServiceImp : ServiceImpl<MessageMapper, Message>(), MessageService 
                 is Student -> {
                     val res = baseMapper.queryStudentMessage(page, account.id!!)
                     val size = baseMapper.queryStudentMessageNumber(account.id!!)
-                    Result.success(res.records.forEach { it.totalSize = size.toInt() })
+                    res.records.forEach { it.totalSize = size.toInt() }
+                    Result.success(res.records)
                 }
 
                 is Teacher -> {
                     val res = baseMapper.queryTeacherMessage(page, account.id!!)
                     val size = baseMapper.queryTeacherMessageNumber(account.id!!)
-                    Result.success(res.records.forEach { it.totalSize = size.toInt() })
+                    res.records.forEach { it.totalSize = size.toInt() }
+                    Result.success(res.records)
                 }
 
                 else -> {
@@ -87,7 +93,7 @@ class MessageServiceImp : ServiceImpl<MessageMapper, Message>(), MessageService 
                 }
             }
         } catch (e: Exception) {
-            Log.error(this.javaClass, this::doQueryMessageList.name + " Query Exception", e.suppressed)
+            Log.error(this.javaClass, this::doQueryMessageList.name + "-> Query Exception: " + e.message, e.stackTrace)
             throw SqlException("Query Exception", this::doQueryMessageList.name)
         }
 
@@ -99,8 +105,14 @@ class MessageServiceImp : ServiceImpl<MessageMapper, Message>(), MessageService 
         try {
             val res = baseMapper.querySystemMessage(page, account.id!!)
             val size = baseMapper.querySystemMessageNumber(account.id!!)
-            return Result.success(res.records.forEach { it.totalSize = size.toInt() })
+            res.records.forEach { it.totalSize = size.toInt() }
+            return Result.success(res.records)
         } catch (e: Exception) {
+            Log.error(
+                this.javaClass,
+                this::doQuerySystemMessage.name + "-> Query Exception: " + e.message,
+                e.stackTrace
+            )
             throw SqlException("Query Exception", this::doQuerySystemMessage.name)
         }
     }
@@ -113,7 +125,7 @@ class MessageServiceImp : ServiceImpl<MessageMapper, Message>(), MessageService 
             baseMapper.update(null, query)
             return Result.success()
         } catch (e: Exception) {
-            Log.error(this.javaClass, this::markMessage.name + " Update Exception", e.suppressed)
+            Log.error(this.javaClass, this::markMessage.name + "-> Update Exception: " + e.message, e.stackTrace)
             throw SqlException("Update Exception", this::markMessage.name)
         }
     }
@@ -126,7 +138,7 @@ class MessageServiceImp : ServiceImpl<MessageMapper, Message>(), MessageService 
             baseMapper.delete(query)
             return Result.success()
         } catch (e: Exception) {
-            Log.error(this.javaClass, this::deleteMessage.name + " Delete Exception", e.suppressed)
+            Log.error(this.javaClass, this::deleteMessage.name + "-> Delete Exception: " + e.message, e.stackTrace)
             throw SqlException("Delete Exception", this::deleteMessage.name)
         }
     }

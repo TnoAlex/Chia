@@ -34,22 +34,22 @@ class PreRegistrationServiceImp : ServiceImpl<PreRegistrationMapper, PreRegistra
                 Result.success()
             }
         } catch (e: RuntimeException) {
-            Log.error(this.javaClass, this::doPreRegistration.name + " Insertion error", e.suppressed)
+            Log.error(this.javaClass, this::doPreRegistration.name + "-> Insertion error: " + e.message, e.stackTrace)
             throw SqlException("Insertion error", this::doPreRegistration.name)
         }
     }
 
     @Transactional
-    override fun doCancelPreRegistration(pid: String, user: UserDetails): Result {
+    override fun doCancelPreRegistration(cid: String, user: UserDetails): Result {
         val uid =
             ((user as UserDetailsAdapter).getPayLoad()).id!!
         try {
-            val info = baseMapper.queryOne(pid, uid) ?: return Result.error("查询错误")
+            val info = baseMapper.queryOne(cid, uid) ?: return Result.error("查询错误")
             return if (info.cspState == -1)
                 Result.error("预报名已经结束，无法取消")
             else {
                 baseMapper.delete(
-                    KtQueryWrapper(PreRegistration::class.java).eq(PreRegistration::id, pid)
+                    KtQueryWrapper(PreRegistration::class.java).eq(PreRegistration::cspId, cid)
                         .eq(PreRegistration::studentId, uid)
                 )
                 Result.success("取消预报名成功")
@@ -57,8 +57,8 @@ class PreRegistrationServiceImp : ServiceImpl<PreRegistrationMapper, PreRegistra
         } catch (e: Exception) {
             Log.error(
                 this.javaClass,
-                this::doCancelPreRegistration.name + " An Exception Occurs during query or delete",
-                e.suppressed
+                this::doCancelPreRegistration.name + "-> An Exception Occurs during query or delete: " + e.message,
+                e.stackTrace
             )
             throw SqlException("An Exception Occurs during query or delete", this::doCancelPreRegistration.name)
         }

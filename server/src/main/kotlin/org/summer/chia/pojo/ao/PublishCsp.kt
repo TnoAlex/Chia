@@ -7,5 +7,6 @@ data class PublishCsp(
     var id: String?,
     var name: Int?,
     var startTime: String?,
-    var endTime: String?
+    var endTime: String?,
+    var freeThreshold: Int?
 )

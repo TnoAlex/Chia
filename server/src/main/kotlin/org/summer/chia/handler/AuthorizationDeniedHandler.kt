@@ -19,6 +19,7 @@ class AuthorizationDeniedHandler : AuthenticationFailureHandler, AuthenticationE
         exception: AuthenticationException
     ) {
         val res = exception.message?.let { Result.error(it) }
+        response.status = HttpServletResponse.SC_FORBIDDEN
         response.writer.write(Gson().toJson(res))
     }
 
@@ -44,6 +45,7 @@ class AuthorizationDeniedHandler : AuthenticationFailureHandler, AuthenticationE
         exception: RuntimeException
     ) {
         val ex = request.getAttribute("javax.servlet.error.exception") as RuntimeException?
+        response.status = HttpServletResponse.SC_FORBIDDEN
         if (ex == null) {
             response.writer.write(Gson().toJson(exception.message?.let { Result.error(it) }))
         } else {

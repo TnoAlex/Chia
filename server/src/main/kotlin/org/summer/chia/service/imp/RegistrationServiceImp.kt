@@ -48,12 +48,19 @@ class RegistrationServiceImp : ServiceImpl<RegistrationMapper, Registration>(), 
     override fun registrationList(objList: List<RegistrationListItem>): Result {
         val studentId = studentMapper.selectList(
             KtQueryWrapper(Student::class.java).`in`(
-                Student::idNumber,
+                Student::studentNumber,
                 objList.map { it.studentIdNumber })
-        ).associate { it.idNumber to it.id }
+        ).associate { it.studentNumber to it.id }
         try {
             objList.forEach {
-                baseMapper.insert(Registration(null, it.cspId, studentId[it.studentIdNumber]!!, null, it.type, null))
+                studentId[it.studentIdNumber]?.let { p ->
+                    baseMapper.insertRegistrationInfo(Registration(null, it.cspId, p, null, it.type, null))
+                    if (it.type == 1)
+                        studentMapper.update(
+                            null,
+                            KtUpdateWrapper(Student::class.java).eq(Student::id, p).setSql("free_time = free_time - 1")
+                        )
+                }
             }
             val cspId = objList.map { it.cspId }.toSet()
             cspId.forEach {
@@ -63,7 +70,7 @@ class RegistrationServiceImp : ServiceImpl<RegistrationMapper, Registration>(), 
                 )
             }
         } catch (e: Exception) {
-            Log.error(this.javaClass, this::registrationList.name + " Insert Exception", e.suppressed)
+            Log.error(this.javaClass, this::registrationList.name + "-> Insert Exception: " + e.message, e.stackTrace)
             throw SqlException("Insert Exception", this::registrationList.name)
         }
         return Result.success()
@@ -73,28 +80,37 @@ class RegistrationServiceImp : ServiceImpl<RegistrationMapper, Registration>(), 
     override fun transcriptsList(objList: List<RegistrationListItem>): Result {
         val studentId = studentMapper.selectList(
             KtQueryWrapper(Student::class.java).`in`(
-                Student::idNumber,
+                Student::studentNumber,
                 objList.map { it.studentIdNumber })
-        ).associate { it.idNumber to it.id }
+        ).associate { it.studentNumber to it.id }
         try {
-            objList.forEach {
-                baseMapper.update(
-                    null,
-                    KtUpdateWrapper(Registration::class.java).eq(Registration::cspId, it.cspId)
-                        .eq(Registration::studentId, studentId[it.studentIdNumber]!!)
-                        .set(Registration::miss, 0)
-                        .set(Registration::score, it.socre!!)
-                )
-            }
             val cspId = objList.map { it.cspId }.toSet()
+            val cspInfo = cspInfoMapper.selectList(KtQueryWrapper(CspInfo::class.java).`in`(CspInfo::id, cspId))
+                .associate { it.id to it.freeThreshold }
             cspId.forEach {
                 cspInfoMapper.update(
                     null,
                     KtUpdateWrapper(CspInfo::class.java).eq(CspInfo::id, it).set(CspInfo::stage, 2)
                 )
             }
+            objList.forEach {
+                studentId[it.studentIdNumber]?.let { id ->
+                    if (it.socre!! >= cspInfo[it.cspId]!!)
+                        studentMapper.update(
+                            null,
+                            KtUpdateWrapper(Student::class.java).eq(Student::id, id).setSql("free_time = free_time +1")
+                        )
+                    baseMapper.update(
+                        null,
+                        KtUpdateWrapper(Registration::class.java).eq(Registration::cspId, it.cspId)
+                            .eq(Registration::studentId, id)
+                            .set(Registration::miss, 0)
+                            .set(Registration::score, it.socre!!)
+                    )
+                }
+            }
         } catch (e: Exception) {
-            Log.error(this.javaClass, this::transcriptsList.name + " Update Exception", e.suppressed)
+            Log.error(this.javaClass, this::transcriptsList.name + "-> Update Exception: " + e.message, e.stackTrace)
             throw SqlException("Update Exception", this::transcriptsList.name)
         }
         return Result.success()
@@ -112,7 +128,11 @@ class RegistrationServiceImp : ServiceImpl<RegistrationMapper, Registration>(), 
             students.records.forEach { it.totalSize = size }
             Result.success(students.records)
         } catch (e: Exception) {
-            Log.error(this.javaClass, this::doQueryAbsentOfficialRegistration.name + " Query Exception", e.suppressed)
+            Log.error(
+                this.javaClass,
+                this::doQueryAbsentOfficialRegistration.name + "-> Query Exception: " + e.message,
+                e.stackTrace
+            )
             throw SqlException("Query Exception", this::doQueryAbsentOfficialRegistration.name)
         }
     }
@@ -129,17 +149,22 @@ class RegistrationServiceImp : ServiceImpl<RegistrationMapper, Registration>(), 
             students.records.forEach { it.totalSize = size }
             Result.success(students.records)
         } catch (e: Exception) {
-            Log.error(this.javaClass, this::doQueryAbsentOfficialRegistration.name + " Query Exception", e.suppressed)
+            Log.error(
+                this.javaClass,
+                this::doQueryAbsentOfficialRegistration.name + "-> Query Exception: " + e.message,
+                e.stackTrace
+            )
             throw SqlException("Query Exception", this::doQueryAbsentOfficialRegistration.name)
         }
     }
 
     @Async
-    override fun noticeStudent(list: List<String>, cid: String, user: UserDetails): Result {
+    override fun noticeStudent(cid: String, user: UserDetails): Result {
         val uid = (user as UserDetailsAdapter).getPayLoad().id!!
         val csp = cspInfoMapper.selectOne(KtQueryWrapper(CspInfo::class.java).eq(CspInfo::id, cid))
         val data = mapOf("cspName" to csp.name)
         var successNumber = 0
+        val list = (doQueryAbsentOfficialRegistration(cid, "0", "1000").data as List<StudentListItem>).map { it.id }
         val errorStudentName = ArrayList<String>()
         return try {
             list.forEach {
@@ -176,7 +201,7 @@ class RegistrationServiceImp : ServiceImpl<RegistrationMapper, Registration>(), 
             }
             Result.success()
         } catch (e: Exception) {
-            Log.error(this.javaClass, this::noticeStudent.name, e.suppressed)
+            Log.error(this.javaClass, this::noticeStudent.name + "->" + e.message, e.stackTrace)
             Result.error("邮件发送失败")
         }
     }
