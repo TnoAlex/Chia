@@ -18,6 +18,10 @@ class AuthenticationFilter : OncePerRequestFilter() {
         response: HttpServletResponse,
         chain: FilterChain
     ) {
+        if (request.servletPath.contains("/forget") || request.servletPath.contains("/verify")) {
+            chain.doFilter(request, response)
+            return
+        }
         if (SecurityContextHolder.getContext().authentication == null) {
             response.writer.write(Gson().toJson(Result.error(ResultStatus.NONE_AUTHENTICATION)))
             return

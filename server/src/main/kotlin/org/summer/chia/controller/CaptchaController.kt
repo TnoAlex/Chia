@@ -3,10 +3,8 @@ package org.summer.chia.controller
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.core.userdetails.UserDetails
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
+import org.summer.chia.pojo.ao.RestPassword
 import org.summer.chia.pojo.ao.Result
 import org.summer.chia.service.CaptchaService
 
@@ -30,5 +28,16 @@ class CaptchaController {
     @PostMapping("/verify/reset_code/validate/{code}")
     fun validateRestPasswordCode(@PathVariable code: String): Result {
         return captchaService.doValidateRestPasswordCode(code)
+    }
+
+    @PostMapping("/forget/password/email/{email}")
+    fun forgetPassword(@PathVariable email: String): Result? {
+        val task = captchaService.forgetPassword(email)
+        return task.get()
+    }
+
+    @PostMapping("/forget/password/rest")
+    fun resetPassword(@RequestBody obj: RestPassword): Result {
+        return captchaService.resetPassword(obj)
     }
 }

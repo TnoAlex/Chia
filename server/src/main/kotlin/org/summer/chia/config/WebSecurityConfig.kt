@@ -57,6 +57,7 @@ class WebSecurityConfig {
                     .antMatchers("/logout").permitAll()
                     .antMatchers("/static/**").permitAll()
                     .antMatchers("/verify/**").permitAll()
+                    .antMatchers("/forget/**").permitAll()
                     .antMatchers("/teacher/**").hasRole("Teacher")
                     .anyRequest().authenticated()
             }

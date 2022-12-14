@@ -5,17 +5,11 @@
                     <span class="logo-lg" style="height: 100%;width: 100%;">
                         <img src="../../assets/picture/csp_icon.png" style="width: 85%;height: 85%;"  alt="logo" height="22">
                     </span>
-      <span class="logo-sm">
-                        <img src="../../assets/picture/logo-sm.png" alt="small logo" height="22">
-                    </span>
     </a>
     <!-- Logo Dark -->
     <a href="" class="logo logo-dark">
                     <span class="logo-lg">
                         <img src="../../assets/picture/csp_icon.png" style="width: 85%;height: 85%;"  alt="dark logo" height="22">
-                    </span>
-      <span class="logo-sm">
-                        <img src="../../assets/picture/logo-dark-sm.png" alt="small logo" height="22">
                     </span>
     </a>
     <!-- Sidebar Hover Menu Toggle Button -->
@@ -24,14 +18,6 @@
     </button>
     <!-- Sidebar -left -->
     <div class="h-100" id="leftside-menu-container" data-simplebar="">
-      <!-- Leftbar User -->
-      <div class="leftbar-user">
-        <a href="pages-profile.html">
-          <img src="../../assets/picture/avatar-1.jpg" alt="user-image" height="42" class="rounded-circle shadow-sm">
-          <span class="leftbar-user-name">Dominic Keller</span>
-        </a>
-      </div>
-      <!--- Sidemenu -->
       <ul class="side-nav">
         <li class="side-nav-title side-nav-item">导航栏</li>
         <li class="side-nav-item">
@@ -85,6 +71,7 @@ import {js8} from '../../assets/js/moment.min'
 import {js9} from '../../assets/js/vendor.min'
 import {js3} from '../../assets/js/apexcharts.min'
 import cookies from "vue-cookies";
+
 export default {
   name: "leftBar.vue",
   data(){

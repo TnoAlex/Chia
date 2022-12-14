@@ -19,7 +19,8 @@
             </i>
             <input id="student_passwd" v-model="loginObject.password" placeholder="密码" type="password">
           </div>
-          <router-link className="atag" style="display: block;text-align: right" to="forget_password">忘记密码
+          <router-link :to="{path:'/forget_password',query:this.loginObject.type}" className="atag"
+                       style="display: block;text-align: right">忘记密码
           </router-link>
           <input className="btn solid" type="button" value="登录" @click="submitForm">
         </form>
@@ -33,7 +34,8 @@
             <i className="fas fa-lock"></i>
             <input id="teacher_passwd" v-model="loginObject.password" placeholder="密码" type="password">
           </div>
-          <router-link className="atag" style="display: block;text-align: right" to="forget_password">忘记密码
+          <router-link :to="{path:'/forget_password',query:this.loginObject.type}" className="atag"
+                       style="display: block;text-align: right">忘记密码
           </router-link>
           <input className="btn" type="button" value="登录" @click="submitForm">
         </form>
@@ -61,7 +63,6 @@
 <script>
 import util from '../utils/commonUtil'
 import cookies from "vue-cookies";
-import axios from "axios";
 
 export default {
   name: "login",

@@ -9,15 +9,21 @@ import org.springframework.scheduling.annotation.Async
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.util.Base64Utils
 import org.summer.chia.adapter.UserDetailsAdapter
 import org.summer.chia.exception.MailSendException
 import org.summer.chia.exception.SqlException
 import org.summer.chia.mapper.CaptchaMapper
 import org.summer.chia.mapper.StudentMapper
+import org.summer.chia.mapper.TeacherMapper
+import org.summer.chia.pojo.ao.RestPassword
 import org.summer.chia.pojo.ao.Result
 import org.summer.chia.pojo.dto.Captcha
 import org.summer.chia.pojo.dto.Student
+import org.summer.chia.pojo.dto.Teacher
+import org.summer.chia.pojo.dto.User
 import org.summer.chia.service.CaptchaService
+import org.summer.chia.service.UserService
 import org.summer.chia.utils.Log
 import org.summer.chia.utils.MailSendUtil
 import org.summer.chia.utils.verificationCode
@@ -34,6 +40,12 @@ class CaptchaServiceImp : ServiceImpl<CaptchaMapper, Captcha>(), CaptchaService 
 
     @Autowired
     private lateinit var mailSendUtils: MailSendUtil
+
+    @Autowired
+    private lateinit var teacherMapper: TeacherMapper
+
+    @Autowired
+    private lateinit var userService: UserService
 
     @Transactional
     override fun doActivateAccount(code: String): Result {
@@ -76,16 +88,9 @@ class CaptchaServiceImp : ServiceImpl<CaptchaMapper, Captcha>(), CaptchaService 
     @Async
     @Transactional
     override fun genRestPasswordCode(user: UserDetails): CompletableFuture<Result> {
-        val code = verificationCode(System.currentTimeMillis())
         val account = (user as UserDetailsAdapter).getPayLoad()
-        val history = baseMapper.selectList(KtQueryWrapper(Captcha::class.java).eq(Captcha::uid, account.id!!))
-        if (history.isNullOrEmpty()) {
-            baseMapper.delete(KtQueryWrapper(Captcha::class.java).eq(Captcha::uid, account.id!!))
-        }
         return try {
-            baseMapper.insert(Captcha(null, account.id!!, code, Timestamp(Date().time), 0))
-            val data = mapOf("code" to code)
-            mailSendUtils.sendTemplateMail(account.email!!, "您正在修改您的密码", "forget_password.html", data)
+            genCode(account)
             CompletableFuture.completedFuture(Result.success())
         } catch (e: Exception) {
             Log.error(
@@ -98,6 +103,17 @@ class CaptchaServiceImp : ServiceImpl<CaptchaMapper, Captcha>(), CaptchaService 
                 else -> throw SqlException("Insert Exception", this::genRestPasswordCode.name)
             }
         }
+    }
+
+    private fun genCode(account: User) {
+        val code = verificationCode(System.currentTimeMillis())
+        val history = baseMapper.selectList(KtQueryWrapper(Captcha::class.java).eq(Captcha::uid, account.id!!))
+        if (history.isNullOrEmpty()) {
+            baseMapper.delete(KtQueryWrapper(Captcha::class.java).eq(Captcha::uid, account.id!!))
+        }
+        baseMapper.insert(Captcha(null, account.id!!, code, Timestamp(Date().time), 0))
+        val data = mapOf("code" to code)
+        mailSendUtils.sendTemplateMail(account.email!!, "您正在修改您的密码", "forget_password.html", data)
     }
 
     @Transactional
@@ -139,6 +155,56 @@ class CaptchaServiceImp : ServiceImpl<CaptchaMapper, Captcha>(), CaptchaService 
             throw SqlException("Delete Exception", this::evalCode.name)
         }
 
+    }
+
+    @Async
+    @Transactional
+    override fun forgetPassword(email: String): CompletableFuture<Result> {
+        var user: User? = studentMapper.selectOne(
+            KtQueryWrapper(Student::class.java).eq(
+                Student::email,
+                Base64Utils.decode(email.toByteArray())
+            )
+        )
+        if (user == null) {
+            user = teacherMapper.selectOne(
+                KtQueryWrapper(Teacher::class.java).eq(
+                    Teacher::email,
+                    Base64Utils.decode(email.toByteArray())
+                )
+            )
+        }
+        if (user == null)
+            return CompletableFuture.completedFuture(Result.error("没有找到与此邮箱匹配的账号"))
+        return try {
+            genCode(user)
+            CompletableFuture.completedFuture(Result.success())
+        } catch (e: Exception) {
+            Log.error(
+                this.javaClass,
+                this::genRestPasswordCode.name + "-> Insert Exception: " + e.message,
+                e.stackTrace
+            )
+            when (e) {
+                is MailSendException -> throw e
+                else -> throw SqlException("Insert Exception", this::genRestPasswordCode.name)
+            }
+        }
+    }
+
+    @Transactional
+    override fun resetPassword(obj: RestPassword): Result {
+        val uid = baseMapper.selectOne(KtQueryWrapper(Captcha::class.java).eq(Captcha::code, obj.code)).uid
+        var user: User? = null
+        when (obj.type) {
+            1 -> user = teacherMapper.selectOne(KtQueryWrapper(Teacher::class.java).eq(Teacher::id, uid))
+            0 -> user = studentMapper.selectOne(KtQueryWrapper(Student::class.java).eq(Student::id, uid))
+            else -> {
+                baseMapper.delete(KtUpdateWrapper(Captcha::class.java).eq(Captcha::code, obj.code))
+                return Result.error("此用户不存在")
+            }
+        }
+        return userService.resetUserPassword(obj, UserDetailsAdapter(user!!))
     }
 
 }

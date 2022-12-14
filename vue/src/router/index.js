@@ -10,9 +10,9 @@ const router = createRouter({
                 component: () => import('@/components/login')
             },
             {
-                path:'/index',
-                name:"index",
-                component:()=>import('@/components/index/index')
+                path: '/index',
+                name: "index",
+                component: () => import('@/components/index/index')
             },
             {
                 path: '/studentList',
@@ -27,23 +27,28 @@ const router = createRouter({
             {
                 path: '/personal_info',
                 name: 'personal-info',
-                component: ()=>import('@/components/personal_info')
+                component: () => import('@/components/personal_info')
             },
 
             {
                 path: '/message',
                 name: 'message',
-                component: ()=>import('@/components/message')
+                component: () => import('@/components/message')
             },
             {
                 path: '/officialEnroll',
                 name: 'officialEnroll',
-                component: ()=>import('@/components/officialEnroll')
+                component: () => import('@/components/officialEnroll')
             },
             {
-                path:'/teacherManager',
-                name:'teacherManager',
-                component: ()=>import('@/components/teacherManager')
+                path: '/teacherManager',
+                name: 'teacherManager',
+                component: () => import('@/components/teacherManager')
+            },
+            {
+                path: '/forget_password',
+                name: 'forgetPassword',
+                component: () => import('@/components/forget_password')
             }
 
         ],
