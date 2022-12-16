@@ -163,14 +163,14 @@ class CaptchaServiceImp : ServiceImpl<CaptchaMapper, Captcha>(), CaptchaService 
         var user: User? = studentMapper.selectOne(
             KtQueryWrapper(Student::class.java).eq(
                 Student::email,
-                Base64Utils.decode(email.toByteArray())
+                Base64Utils.decode(email.toByteArray(Charsets.UTF_8)).toString(Charsets.UTF_8)
             )
         )
         if (user == null) {
             user = teacherMapper.selectOne(
                 KtQueryWrapper(Teacher::class.java).eq(
                     Teacher::email,
-                    Base64Utils.decode(email.toByteArray())
+                    Base64Utils.decode(email.toByteArray(Charsets.UTF_8)).toString(Charsets.UTF_8)
                 )
             )
         }

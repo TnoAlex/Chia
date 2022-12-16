@@ -183,9 +183,10 @@
   <script>
   import topNav from "@/components/index/topNav";
   import leftNav from "@/components/index/leftNav";
-  import {Search,Delete,Edit } from '@element-plus/icons-vue';
+  import {Delete, Edit, Search} from '@element-plus/icons-vue';
   import util from '@/utils/commonUtil'
   import axios from "axios";
+
   export default
   {
     name: "studentList.vue",
@@ -489,12 +490,18 @@
           .catch(async () => {
             await util.delay(100)
             loading.close()
-            util.messageBox('拉取CSP届次失败','error')
+            util.messageBox('拉取CSP届次失败', 'error')
           })
       },
     },
     created() {
       this.getCspInfo()
+    },
+    mounted() {
+      window.addEventListener('beforeunload', e => util.destroyCookie(e))
+    },
+    unmounted() {
+      window.removeEventListener('beforeunload', e => util.destroyCookie(e))
     }
   }
   </script>

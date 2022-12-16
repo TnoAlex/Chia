@@ -182,7 +182,7 @@ form.sign-in-form {
 
 .container:before {
     content: "";
-    position: absolute;
+    position: fixed;
     height: 2000px;
     width: 2000px;
     top: -10%;

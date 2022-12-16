@@ -4,56 +4,56 @@
     <title>登录界面</title>
   </head>
   <body>
-  <div className="container">
-    <div className="forms-container">
-      <div className="signin-signup">
-        <form className="sign-in-form">
-          <h2 className="title">学生登录</h2>
-          <div className="input-field">
-            <i className="fas fa-user">
+  <div class="container">
+    <div class="forms-container">
+      <div class="signin-signup">
+        <form class="sign-in-form">
+          <h2 class="title">学生登录</h2>
+          <div class="input-field">
+            <i class="fas fa-user">
             </i>
             <input id="student_name" v-model="loginObject.username" placeholder="用户名" type="text">
           </div>
-          <div className="input-field">
-            <i className="fas fa-lock">
+          <div class="input-field">
+            <i class="fas fa-lock">
             </i>
             <input id="student_passwd" v-model="loginObject.password" placeholder="密码" type="password">
           </div>
-          <router-link :to="{path:'/forget_password',query:this.loginObject.type}" className="atag"
+          <router-link :to="{path:'/forget_password',query:this.loginObject.type}" class="atag"
                        style="display: block;text-align: right">忘记密码
           </router-link>
-          <input className="btn solid" type="button" value="登录" @click="submitForm">
+          <input class="btn solid" type="button" value="登录" @click="submitForm">
         </form>
-        <form className="sign-up-form">
-          <h2 className="title">教师登录</h2>
-          <div className="input-field">
-            <i className="fas fa-user"></i>
+        <form class="sign-up-form">
+          <h2 class="title">教师登录</h2>
+          <div class="input-field">
+            <i class="fas fa-user"></i>
             <input id="teacher_name" v-model="loginObject.username" placeholder="用户名" type="text">
           </div>
-          <div className="input-field">
-            <i className="fas fa-lock"></i>
+          <div class="input-field">
+            <i class="fas fa-lock"></i>
             <input id="teacher_passwd" v-model="loginObject.password" placeholder="密码" type="password">
           </div>
-          <router-link :to="{path:'/forget_password',query:this.loginObject.type}" className="atag"
+          <router-link :to="{path:'/forget_password',query:this.loginObject.type}" class="atag"
                        style="display: block;text-align: right">忘记密码
           </router-link>
-          <input className="btn" type="button" value="登录" @click="submitForm">
+          <input class="btn" type="button" value="登录" @click="submitForm">
         </form>
       </div>
     </div>
-    <div className="panels-container">
-      <div className="panel left-panel">
-        <div className="content" style="margin-right: 200px">
+    <div class="panels-container">
+      <div class="panel left-panel">
+        <div class="content" style="margin-right: 200px">
           <h3>您是教师 ?</h3>
           <p>请 点 击 此 处 进 行 登 录!</p>
-          <button id="sign-up-btn" className="btn transparent">教师登录</button>
+          <button id="sign-up-btn" class="btn transparent">教师登录</button>
         </div>
       </div>
-      <div className="panel right-panel">
-        <div className="content">
+      <div class="panel right-panel">
+        <div class="content">
           <h3>您是学生 ?</h3>
           <p>请 点 击 此 处 进 行 登 录!</p>
-          <button id="sign-in-btn" className="btn transparent">学生登录</button>
+          <button id="sign-in-btn" class="btn transparent">学生登录</button>
         </div>
       </div>
     </div>
@@ -62,12 +62,13 @@
 </template>
 <script>
 import util from '../utils/commonUtil'
-import cookies from "vue-cookies";
+import {Base64} from "js-base64";
 
 export default {
   name: "login",
   data() {
     return {
+      userSatatus: 0,
       loginObject: {
         type: 0,
         username: '',
@@ -110,7 +111,7 @@ export default {
       } else {
         await this.$axios.get('student/query/details')
             .then((res) => {
-              console.log(res)
+              this.userSatatus = res.data.data.status
               util.userInfo.userName = res.data.data.name
               util.userInfo.studentNum = res.data.data.studentID
               util.userInfo.maxScore = res.data.data.maxScore
@@ -176,8 +177,13 @@ export default {
 
       } else {
         util.messageBox('登录成功', 'success')
-        cookies.set('userInfo',util.userInfo,{ expires: 7 })
-        this.$router.push('/index')
+        this.$cookies.set('userInfo', util.userInfo)
+        localStorage.setItem('userInfo', Base64.toBase64(JSON.stringify(util.userInfo)))
+        if (this.userSatatus === 0 && this.loginObject.type === 0) {
+          this.$router.push('/enable_account')
+        } else {
+          this.$router.push('/index')
+        }
       }
     }
   }

@@ -9,5 +9,6 @@ data class StudentDetails(
     var idNumber: String,
     var maxScore: Int,
     var freeTime: Int,
+    var status: Int,
     var email: String
 )

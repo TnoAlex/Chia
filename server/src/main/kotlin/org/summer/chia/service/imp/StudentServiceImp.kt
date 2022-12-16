@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.util.Base64Utils
 import org.summer.chia.adapter.UserDetailsAdapter
 import org.summer.chia.exception.MailSendException
 import org.summer.chia.exception.SqlException
@@ -78,18 +79,22 @@ class StudentServiceImp : ServiceImpl<StudentMapper, Student>(), StudentService 
     override fun enableAccount(mailAddress: String, user: UserDetails): CompletableFuture<Result> {
         val uid = (user as UserDetailsAdapter).getPayLoad().id!!
         val code = verificationCode(System.currentTimeMillis())
+        val mail = Base64Utils.decode(mailAddress.toByteArray(Charsets.UTF_8)).toString(Charsets.UTF_8)
         try {
+            if (captchaMapper.selectList(KtQueryWrapper(Captcha::class.java).eq(Captcha::uid, uid)).isNotEmpty()) {
+                captchaMapper.delete(KtQueryWrapper(Captcha::class.java).eq(Captcha::uid, uid))
+            }
             captchaMapper.insert(Captcha(null, uid, code, Timestamp(Date().time), 0))
             baseMapper.update(
                 null,
-                KtUpdateWrapper(Student::class.java).eq(Student::id, uid).set(Student::email, mailAddress)
+                KtUpdateWrapper(Student::class.java).eq(Student::id, uid).set(Student::email, mail)
             )
             val data = mapOf(
-                "email" to mailAddress,
+                "email" to mail,
                 "code" to code,
-                "createTime" to SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒")
+                "createTime" to SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒").format(Date())
             )
-            mailSendUtils.sendTemplateMail(mailAddress, "邮箱绑定确认", "email_binding", data)
+            mailSendUtils.sendTemplateMail(mail, "邮箱绑定确认", "email_binding", data)
         } catch (e: Exception) {
             Log.error(
                 this.javaClass,
@@ -260,7 +265,7 @@ class StudentServiceImp : ServiceImpl<StudentMapper, Student>(), StudentService 
         val account =
             ((user as UserDetailsAdapter).getPayLoad()) as Student
         var email = ""
-        if (account.email != null) {
+        if (account.email != null && account.email!!.isNotBlank()) {
             email = "****@" + account.email!!.split("@")[1]
         }
         val idNumber = account.idNumber.replace(Regex("(?<=\\w{3})\\w(?=\\w{4})"), "*")
@@ -271,6 +276,7 @@ class StudentServiceImp : ServiceImpl<StudentMapper, Student>(), StudentService 
                 idNumber,
                 account.maxScore,
                 account.freeTimes,
+                account.status,
                 email
             )
         )

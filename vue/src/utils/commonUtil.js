@@ -1,17 +1,17 @@
-import {ElMessage} from "element-plus";
-import {ElLoading} from 'element-plus';
+import {ElLoading, ElMessage} from "element-plus";
+import axios from "axios";
 
 const userInfo = {
-    type:0,
-    id:'2222',
-    userName:'',
-    studentNum:'',
-    status:1,
-    freeTime:0,
-    maxScore:500,
-    email:''
+    type: 0,
+    id: '',
+    userName: '',
+    studentNum: '',
+    status: 0,
+    freeTime: 0,
+    maxScore: 500,
+    email: ''
 }
-export default{
+export default {
     messageBox,
     readFile,
     delay,
@@ -21,7 +21,8 @@ export default{
     print,
     judgeInputIsNumber,
     preFixInteger,
-    timeStampToTime
+    timeStampToTime,
+    destroyCookie
 }
 function messageBox(msg, type) {
     ElMessage({
@@ -75,14 +76,21 @@ function preFixInteger(num,length)
 {
     return (Array(length).join('0')+num).slice(-length)
 }
-function timeStampToTime(timestamp)
-{
+function timeStampToTime(timestamp) {
     var date = new Date(timestamp);//时间戳为10位需*1000，时间戳为13位的话不需乘1000
     var Y = date.getFullYear() + '-';
-    var M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
-    var D = (date.getDate() < 10 ? '0'+(date.getDate()) : date.getDate()) + ' ';
-    var h = (date.getHours() < 10 ? '0'+(date.getHours()) : date.getHours()) + ':';
-    var m = (date.getMinutes() < 10 ? '0'+(date.getMinutes()) : date.getMinutes()) + ':';
-    var s = (date.getSeconds() < 10 ? '0'+(date.getSeconds()) : date.getSeconds());
-    return Y+M+D+h+m+s;
+    var M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-';
+    var D = (date.getDate() < 10 ? '0' + (date.getDate()) : date.getDate()) + ' ';
+    var h = (date.getHours() < 10 ? '0' + (date.getHours()) : date.getHours()) + ':';
+    var m = (date.getMinutes() < 10 ? '0' + (date.getMinutes()) : date.getMinutes()) + ':';
+    var s = (date.getSeconds() < 10 ? '0' + (date.getSeconds()) : date.getSeconds());
+    return Y + M + D + h + m + s;
+}
+
+function destroyCookie(e) {
+    axios({
+        method: 'POST',
+        url: '/logout'
+    })
+    localStorage.clear()
 }

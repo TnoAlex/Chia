@@ -215,8 +215,9 @@
 import topNav from './topNav'
 import leftNav from './leftNav'
 import util from '../../utils/commonUtil'
-import cookies from "vue-cookies";
+
 import axios from "axios";
+
 export default {
   components: {
     TopNav: topNav,
@@ -248,41 +249,43 @@ export default {
       enrollInfo:{
         options:[{value: 0, label: '自费'},{value: 1, label: '免费'}],
         freeOrOwn:'',
-        extra:''
+        extra: ''
       }
     }
   },
   name: "index.vue",
   mounted() {
-    this.userInfo = cookies.get('userInfo')
+    window.addEventListener('beforeunload', e => util.destroyCookie(e))
+    this.userInfo = this.$cookies.get('userInfo')
     this.getCspInfo()
+  },
+  unmounted() {
+    window.removeEventListener('beforeunload', e => util.destroyCookie(e))
   },
   methods: {
 
-    async createCsp()
-    {
-      if(this.createCspInfo.endTime===''||this.createCspInfo.startTime===''
-          ||this.createCspInfo.number==='' ||this.createCspInfo.gtScore==='')
-      {
-        util.messageBox('请将信息填写完整','warning')
+    async createCsp() {
+      if (this.createCspInfo.endTime === '' || this.createCspInfo.startTime === ''
+          || this.createCspInfo.number === '' || this.createCspInfo.gtScore === '') {
+        util.messageBox('请将信息填写完整', 'warning')
         return
       }
       let loading = util.loadingWait('正在发布中。。。')
       await util.delay(100)
       axios({
-        url:'teacher/publish/csp',
-        method:'POST',
-        headers:{'content-type':'application/json'},
-        data:{
-          name:this.createCspInfo.number,
+        url: 'teacher/publish/csp',
+        method: 'POST',
+        headers: {'content-type': 'application/json'},
+        data: {
+          name: this.createCspInfo.number,
           startTime: util.timeStampToTime(new Date(this.createCspInfo.startTime).getTime()),
-          endTime:util.timeStampToTime(new Date(this.createCspInfo.endTime).getTime()),
-          freeThreshold:this.createCspInfo.gtScore
+          endTime: util.timeStampToTime(new Date(this.createCspInfo.endTime).getTime()),
+          freeThreshold: this.createCspInfo.gtScore
         }
-      }).then(async (res)=>{
+      }).then(async () => {
         await util.delay(100)
         loading.close()
-        util.messageBox('发布成功','success')
+        util.messageBox('发布成功', 'success')
         await this.getCspInfo()
         this.createCspVisible = false
       }).catch(async()=>{
@@ -331,20 +334,20 @@ export default {
       console.log(new Date(this.editCspInfo.startTime).getTime())
       await util.delay(100)
       axios({
-        method:'POST',
-        url:`teacher/publish/modify`,
-        headers:{'content-type':'application/json'},
-        data:{
-          id:this.editCspInfo.id,
-          name:this.editCspInfo.number,
-          startTime:util.timeStampToTime(new Date(this.editCspInfo.startTime).getTime()),
-          endTime:util.timeStampToTime(new Date(this.editCspInfo.endTime).getTime()),
-          freeThreshold:this.editCspInfo.gtScore
+        method: 'POST',
+        url: `teacher/publish/modify`,
+        headers: {'content-type': 'application/json'},
+        data: {
+          id: this.editCspInfo.id,
+          name: this.editCspInfo.number,
+          startTime: util.timeStampToTime(new Date(this.editCspInfo.startTime).getTime()),
+          endTime: util.timeStampToTime(new Date(this.editCspInfo.endTime).getTime()),
+          freeThreshold: this.editCspInfo.gtScore
         }
-      }).then(async (res)=>{
+      }).then(async () => {
         await util.delay(100)
         loading.close()
-        util.messageBox('修改成功','success')
+        util.messageBox('修改成功', 'success')
         await this.getCspInfo()
         this.editCspVisible = false
       }).catch(async ()=>{
@@ -447,20 +450,19 @@ export default {
         if(res.data.code===403)
         {
           util.messageBox('您已经报名成功，请勿多次报名，','warning')
-        }else
-        {
-          util.messageBox('报名成功','success')
-          this.enrollInfo.extra=''
-          this.enrollInfo.freeOrOwn=''
+        } else {
+          util.messageBox('报名成功', 'success')
+          this.enrollInfo.extra = ''
+          this.enrollInfo.freeOrOwn = ''
           this.enrollVisible = false
           await this.getCspInfo()
         }
-        this.enrollInfo.extra=''
-        this.enrollInfo.freeOrOwn=''
-      }).catch(async (err) => {
+        this.enrollInfo.extra = ''
+        this.enrollInfo.freeOrOwn = ''
+      }).catch(async () => {
         await util.delay(100)
         loading.close()
-        util.messageBox('报名失败','error')
+        util.messageBox('报名失败', 'error')
       })
     },
     async getCspInfo(){

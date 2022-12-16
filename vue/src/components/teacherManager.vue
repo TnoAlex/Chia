@@ -30,15 +30,6 @@
               <div class="card">
                 <div class="card-body">
 
-
-
-
-
-
-
-
-
-
                   <div class="row mb-3">
                     <div class="col-sm-5">
                       <span style="width: 150px" @click="addInfoDialogVisible = true"  class="btn btn-danger mb-2"><i class="mdi mdi-plus-circle me-2"></i> 添加教师账号</span>
@@ -79,11 +70,6 @@
                             </span>
                           </template>
                         </el-dialog>
-
-
-
-
-
                       </span>
                         </template>
                       </el-dialog>
@@ -126,9 +112,10 @@
 <script>
 import topNav from "@/components/index/topNav";
 import leftNav from "@/components/index/leftNav";
-import {Search,Delete,Edit } from '@element-plus/icons-vue';
+import {Delete, Edit, Search} from '@element-plus/icons-vue';
 import util from '@/utils/commonUtil'
 import axios from "axios";
+
 export default {
   name: "teacherMagager.vue",
   components:{
@@ -276,7 +263,11 @@ export default {
     },
   },
   mounted() {
-    this.getInitTableData(1,5)
+    this.getInitTableData(1, 5)
+    window.addEventListener('beforeunload', e => util.destroyCookie(e))
+  },
+  unmounted() {
+    window.removeEventListener('beforeunload', e => util.destroyCookie(e))
   }
 }
 </script>

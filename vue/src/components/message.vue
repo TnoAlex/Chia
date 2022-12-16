@@ -35,7 +35,8 @@
                         <span style="margin-top: 0!important; display: inline-block;justify-content: center;align-items: center;">
                           <el-button size="normal" type="success" @click="getInitMessages(1,this.pageSize)">学生信息</el-button>
                           <el-button v-show="userInfo.type===1" size="normal" type="success" @click="getSystemMessages(1,this.pageSize)">系统信息</el-button>
-                          <el-button v-show="userInfo.type===0" size="normal" type="success" @click="sendToTeacherInfo.sendToTeacherVisible = true" >给老师发送消息</el-button>
+                          <el-button v-show="userInfo.type===0" size="normal" type="success"
+                                     @click="sendToTeacherInfo.sendToTeacherVisible = true">发给老师</el-button>
                                <el-dialog
                                    v-model="sendToTeacherInfo.sendToTeacherVisible"
                                    title="消息发送"
@@ -169,10 +170,10 @@
   <script>
   import topNav from "@/components/index/topNav";
   import leftNav from "@/components/index/leftNav";
-  import {Search,Delete,Edit } from '@element-plus/icons-vue';
+  import {Delete, Edit, Search} from '@element-plus/icons-vue';
   import util from '@/utils/commonUtil'
   import axios from "axios";
-  import cookies from 'vue-cookies'
+
   export default {
     name: "message.vue",
     components:{
@@ -211,7 +212,7 @@
     },
     created()
     {
-      this.userInfo = cookies.get('userInfo')
+      this.userInfo = this.$cookies.get('userInfo')
     },
     methods:{
       rightClick(row,column,event)
@@ -279,18 +280,18 @@
 
         let loading = util.loadingWait('消息发送中。。。',"table_studentList")
           await util.delay(50)
-          axios({
-            method:'POST',
-            url:`message/post`,
-            data:{
-              reciId:this.currentClickRow.sendFromId,
-              content:this.deliContent
-            }
-          }).then(async (res)=>{
-            await util.delay(100)
-            loading.close()
-            util.messageBox('发送成功','success')
-          }).catch(async (err)=>{
+        axios({
+          method: 'POST',
+          url: `message/post`,
+          data: {
+            reciId: this.currentClickRow.sendFromId,
+            content: this.deliContent
+          }
+        }).then(async () => {
+          await util.delay(100)
+          loading.close()
+          util.messageBox('发送成功', 'success')
+        }).catch(async (err)=>{
             await util.delay(100)
             loading.close()
             util.print(err)
@@ -302,15 +303,15 @@
         let loading = util.loadingWait('删除中。。。',"table_studentList")
         await util.delay(50)
         await axios({
-          url:`message/delete`,
-          headers:{'content-type':'application/json'},
-          method:'POST',
-          data:messageIdList
-        }).then(async (res)=>{
-          util.messageBox('删除成功','success')
+          url: `message/delete`,
+          headers: {'content-type': 'application/json'},
+          method: 'POST',
+          data: messageIdList
+        }).then(async () => {
+          util.messageBox('删除成功', 'success')
           await util.delay(50)
           loading.close()
-          await this.getInitMessages(this.currentPage,this.pageSize)
+          await this.getInitMessages(this.currentPage, this.pageSize)
         }).catch(async ()=>{
           await util.delay(50)
           loading.close()
@@ -323,18 +324,18 @@
         let loading = util.loadingWait('标记中。。。',"table_studentList")
         await util.delay(100)
         await axios({
-          url:`message/read`,
-          method:'POST',
-          headers:{'content-type':'application/json'},
-          data:messageIdList
-        }).then(async (res)=>{
+          url: `message/read`,
+          method: 'POST',
+          headers: {'content-type': 'application/json'},
+          data: messageIdList
+        }).then(async () => {
           await util.delay(100)
           loading.close()
-          util.messageBox('标记成功','success')
+          util.messageBox('标记成功', 'success')
           await this.getInitMessages(this.currentPage, this.pageSize)
-        }).catch(async (err)=>{
+        }).catch(async () => {
           await util.delay(100)
-          util.messageBox('标记失败','error')
+          util.messageBox('标记失败', 'error')
         })
       },
       async getInitMessages(pageNum,pageSize)
@@ -361,19 +362,19 @@
               status:   element.status===0?'未读':'已读',
               content:  element.content,
               sendFrom: element.sendFrom,
-              sendFromId:element.sendFromId,
-              sendTo:element.sendTo,
-              sendToId:element.sendToId,
-              id:element.id,
-              index:index
+              sendFromId: element.sendFromId,
+              sendTo: element.sendTo,
+              sendToId: element.sendToId,
+              id: element.id,
+              index: index
             })
           })
           this.messagesTableList = messages
-          util.messageBox('获取消息成功','success')
-        }).catch(async (err)=>{
+          util.messageBox('获取消息成功', 'success')
+        }).catch(async () => {
           await util.delay(100)
           loading.close()
-          util.messageBox('获取失败','error')
+          util.messageBox('获取失败', 'error')
         })
       },
       async handleSizeChange(size)
@@ -460,21 +461,20 @@
         let loading = util.loadingWait('发送中。。。')
         await util.delay(100)
         await axios({
-          url:`message/post`,
-          method:'post',
-          headers:{'content-type':'application/json'},
-          data:{
-            reciId: this.sendToTeacherInfo.
-                teacherList[this.sendToTeacherInfo.teacherSelectIndex].id,
-            content:this.sendToTeacherInfo.sendText
+          url: `message/post`,
+          method: 'post',
+          headers: {'content-type': 'application/json'},
+          data: {
+            reciId: this.sendToTeacherInfo.teacherList[this.sendToTeacherInfo.teacherSelectIndex].id,
+            content: this.sendToTeacherInfo.sendText
           }
-        }).then(async (res) => {
+        }).then(async () => {
           await util.delay(100)
           loading.close()
           util.messageBox('发送成功', 'success')
           this.sendToTeacherInfo.sendText = ''
           this.sendToTeacherInfo.teacherSelectIndex = ''
-        }).catch(async (err) => {
+        }).catch(async () => {
           await util.delay(100)
           loading.close()
           util.messageBox('发送失败', 'error')
@@ -506,24 +506,31 @@
           console.log(err)
           await util.delay(100)
           loading.close()
-          util.messageBox('获取系统消息失败','error')
+          util.messageBox('获取系统消息失败', 'error')
         })
       }
 
     },
-    mounted()
-    {
+    mounted() {
+      window.addEventListener('beforeunload', e => util.destroyCookie(e))
       this.getInitMessages(1, 5)
       this.getInitTeacherList()
+    },
+    unmounted() {
+      window.removeEventListener('beforeunload', e => util.destroyCookie(e))
     }
   }
   </script>
   <style scoped>
+  @import "../assets/css/index_css/app-saas.min.css";
+  @import "../assets/css/index_css/icons.min.css";
+
   .menuDiv {
     display: none;
     position: absolute;
     width: 120px;
   }
+
   .menuDiv .menuUl {
 
     height: auto;
@@ -540,7 +547,6 @@
   cursor:pointer;
   background-color: rgb(246, 246, 246);
 }
-  @import "../assets/css/index_css/icons.min.css";
-  @import "../assets/css/index_css/app-saas.min.css";
+
   /*@import "../../assets/css/index_css/jquery-jvectormap-1.2.2.css";*/
   </style>

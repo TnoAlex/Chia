@@ -1,19 +1,15 @@
 <template>
-  <div  class="leftside-menu">
+  <div class="leftside-menu">
     <!-- Logo Light -->
-    <a href="" class="logo logo-light">
-                    <span class="logo-lg" style="height: 100%;width: 100%;">
-                        <img src="../../assets/picture/csp_icon.png" style="width: 85%;height: 85%;"  alt="logo" height="22">
-                    </span>
-    </a>
-    <!-- Logo Dark -->
-    <a href="" class="logo logo-dark">
-                    <span class="logo-lg">
-                        <img src="../../assets/picture/csp_icon.png" style="width: 85%;height: 85%;"  alt="dark logo" height="22">
-                    </span>
-    </a>
+    <div class="d-flex justify-content-center">
+      <router-link class="logo d-flex align-items-center w-auto" style="position: relative;margin-bottom: 40px" to="/">
+        <img alt="" src="@/assets/img/logo.png">
+        <span class="d-none d-lg-block">NiceCSP</span>
+      </router-link>
+    </div>
     <!-- Sidebar Hover Menu Toggle Button -->
-    <button type="button" class="btn button-sm-hover p-0" data-bs-toggle="tooltip" data-bs-placement="right" title="Show Full Sidebar">
+    <button type="button" class="btn button-sm-hover p-0" data-bs-toggle="tooltip" data-bs-placement="right"
+            title="Show Full Sidebar">
       <i class="ri-checkbox-blank-circle-line align-middle"></i>
     </button>
     <!-- Sidebar -left -->
@@ -21,41 +17,31 @@
       <ul class="side-nav">
         <li class="side-nav-title side-nav-item">导航栏</li>
         <li class="side-nav-item">
-          <a data-bs-toggle="collapse" href="#sidebarDashboards" aria-expanded="false" aria-controls="sidebarDashboards" class="side-nav-link">
-            <i class="uil-home-alt"></i>
-            <span class="badge bg-success float-end">2</span>
+          <router-link :to="{path:'/index'}" class="side-nav-link">
+            <i class="uil-home"></i>
             <span> 主页 </span>
-          </a>
-          <div class="collapse" id="sidebarDashboards">
-            <ul class="side-nav-second-level">
-              <li>
-                <router-link :to="{path:'/index'}">回到主页</router-link>
-              </li>
-
-              <li>
-                <router-link :to="{path:'/message'}">通知</router-link>
-              </li>
-            </ul>
-          </div>
+          </router-link>
+          <router-link :to="{path:'/message'}" class="side-nav-link">
+            <i class="uil-message">
+            </i>
+            <span> 通知 </span>
+          </router-link>
         </li>
         <li v-show="userInfo.type===1"
             class="side-nav-title side-nav-item">学生教师信息管理</li>
         <li class="side-nav-item" v-if="userInfo.type===1">
           <router-link :to="{path:'/teacherManager'}" class="side-nav-link">
-            <i class="uil-table">
-            </i>
+            <i class="bi bi-person-badge"></i>
             <span> 教师账号管理 </span>
           </router-link>
 
           <router-link :to="{path:'/studentList'}" class="side-nav-link">
-            <i class="uil-table">
-            </i>
+            <i class="bi bi-person-video2"></i>
             <span> 学生信息表 </span>
           </router-link>
 
           <router-link :to="{path:'/officialEnroll'}" class="side-nav-link">
-            <i class="uil-table">
-            </i>
+            <i class="bi bi-calendar3-week"></i>
             <span> 正式报名比对</span>
           </router-link>
         </li>
@@ -70,12 +56,12 @@ import {js1} from '../../assets/js/hyper-config'
 import {js8} from '../../assets/js/moment.min'
 import {js9} from '../../assets/js/vendor.min'
 import {js3} from '../../assets/js/apexcharts.min'
-import cookies from "vue-cookies";
+import "bootstrap-icons/font/bootstrap-icons.css"
 
 export default {
   name: "leftBar.vue",
-  data(){
-    return{
+  data() {
+    return {
       util,
       js1,
       js8,
@@ -84,11 +70,12 @@ export default {
       userInfo: {}
     }
   },
-  created() {
-    this.userInfo = cookies.get('userInfo')
+  beforeMount() {
+    this.userInfo = this.$cookies.get('userInfo')
   }
 }
 </script>
 <style scoped src="../../assets/css/index_css/icons.min.css"></style>
 <style scoped src="../../assets/css/index_css/app-saas.min.css"></style>
-<style scoped src="../../assets/css/index_css/jquery-jvectormap-1.2.2.css"></style>
+<style scoped src="../../assets/css/forget_password_style.css">
+</style>

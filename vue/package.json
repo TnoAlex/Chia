@@ -12,6 +12,8 @@
     "axios": "^1.2.0",
     "bootstrap": "^5.2.3",
     "bootstrap-daterangepicker": "^3.1.0",
+    "bootstrap-icons": "^1.10.2",
+    "bootstrap-vue": "^2.23.1",
     "core-js": "^3.8.3",
     "element-plus": "^2.2.22",
     "gsap": "^3.11.3",

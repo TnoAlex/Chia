@@ -179,7 +179,6 @@ import topNav from "@/components/index/topNav";
 import leftNav from "@/components/index/leftNav";
 
 import util from '../utils/commonUtil'
-import cookies from "vue-cookies";
 
 import '../utils/commonUtil'
 import '../assets/js/hyper-config'
@@ -197,7 +196,7 @@ export default {
     LeftNav: leftNav
   },
   beforeMount() {
-    this.userInfo = cookies.get('userInfo')
+    this.userInfo = this.$cookies.get('userInfo')
   },
   data(){
     return {
@@ -303,12 +302,18 @@ export default {
           }
 
 
-        },1000)
+        }, 1000)
 
       }
 
     }
 
+  },
+  mounted() {
+    window.addEventListener('beforeunload', e => util.destroyCookie(e))
+  },
+  unmounted() {
+    window.removeEventListener('beforeunload', e => util.destroyCookie(e))
   }
 
 }
