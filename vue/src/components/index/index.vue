@@ -270,7 +270,7 @@ export default {
         util.messageBox('请将信息填写完整', 'warning')
         return
       }
-      let loading = util.loadingWait('正在发布中。。。')
+      let loading = util.loadingWait('正在发布中...')
       await util.delay(100)
       axios({
         url: 'teacher/publish/csp',
@@ -296,7 +296,7 @@ export default {
       })
     },
     async deleteCspInfo(pid){
-      let loading = util.loadingWait('删除中。。。')
+      let loading = util.loadingWait('删除中...')
       await util.delay(100)
       axios({
         url:`teacher/publish/delete/${pid}`,
@@ -329,9 +329,7 @@ export default {
         util.messageBox('请将信息填写完整','warning')
         return
       }
-      let loading = util.loadingWait('修改中。。。')
-      console.log(this.editCspInfo)
-      console.log(new Date(this.editCspInfo.startTime).getTime())
+      let loading = util.loadingWait('修改中...')
       await util.delay(100)
       axios({
         method: 'POST',
@@ -433,7 +431,7 @@ export default {
         util.messageBox('您的免费次数不足只能选择自费')
         return
       }
-      let loading = util.loadingWait('报名中。。。')
+      let loading = util.loadingWait('报名中...')
       await util.delay(50)
       await axios({
         method:'POST',
@@ -466,14 +464,13 @@ export default {
       })
     },
     async getCspInfo(){
-      let loading = util.loadingWait('拉取CSP信息中。。。')
+      let loading = util.loadingWait('拉取CSP信息中...')
       await util.delay(200)
       await this.$axios.get('csp_info/pre')
           .then(async (res) => {
             await util.delay(100)
             loading.close()
             util.messageBox('CSP信息拉取成功','success')
-            console.log(res)
             this.cspInfoList = res.data.data
           })
           .catch(async () => {

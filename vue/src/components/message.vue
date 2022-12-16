@@ -420,7 +420,6 @@
         await util.delay(50)
         await axios.get(url
         ).then(async (res) => {
-          console.log(res)
           await util.delay(100)
           loading.close()
           if(res.data.data.length===0)
@@ -503,7 +502,6 @@
             util.messageBox('获取系统消息成功','success')
           }
         }).catch(async (err)=>{
-          console.log(err)
           await util.delay(100)
           loading.close()
           util.messageBox('获取系统消息失败', 'error')

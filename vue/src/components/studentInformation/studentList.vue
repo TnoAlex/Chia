@@ -240,10 +240,10 @@
 <script>
 import topNav from "@/components/index/topNav";
 import leftNav from "@/components/index/leftNav";
-import {Search,Delete,Edit } from '@element-plus/icons-vue';
+import {Delete, Edit, Search} from '@element-plus/icons-vue';
 import util from '@/utils/commonUtil'
 import axios from "axios";
-import { forEach } from "lodash";
+
 export default {
   name: "studentList.vue",
   components:{
@@ -359,20 +359,19 @@ export default {
           let loading = util.loadingWait('删除中')
           await util.delay(100)
           await axios({
-            url:url,
-            headers:{'content-type':'application/x-www-form-urlencoded;charset=UTF-8'},
-            method:'POST'
-          }).then((res)=>{
+            url: url,
+            headers: {'content-type': 'application/x-www-form-urlencoded;charset=UTF-8'},
+            method: 'POST'
+          }).then(() => {
             loading.close()
             util.delay(100)
-            util.messageBox('删除成功','success')
+            util.messageBox('删除成功', 'success')
             this.bulkDeletionVisible = false
-            this.getInitTableData(1,this.pageSize)
-          }).catch((err)=>{
+            this.getInitTableData(1, this.pageSize)
+          }).catch(() => {
             loading.close()
             util.delay(100)
-            console.log(err)
-            util.messageBox('删除失败','error')
+            util.messageBox('删除失败', 'error')
           })
         }
       }
@@ -414,7 +413,6 @@ export default {
       if(url==='')
       {
         await this.getInitTableData(1,this.pageSize)
-        console.log("ddd")
         return
       }
       else
@@ -625,7 +623,6 @@ export default {
       else
       {
         await this.otherSearch(this.currentPage,size)
-        console.log('size更新')
       }
     },
      async handleCurrentChange(index)

@@ -279,7 +279,6 @@
             enrollStatusIndex = i
           }
         }
-        console.log(studentIdNumberIndex,enrollTypeIndex,enrollStatusIndex)
         let dataArray  = []
         for(let i = 0 ;i<data.length;i++)
         {
@@ -356,7 +355,6 @@
         loadingInstance.close()
         util.messageBox('解析成功','success')
         this.$refs.uploadScore.clearFiles()
-        console.log(dataArray)
         await this.uploadScoreExcelInfo(dataArray)
       },
       async uploadScoreExcelInfo(dataArray)
@@ -380,19 +378,15 @@
       },
       async uploadExcelInfo(dataArray)
       {
-        console.log(dataArray)
         let loading = util.loadingWait('上传信息中。。。')
         await util.delay(50)
         let upFlag = 1
         await axios({
-          headers: {'content-type':'application/json'},
-          method:'post',
-          url:'teacher/upload/regList',
-          data:dataArray
-        }).then((res)=>{
-          console.log(res)
-        }).catch((err)=>{
-          console.log(err)
+          headers: {'content-type': 'application/json'},
+          method: 'post',
+          url: 'teacher/upload/regList',
+          data: dataArray
+        }).catch(() => {
           upFlag = 0
         })
         await util.delay(100)
@@ -415,7 +409,6 @@
           util.messageBox('请先选择届次','warning')
           return
         }
-        console.log(this.cspNameSelectList[this.nowCspSelect].id)
         let loading = util.loadingWait('发送中')
         await util.delay(100)
         await axios({
@@ -426,12 +419,10 @@
           loading.close()
           await util.delay(100)
           util.messageBox('发送成功','success')
-          console.log(res)
         }).catch(async (err)=>{
           loading.close()
           await util.delay(100)
           util.messageBox('发送失败','error')
-          console.log(err)
         })
 
       },
@@ -448,20 +439,19 @@
           method:'GET',
           headers:{'content-type':'application/x-www-form-urlencoded;charset=UTF-8'},
           url:`teacher/query/absent/official/${this.cspNameSelectList[this.nowCspSelect].cspId}/${pageNum}/${pageSize}`,
-        }).then(async (res)=>{
+        }).then(async (res) => {
           loading.close()
           await util.delay(100)
-          util.messageBox('查询成功','success')
-          if(res.data.data.length>0)
-          {
+          util.messageBox('查询成功', 'success')
+          if (res.data.data.length > 0) {
             this.absenceTableList = res.data.data
             this.absenceTotalNum = res.data.data[0].totalSize
 
           }
-        }).catch(async (err)=>{
+        }).catch(async () => {
           loading.close()
           await util.delay(100)
-          util.messageBox('查询失败','error')
+          util.messageBox('查询失败', 'error')
         })
       },
       async getCspInfo(){
@@ -485,7 +475,6 @@
               }
               this.cspInfoList = res.data.data
             }
-            console.log(this.cspInfoList)
           })
           .catch(async () => {
             await util.delay(100)
