@@ -43,27 +43,39 @@ class ChiaApplication : ApplicationRunner {
             Log.info(this.javaClass, "邮件模块初始化成功", null)
             val accounts = teacherMapper.selectList(null)
             if (accounts.isNullOrEmpty()) {
-                val scanner = Scanner(System.`in`)
-                Log.info(javaClass, "请输入初始化教师姓名", null)
-                val teacherName = scanner.next()
-                Log.info(javaClass, "请输入此用户密码", null)
-                val teacherPassword = scanner.next()
-                Log.info(javaClass, "请输入此用户邮箱", null)
-                val teacherEmail = scanner.next()
-                teacherMapper.insert(
-                    Teacher(
-                        null,
-                        teacherName,
-                        BCryptPasswordEncoder().encode(teacherPassword),
-                        teacherEmail,
-                        null
+                if (!args.containsOption("in") || !args.containsOption("ip") || !args.containsOption("ie")) {
+                    Log.error(this.javaClass, "初始化错误，参数不足", null)
+                    SpringApplication.exit(applicationContext)
+                } else {
+                    Log.info(javaClass, "初始化教师姓名", null)
+                    val teacherName = args.getOptionValues("in")[0]
+                    Log.info(javaClass, "初始化此用户密码", null)
+                    val teacherPassword = args.getOptionValues("ip")[0]
+                    Log.info(javaClass, "初始化此用户邮箱", null)
+                    val teacherEmail = args.getOptionValues("ie")[0]
+                    teacherMapper.insert(
+                        Teacher(
+                            null,
+                            teacherName,
+                            BCryptPasswordEncoder().encode(teacherPassword),
+                            teacherEmail,
+                            null
+                        )
                     )
-                )
+                }
             }
             val systemAccount =
                 teacherMapper.selectOne(KtQueryWrapper(Teacher::class.java).eq(Teacher::id, "System"))
             if (systemAccount == null) {
-                teacherMapper.insert(Teacher("System", "System", UUID.randomUUID().toString(), "System", null))
+                teacherMapper.insert(
+                    Teacher(
+                        "System",
+                        "System",
+                        BCryptPasswordEncoder().encode(UUID.randomUUID().toString()),
+                        "System",
+                        null
+                    )
+                )
             }
             Log.info(this.javaClass, "数据库初始化成功", null)
             Log.info(javaClass, "---------------------------------初始化进程完成-------------------------", null)

@@ -1,0 +1,91 @@
+version: '3.4'
+
+services:
+  chia_mysql:
+    image: mysql:8.0.31
+    container_name: chia_mysql
+    environment:
+      TZ: Asia/Shanghai
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: chia
+      MYSQL_USER: chia
+      MYSQL_PASSWORD: Chia
+    healthcheck:
+      test: [ "CMD", "mysqladmin","ping","-h", "localhost" ]
+      interval: 3s
+      timeout: 5s
+      retries: 30
+      start_period: 40s
+    expose:
+      - 3306
+    ports:
+      - 3306:3306
+    networks:
+      - chia-network
+    volumes:
+      - ./data/mysql/data:/var/lib/mysql/
+      - ./data/mysql/conf:/etc/mysql/conf.d/
+      - ./data/mysql/init:/docker-entrypoint-initdb.d
+    command:
+      --default-authentication-plugin=mysql_native_password
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_general_ci
+      --explicit_defaults_for_timestamp=true
+      --lower_case_table_names=1
+
+  chia_serve:
+    build:
+      context: ./serve
+      dockerfile: Dockerfile
+    container_name: chia_serve
+    ports:
+      - 8086:8086
+    volumes:
+      - ./data/serve/config:/usr/chia/config
+      - ./data/serve/logs:/usr/chia/logs
+    environment:
+      IN: test
+      IP: 123456
+      IE: test@123.com
+    healthcheck:
+      test: [ "CMD", "curl","http://localhost:8086/login" ]
+      interval: 3s
+      timeout: 5s
+      retries: 30
+      start_period: 40s
+    links:
+      - chia_mysql
+    networks:
+      - chia-network
+    stdin_open: true
+    tty: true
+    depends_on:
+      chia_mysql:
+        condition: service_healthy
+  
+  chia_web:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    container_name: chia_web
+    ports:
+      - 80:80
+    links:
+      - chia_serve
+    networks:
+      - chia-network
+    volumes:
+      - ./data/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./data/nginx/conf.d:/etc/nginx/conf.d
+      - ./data/nginx/logs:/var/log/nginx
+    stdin_open: true
+    tty: true
+    depends_on:
+      chia_serve:
+        condition: service_healthy
+
+networks:
+  chia-network:
+    driver: bridge
+
+

@@ -13,7 +13,7 @@ class LogoutSuccessHandler : LogoutSuccessHandler {
     override fun onLogoutSuccess(
         request: HttpServletRequest,
         response: HttpServletResponse,
-        authentication: Authentication
+        authentication: Authentication?
     ) {
         response.writer.write(Gson().toJson(Result.success("登出成功")))
     }
