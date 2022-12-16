@@ -206,6 +206,36 @@ class RegistrationServiceImp : ServiceImpl<RegistrationMapper, Registration>(), 
         }
     }
 
+    override fun queryWrongType(cid: String, pageNum: String, pageSize: String): Result {
+        try {
+            val page = Page<StudentListItem>(pageNum.toLong(), pageSize.toLong())
+            val res = baseMapper.queryWrongType(page, cid)
+            val total = baseMapper.queryWrongTypeNumber(cid)
+            res.records.forEach {
+                it.totalSize = total
+            }
+            return Result.success(res.records)
+        } catch (e: Exception) {
+            Log.error(javaClass, this::queryWrongType.name + "-> Query Exception: " + e.message, e.stackTrace)
+            throw SqlException("Query Exception", this::queryWrongType.name)
+        }
+    }
+
+    override fun queryOfficialList(cid: String, pageNum: String, pageSize: String): Result {
+        try {
+            val page = Page<StudentListItem>(pageNum.toLong(), pageSize.toLong())
+            val res = baseMapper.queryOfficialList(page, cid)
+            val total = baseMapper.queryOfficialNumber(cid)
+            res.records.forEach {
+                it.totalSize = total
+            }
+            return Result.success(res.records)
+        } catch (e: Exception) {
+            Log.error(javaClass, this::queryOfficialList.name + "-> Query Exception: " + e.message, e.stackTrace)
+            throw SqlException("Query Exception", this::queryOfficialList.name)
+        }
+    }
+
     private fun arrayToString(list: List<String>): String {
         val builder = StringBuilder()
         list.forEach {

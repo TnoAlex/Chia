@@ -1,6 +1,7 @@
 package org.summer.chia.service.imp
 
 import com.baomidou.mybatisplus.extension.kotlin.KtQueryWrapper
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Service
@@ -9,6 +10,7 @@ import org.summer.chia.adapter.UserDetailsAdapter
 import org.summer.chia.exception.SqlException
 import org.summer.chia.mapper.PreRegistrationMapper
 import org.summer.chia.pojo.ao.Result
+import org.summer.chia.pojo.ao.StudentListItem
 import org.summer.chia.pojo.dto.PreRegistration
 import org.summer.chia.pojo.dto.Student
 import org.summer.chia.service.PreRegistrationService
@@ -61,6 +63,25 @@ class PreRegistrationServiceImp : ServiceImpl<PreRegistrationMapper, PreRegistra
                 e.stackTrace
             )
             throw SqlException("An Exception Occurs during query or delete", this::doCancelPreRegistration.name)
+        }
+    }
+
+    override fun doQueryList(cid: String, pageNum: String, pageSize: String): Result {
+        try {
+            val page = Page<StudentListItem>(pageNum.toLong(), pageSize.toLong())
+            val res = baseMapper.queryList(page, cid)
+            val totalSize = baseMapper.totalNum(cid)
+            res.records.forEach {
+                it.totalSize = totalSize
+            }
+            return Result.success(res.records)
+        } catch (e: Exception) {
+            Log.error(
+                this.javaClass,
+                this::doQueryList.name + "-> An Exception Occurs during query or delete: " + e.message,
+                e.stackTrace
+            )
+            throw SqlException("An Exception Occurs during query", this::doQueryList.name)
         }
     }
 }

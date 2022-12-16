@@ -9,4 +9,5 @@ interface PreRegistrationService : IService<PreRegistration> {
 
     fun doPreRegistration(obj: PreRegistration, user: UserDetails): Result
     fun doCancelPreRegistration(cid: String, user: UserDetails): Result
+    fun doQueryList(cid: String, pageNum: String, pageSize: String): Result
 }

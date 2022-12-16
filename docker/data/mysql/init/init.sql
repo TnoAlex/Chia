@@ -106,7 +106,7 @@ create definer = root@localhost trigger reg_auto_max_i
     on registration
     for each row
     UPDATE csp_info
-    SET csp_info.score_h = (SELECT MAX(registration.score) FROM registration)
+    SET csp_info.score_h = (SELECT MAX(score) FROM registration)
     WHERE csp_info.id = new.csp_id;
 
 create definer = root@localhost trigger reg_auto_max_u
@@ -114,7 +114,7 @@ create definer = root@localhost trigger reg_auto_max_u
     on registration
     for each row
     UPDATE csp_info
-    SET csp_info.score_h = (SELECT MAX(registration.score) FROM registration)
+    SET csp_info.score_h = (SELECT MAX(score) FROM registration)
     WHERE csp_info.id = new.csp_id;
 
 create definer = root@localhost trigger reg_auto_mean_i
@@ -148,6 +148,22 @@ create definer = root@localhost trigger reg_num_i
     UPDATE csp_info
     SET csp_info.quantity = csp_info.quantity + 1
     WHERE csp_info.id = new.csp_id;
+
+create definer = root@localhost trigger student_auto_max_i
+    after insert
+    on registration
+    for each row
+    UPDATE student as s
+    SET s.max_score = IF((SELECT score FROM registration as r WHERE r.student_id = s.id) > s.max_score,
+                         (SELECT score FROM registration as r WHERE r.student_id = s.id), s.max_score);
+
+create definer = root@localhost trigger student_auto_max_u
+    after update
+    on registration
+    for each row
+    UPDATE student as s
+    SET s.max_score = IF((SELECT score FROM registration as r WHERE r.student_id = s.id) > s.max_score,
+                         (SELECT score FROM registration as r WHERE r.student_id = s.id), s.max_score);
 
 create table if not exists teacher
 (

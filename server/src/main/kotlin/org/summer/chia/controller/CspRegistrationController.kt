@@ -31,6 +31,24 @@ class CspRegistrationController {
         return registrationService.doQueryAbsentOfficialRegistration(cid, pageNum, pageSize)
     }
 
+    @GetMapping("/teacher/query/wrong/{cid}/{pageNum}/{pageSize}")
+    fun queryWrongType(
+        @PathVariable cid: String,
+        @PathVariable pageNum: String,
+        @PathVariable pageSize: String
+    ): Result {
+        return registrationService.queryWrongType(cid, pageNum, pageSize)
+    }
+
+    @GetMapping("/teacher/query/official/{cid}/{pageNum}/{pageSize}")
+    fun queryOfficialList(
+        @PathVariable cid: String,
+        @PathVariable pageNum: String,
+        @PathVariable pageSize: String
+    ): Result {
+        return registrationService.queryOfficialList(cid, pageNum, pageSize)
+    }
+
     @GetMapping("/teacher/query/absent/exam/{cid}/{pageNum}/{pageSize}")
     fun queryAbsentExam(
         @PathVariable cid: String,
@@ -39,6 +57,7 @@ class CspRegistrationController {
     ): Result {
         return registrationService.doQueryAbsentExam(cid, pageNum, pageSize)
     }
+
 
     @PostMapping("/teacher/notice/official/{cid}")
     fun noticeStudent(

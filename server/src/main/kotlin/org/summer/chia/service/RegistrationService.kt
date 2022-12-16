@@ -12,4 +12,6 @@ interface RegistrationService : IService<Registration> {
     fun doQueryAbsentOfficialRegistration(cid: String, pageNum: String, pageSize: String): Result
     fun doQueryAbsentExam(cid: String, pageNum: String, pageSize: String): Result
     fun noticeStudent(cid: String, user: UserDetails): Result
+    fun queryWrongType(cid: String, pageNum: String, pageSize: String): Result
+    fun queryOfficialList(cid: String, pageNum: String, pageSize: String): Result
 }
