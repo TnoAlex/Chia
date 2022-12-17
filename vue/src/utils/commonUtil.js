@@ -1,5 +1,6 @@
 import {ElLoading, ElMessage} from "element-plus";
 import axios from "axios";
+import xlsx from "xlsx";
 
 const userInfo = {
     type: 0,
@@ -22,7 +23,8 @@ export default {
     judgeInputIsNumber,
     preFixInteger,
     timeStampToTime,
-    destroyCookie
+    destroyCookie,
+    exportExcel
 }
 function messageBox(msg, type) {
     ElMessage({
@@ -77,13 +79,13 @@ function preFixInteger(num,length)
     return (Array(length).join('0')+num).slice(-length)
 }
 function timeStampToTime(timestamp) {
-    var date = new Date(timestamp);//时间戳为10位需*1000，时间戳为13位的话不需乘1000
-    var Y = date.getFullYear() + '-';
-    var M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-';
-    var D = (date.getDate() < 10 ? '0' + (date.getDate()) : date.getDate()) + ' ';
-    var h = (date.getHours() < 10 ? '0' + (date.getHours()) : date.getHours()) + ':';
-    var m = (date.getMinutes() < 10 ? '0' + (date.getMinutes()) : date.getMinutes()) + ':';
-    var s = (date.getSeconds() < 10 ? '0' + (date.getSeconds()) : date.getSeconds());
+    let date = new Date(timestamp);//时间戳为10位需*1000，时间戳为13位的话不需乘1000
+    let Y = date.getFullYear() + '-';
+    let M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-';
+    let D = (date.getDate() < 10 ? '0' + (date.getDate()) : date.getDate()) + ' ';
+    let h = (date.getHours() < 10 ? '0' + (date.getHours()) : date.getHours()) + ':';
+    let m = (date.getMinutes() < 10 ? '0' + (date.getMinutes()) : date.getMinutes()) + ':';
+    let s = (date.getSeconds() < 10 ? '0' + (date.getSeconds()) : date.getSeconds());
     return Y + M + D + h + m + s;
 }
 
@@ -93,4 +95,12 @@ function destroyCookie(e) {
         url: '/logout'
     })
     localStorage.clear()
+}
+function exportExcel(exportArray)
+{
+    let xlsx = require("xlsx")
+    let sheet = xlsx.utils.json_to_sheet(exportArray)
+    let book = xlsx.utils.book_new()
+    xlsx.utils.book_append_sheet(book,sheet,"sheet1")
+    xlsx.writeFile(book,'导出学生数据表.xlsx')
 }

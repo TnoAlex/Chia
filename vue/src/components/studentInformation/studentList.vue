@@ -128,6 +128,8 @@
                           <el-input style="margin-bottom: 10px" v-model="addInputInfo.studentNum" placeholder="输入学号" />
                           <label class="form-label">年级</label>
                           <el-input style="margin-bottom: 10px" v-model="addInputInfo.grade" placeholder="输入年级如：2020" />
+                          <label class="form-label">免费次数</label>
+                          <el-input style="margin-bottom: 10px" v-model="addInputInfo.freeTime" placeholder="输入免费次数如：1" />
                           <label class="form-label">身份证号</label>
                           <el-input style="margin-bottom: 10px" v-model="addInputInfo.studentId" placeholder="身份证号（18位）" />
                         </div>
@@ -141,7 +143,7 @@
                         <el-button text @click="addInfoConfirmVisible = true" v-show="false">
                           Click to open the Dialog
                         </el-button>
-                         <el-dialog v-model="addInfoConfirmVisible" title="Warning" width="30%" center>
+                         <el-dialog v-model="addInfoConfirmVisible" title="消息确认" width="30%" center>
                           <span>
                             {{confirmMessage}}
                           </span>
@@ -177,7 +179,7 @@
                           <el-button type="primary" size="large">导入</el-button>
 
                         </el-upload >
-                        <el-button  type="success" size="large">导出</el-button>
+                        <el-button @click="exportExcel" type="success" size="large">导出</el-button>
 
                       </div>
 
@@ -269,7 +271,8 @@ export default {
         studentNum:'',
         studentId: '',
         name:'',
-        grade:''
+        grade:'',
+        freeTime:''
       },
       isConfirm:false,
       confirmType:1,
@@ -282,9 +285,57 @@ export default {
       tableLoading:false,
       selection:[],
       bulkDeletionVisible:false,
+      currentExportUrl:'',
     }
   },
   methods:{
+    async exportExcel() {
+      if(this.tableData.length===0)
+      {
+        util.messageBox('没有数据可以导出','success')
+        return
+      }
+      let url = ''
+      if (this.searchInfo.nameOrStudentNumber === '' || this.searchInfo.freeTime === ''
+          || this.searchInfo.grade === '' || this.searchInfo.score === '' ||
+          this.searchInfo.scoreFilter === '') {
+        url = `teacher/list/${0}/${this.tableData[0].totalSize+1}`
+      } else if (this.searchInfo.grade !== '' || this.searchInfo.freeTime !== '' ||
+          this.searchInfo.scoreFilter !== ''  || this.searchInfo.score !== '')
+      {
+        url  = this.getSearchUrl()
+        url+= `${0}/${this.tableData[0].totalSize+1}`
+      }
+      console.log(url)
+      let loading  = util.loadingWait('下载导出数据中',"table_studentList")
+      await util.delay(100)
+      await axios({
+        method:'GET',
+        url:url,
+        headers: {'content-type': 'application/x-www-form-urlencoded;charset=UTF-8'},
+      }).then(async (res)=>{
+        await util.delay(100)
+        loading.close()
+        util.messageBox('拉取数据成功','success')
+        let exportArray = []
+        for(let i = 0;i<res.data.data.length;i++)
+        {
+          exportArray.push({
+            '学号':res.data.data[i]['studentNumber'],
+            '姓名':res.data.data[i]['name'],
+            '年级':res.data.data[i]['grade'],
+            '最高分':res.data.data[i]['maxScore'],
+            '免费次数':res.data.data[i]['freeTime']
+          })
+        }
+        util.exportExcel(exportArray)
+        util.messageBox('导出成功','success')
+      }).catch(async (err)=>{
+        await util.delay(100)
+        loading.close()
+        util.messageBox('拉取数据失败，导出失败','error')
+      })
+    },
     async singleDelete(uidList)
     {
       await axios({
@@ -419,6 +470,7 @@ export default {
         url = url + `${pageNum}/${pageSize}`
       let loading = util.loadingWait('搜索中','table_studentList')
       await util.delay(100)
+      this.currentExportUrl = url
       await axios({
         url: url,
         method: 'GET',
@@ -506,7 +558,8 @@ export default {
             name: this.addInputInfo.name,
             studentNumber: this.addInputInfo.studentNum,
             enrollmentTime: this.addInputInfo.grade+ '-' + '9-1',
-            idNumber: this.addInputInfo.studentId
+            idNumber: this.addInputInfo.studentId,
+            freeTime:this.addInputInfo.freeTime
         }
         await axios({
           headers: {'content-Type': 'application/json'},
@@ -516,6 +569,7 @@ export default {
         }).then(() => {
           loading.close()
           util.messageBox('导入成功','success')
+          this.addInfoDialogVisible=false
         }).catch(() => {
           loading.close()
           util.messageBox('导入失败','error')
@@ -529,7 +583,7 @@ export default {
       if (this.addInputInfo.studentNum==='' ||
           this.addInputInfo.name===''       ||
           this.addInputInfo.studentNum==='' ||
-          this.addInputInfo.studentId==='')
+          this.addInputInfo.studentId===''||this.addInputInfo.freeTime==='')
       {
         util.messageBox('请将信息填写完整','warning')
         this.addInfoDialogVisible = true
@@ -560,6 +614,7 @@ export default {
       this.addInputInfo.studentNum=''
       this.addInputInfo.studentId=''
       this.addInputInfo.grade=''
+      this.addInputInfo.freeTime=''
       this.addInfoConfirmVisible = false
     },
     async handleDelete(index)
@@ -587,6 +642,7 @@ export default {
     async getInitTableData(pageNum,pageSize)
     {
       let url = `teacher/list/${pageNum}/${pageSize}`
+      this.currentExportUrl = url
       let loading = util.loadingWait('获取学生信息中。。。','table_studentList')
       await util.delay(50)
       await axios.get(url
@@ -652,7 +708,7 @@ export default {
       let data = xlsx.utils.sheet_to_json(workSheet)
       let keyArray = Object.keys(data[0])
       if (keyArray[0]!=='学号' || keyArray[1]!=='姓名'||keyArray[2]!=='年级'|| keyArray[3]
-      !=='身份证号')
+      !=='身份证号'||keyArray[4]!=='免费次数')
       {
         loadingInstance.close()
         util.messageBox('解析错误：导入表格列明不正确','error')
@@ -670,7 +726,8 @@ export default {
           studentNumber:valueArray[0],
           name:valueArray[1],
           enrollmentTime:util.dateTranslate(valueArray[2]),
-          idNumber:valueArray[3]
+          idNumber:valueArray[3],
+          freeTime:valueArray[4]
         })
 
       })
@@ -718,7 +775,6 @@ export default {
     }
   },
  mounted() {
-    util.print('haha')
     this.getInitTableData(1,5)
 
   }

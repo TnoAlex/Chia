@@ -46,6 +46,26 @@
 
                       </span>
                     </div>
+                    <div style="margin-bottom: 10px" >
+                       <span style="margin-bottom: 0!important; display: inline-block;justify-content: center;align-items: center ">
+                          <span style="margin-right: 5px!important;">
+                            导出选项
+                          </span>
+                       <el-select clearable v-model="nowExportSelect" class="m-2" placeholder="选择导入的CSP届数" style="margin-bottom: 0!important; margin-top: 0!important; margin-left: 0!important; display: inline-block">
+                          <el-option
+                              v-for="item in exportList"
+                              :key="item.value"
+                              :label="item.label"
+                              :value="item.value"
+                          /></el-select>
+
+                      </span>
+                      <el-button :icon="Search" circle @click="searchShow(1,5)" />
+                      <el-button @click="exportExcel" type="success" size="large">导出</el-button>
+                    </div>
+
+
+
                     <div style="margin-bottom: 10px">
                       <span style="margin-top: 0!important; display: inline-block;justify-content: center;align-items: center;">
                         <el-upload ref="upload" style="display: inline-block;margin-right: 20px"
@@ -67,10 +87,6 @@
                             <el-button type="primary" size="small">成绩单上传</el-button>
 
                           </el-upload >
-
-                          <el-button type="primary" @click="getAbsenceTable(
-                            1,5)"
-                                     size="small">查看未正式报名学生</el-button>
                         <el-button @click="sendMessageToAllAbsence" type="primary"
                                    size="small">提醒学生参与正式报名</el-button>
                        </span>
@@ -81,54 +97,7 @@
 
                     <div class="row mb-2">
                       <div class="col-sm-5">
-                        <span   class="btn btn-danger mb-2"><i class="mdi mdi-plus-circle me-2"></i> 未正式报名表</span>
-                        <el-dialog
-                            v-model="addInfoDialogVisible"
-                            title="学生信息添加"
-                            width="30%"
-                            @close="addInputInfoClose"
-                        >
-                          <div>
-                            <label class="form-label">姓名</label>
-                            <el-input style="margin-bottom: 10px" v-model="addInputInfo.name" placeholder="输入姓名" />
-                            <label class="form-label">学号</label>
-                            <el-input style="margin-bottom: 10px" v-model="addInputInfo.studentNum" placeholder="输入学号" />
-                            <label class="form-label">年级</label>
-                            <el-input style="margin-bottom: 10px" v-model="addInputInfo.grade" placeholder="输入年级如：2020" />
-                            <label class="form-label">身份证号</label>
-                            <el-input style="margin-bottom: 10px" v-model="addInputInfo.studentId" placeholder="身份证号（18位）" />
-                          </div>
-                          <template #footer>
-                        <span class="dialog-footer">
-                        <el-button @click="addInfoDialogVisible = false">关闭</el-button>
-                        <el-button type="primary" @click="addInput">
-                        确认
-                        </el-button>
-
-                          <el-button text @click="addInfoConfirmVisible = true" v-show="false">
-                            Click to open the Dialog
-                          </el-button>
-                           <el-dialog v-model="addInfoConfirmVisible" title="Warning" width="30%" center>
-                            <span>
-                              {{confirmMessage}}
-                            </span>
-                            <template #footer >
-                              <span class="dialog-footer" >
-                                <el-button @click="addInfoConfirmVisible = false">取消</el-button>
-                                <el-button type="primary" @click="addInfoConfirm">
-                                  确认
-                                </el-button>
-                              </span>
-                            </template>
-                          </el-dialog>
-
-
-
-
-
-                        </span>
-                          </template>
-                        </el-dialog>
+                        <span   class="btn btn-danger mb-2"><i class="mdi mdi-plus-circle me-2"></i> 导出选项展示表</span>
                       </div>
                       <el-table
                               fit
@@ -137,7 +106,7 @@
                               v-loading="tableLoading"
                               border
                               ref="multipleTableRef"
-                              :data="absenceTableList"
+                              :data="tableData"
                               style="width: 100%"
                               @selection-change="handleSelectionChange"
                     >
@@ -159,7 +128,7 @@
                                      :disabled="disabled"
                                      :background="background"
                                      layout="total, sizes, prev, pager, next, jumper,"
-                                     :total="absenceTotalNum"
+                                     :total="tableDataNum"
                                      @size-change="handleSizeChange"
                                      @current-change="handleCurrentChange"
                       />
@@ -199,6 +168,13 @@
         Search,
         Delete,
         Edit,
+        exportList:[{value: 0,label: '未有正式报名'},
+                    {value: 1,label: '缺席考试名单'},
+                    {value: 2,label: '正式报名错误'},
+                    {value: 3,label: '正式报名正确'}
+        ],
+        currentExportUrl:'',
+        nowExportSelect:'',
         searchInfo:{
           nameOrStudentNumber:'',
           grade:'',
@@ -208,13 +184,7 @@
         },
         addInfoConfirmVisible:false,
         addInfoDialogVisible:false,
-        confirmMessage:''
-        ,addInputInfo:{
-          studentNum:'',
-          studentId: '',
-          name:'',
-          grade:''
-        },
+        confirmMessage:'',
         isConfirm:false,
         confirmType:1,
         currentPage:1,
@@ -224,25 +194,136 @@
         cspInfoList:[],
         cspNameSelectList:[],
         nowCspSelect:'',
-        absenceTableList:[],
-        absenceTotalNum:0
+        tableData:[],
+        tableDataNum:0
       }
     },
     methods:{
+      async exportExcel()
+      {
+        if(this.nowCspSelect===''||this.nowExportSelect==='')
+        {
+          util.messageBox('选择届次与导出选项才能导出','warning')
+          return
+        }
+        if(this.currentExportUrl==='')
+        {
+          util.messageBox('请先点击搜索按钮，获取部分数据','warning')
+          return
+        }
+        if(this.tableDataNum===0)
+        {
+          util.messageBox('暂无可导出的数据','warning')
+          return
+        }
+
+
+        let loadint = util.loadingWait('获取导出数据中',"table_studentList")
+        await util.delay(100)
+        await axios({
+          url:this.currentExportUrl,
+          method:'GET'
+        }).then(async (res)=>{
+          await util.delay(100)
+          loadint.close()
+          util.messageBox('获取数据成功，即将导出','success')
+          let exportArray = []
+          for(let i = 0;i<res.data.data.length;i++)
+          {
+            exportArray.push({
+              '学号':res.data.data[i]['studentNumber'],
+              '姓名':res.data.data[i]['name'],
+              '年级':res.data.data[i]['grade'],
+              '最高分':res.data.data[i]['maxScore'],
+              '免费次数':res.data.data[i]['freeTime']
+            })
+          }
+          util.exportExcel(exportArray)
+        }).catch(async (err)=>{
+          await util.delay(100)
+          loadint.close()
+          util.messageBox('获取数据失败，导出失败','error')
+        })
+        this.currentExportUrl=''
+      },
+      async searchShow(pageNum,pageSize)
+      {
+        if(this.nowCspSelect===''||this.nowExportSelect==='')
+        {
+          util.messageBox('选择届次与导出选项才能展示','warning')
+          return
+        }
+        let url = ''
+        let cid = this.cspNameSelectList[this.nowCspSelect].cspId
+        if(this.nowExportSelect===0)
+        {
+          url =`teacher/query/absent/official/${cid}/${pageNum}/${pageSize}`
+          await this.getTableData(url)
+          this.currentExportUrl =`teacher/query/absent/official/${cid}/${0}/${this.tableDataNum}`
+        }else if(this.nowExportSelect===1)
+        {
+          url = `teacher/query/absent/exam/${cid}/${pageNum}/${pageSize}`
+          await this.getTableData(url)
+          this.currentExportUrl =`teacher/query/absent/exam/${cid}/${0}/${this.tableDataNum}`
+        }else if(this.nowExportSelect===2)
+        {
+          url = `teacher/query/wrong/${cid}/${pageNum}/${pageSize}`
+          await this.getTableData(url)
+          this.currentExportUrl =`teacher/query/wrong/${cid}/${0}/${this.tableDataNum}`
+        }else if(this.nowExportSelect===3)
+        {
+          url = `teacher/query/official/${cid}/${pageNum}/${pageSize}`
+          await this.getTableData(url)
+          this.currentExportUrl =`teacher/query/official/${cid}/${0}/${this.tableDataNum}`
+        }
+      },
+      async getTableData(url)
+      {
+        let loading = util.loadingWait('获取数据中',"table_studentList")
+        await util.delay(100)
+        await axios({
+          url:url,
+          method:'GET',
+        }).then(async (res)=>{
+          await util.delay(100)
+          loading.close()
+          console.log(res)
+          if(res.data.data===null)
+          {
+            util.messageBox(res.data.msg,'warning')
+            this.tableDataNum=0
+            return
+          }
+          if(res.data.data.length===0)
+          {
+            this.tableDataNum=0
+            util.messageBox('暂无数据','success')
+          }else
+          {
+            util.messageBox('获取数据成功','success')
+            this.tableDataNum = res.data.data.totalSize
+            this.tableData = res.data.data
+          }
+        }).catch(async (err)=>{
+          console.log(err)
+          await util.delay(100)
+          loading.close()
+          util.messageBox('获取数据失败','error')
+        })
+      },
+    async handleSizeChange(size)
+    {
+      this.pageSize = size
+      await this.searchShow(this.currentPage, this.pageSize)
+    },
+    async handleCurrentChange(index)
+    {
+      this.currentPage = index
+      await this.searchShow(this.currentPage,this.pageSize)
+    },
       handleSelectionChange(select)
       {
         this.selection = select
-      },
-      async handleSizeChange(size)
-      {
-        this.pageSize = size
-        await this.getAbsenceTable(this.currentPage,size)
-
-      },
-       async handleCurrentChange(index)
-      {
-        this.currentPage = index
-        await this.absenceTableList(index,this.pageSize)
       },
       async handleExcel(ev)
       {
@@ -251,7 +332,6 @@
           util.messageBox('请先选择届次','warning')
           return
         }
-
         let xlsx = require("xlsx")
         let file = ev.raw
         if(!file) return
@@ -425,34 +505,6 @@
           util.messageBox('发送失败','error')
         })
 
-      },
-      async getAbsenceTable(pageNum,pageSize)
-      {
-        if(this.nowCspSelect==='')
-        {
-          util.messageBox('请先选择届次','warning')
-          return
-        }
-        let loading = util.loadingWait('获取中','table_studentList')
-        await util.delay(100)
-        axios({
-          method:'GET',
-          headers:{'content-type':'application/x-www-form-urlencoded;charset=UTF-8'},
-          url:`teacher/query/absent/official/${this.cspNameSelectList[this.nowCspSelect].cspId}/${pageNum}/${pageSize}`,
-        }).then(async (res) => {
-          loading.close()
-          await util.delay(100)
-          util.messageBox('查询成功', 'success')
-          if (res.data.data.length > 0) {
-            this.absenceTableList = res.data.data
-            this.absenceTotalNum = res.data.data[0].totalSize
-
-          }
-        }).catch(async () => {
-          loading.close()
-          await util.delay(100)
-          util.messageBox('查询失败', 'error')
-        })
       },
       async getCspInfo(){
       let loading = util.loadingWait('拉取CSP届次中。。。')
