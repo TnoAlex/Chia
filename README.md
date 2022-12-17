@@ -1,4 +1,4 @@
-# ![logo](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADEAAAA0CAMAAAAUjyCdAAAAdVBMVEUAAABBVPFBVPFBVPFBVPFBVPFBVPFBVPFBVPFBVPFBVPFBVPFBVPFBVPFBVPFBVPFBVPFBVPFBVPFBVPFBVPFBVPFBVPFBVPFBVPFBVPFBVPFBVPFBVPFBVPFBVPFBVPFBVPFBVPFBVPFBVPFBVPFBVPFBVPF13w9vAAAAJnRSTlMA5ug59iGwkrLLzfp3Vu+/p5ZpKAy0fmVhSxbz69+gbwHW1IyKGU5/excAAAEBaVRYdFhNTDpjb20uYWRvYmUueG1wAAAAAAA8P3hwYWNrZXQgYmVnaW49Iu+7vyI/PjxyOlJERiB4bWxuczpyPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj48cjpEZXNjcmlwdGlvbiB4bWxuczp4PSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIj48eDpDcmVhdGVEYXRlPjIwMjEtMDUtMDRUMTM6MzQ6MDkrMDM6MDA8L3g6Q3JlYXRlRGF0ZT48L3I6RGVzY3JpcHRpb24+PC9yOlJERj48P3hwYWNrZXQgZW5kPSJyIj8+f9gwJQAAAOlJREFUSMft0MmOwjAQhOGCMAkzntjZyMa+9fs/IsECjIWSqITEif9Y0teHRgw2vWXFSjJSTEQyWkgNvyp0zf0WiRUq9kUq/S078UqiATHthCOM6AgrZJazQoLPipQW5W1aR482alAURmyJm9rZoEB7sFPolp8RgXzNCgSaFWgUK1DRAqXMSYHEsKKod5SwfcWYaApWbBJWRFLSQipaqIYVogNWyCRnhezbEfF08iQ2UwyL9P+RuU89or8FLcK3hGLFeckKxIoQjhDCkSn0+HcdscL8PffrdYRfbcUORNlVABxZgWyrwRZfAOrTnmyCT1ScAAAAAElFTkSuQmCC) NiceCSP  ![](https://img.shields.io/badge/framework-spring boot-brightgreen) ![framework: vue.js (shields.io)](https://img.shields.io/badge/framework-vue.js-brightgreen) ![build: Gradle (shields.io)](https://img.shields.io/badge/build-Gradle-blue) ![language: Kotlin (shields.io)](https://img.shields.io/badge/language-Kotlin-blueviolet)
+#  ![][logo] NiceCSP  ![framework:Spring boot](https://img.shields.io/badge/framework-spring%20boot-brightgreen) ![framework: vue.js (shields.io)](https://img.shields.io/badge/framework-vue.js-brightgreen) ![build: Gradle (shields.io)](https://img.shields.io/badge/build-Gradle-blue) ![language: Kotlin (shields.io)](https://img.shields.io/badge/language-Kotlin-blueviolet)
 
 ------
 
@@ -62,14 +62,12 @@ location / {
 
 ------
 
-使用Docker镜像可快速启用服务，需要以下依赖项
-
-[^Warning]: 在Windows平台部署需要WSL支持
+使用Docker镜像可快速启用服务，需要以下依赖项，<font color="#FF6347">注意：在Windows平台部署需要WSL支持</font>
 
 - [Docker](https://www.docker.com/)
-- [Docker Compose]([docker/compose: Define and run multi-container applications with Docker (github.com)](https://github.com/docker/compose))
+- [Docker Compose](https://github.com/docker/compose)
 
-首先，加载镜
+首先，加载镜像
 
 ```bash
 sudo docker load -i chia.tar
@@ -93,3 +91,5 @@ sudo docker compose up
 ```
 
 即可启动服务，不过在此之前，请确认系统80,8086,3306端口空闲
+
+[logo]:data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADEAAAA0CAMAAAAUjyCdAAAAdVBMVEUAAABBVPFBVPFBVPFBVPFBVPFBVPFBVPFBVPFBVPFBVPFBVPFBVPFBVPFBVPFBVPFBVPFBVPFBVPFBVPFBVPFBVPFBVPFBVPFBVPFBVPFBVPFBVPFBVPFBVPFBVPFBVPFBVPFBVPFBVPFBVPFBVPFBVPFBVPF13w9vAAAAJnRSTlMA5ug59iGwkrLLzfp3Vu+/p5ZpKAy0fmVhSxbz69+gbwHW1IyKGU5/excAAAEBaVRYdFhNTDpjb20uYWRvYmUueG1wAAAAAAA8P3hwYWNrZXQgYmVnaW49Iu+7vyI/PjxyOlJERiB4bWxuczpyPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj48cjpEZXNjcmlwdGlvbiB4bWxuczp4PSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIj48eDpDcmVhdGVEYXRlPjIwMjEtMDUtMDRUMTM6MzQ6MDkrMDM6MDA8L3g6Q3JlYXRlRGF0ZT48L3I6RGVzY3JpcHRpb24+PC9yOlJERj48P3hwYWNrZXQgZW5kPSJyIj8+f9gwJQAAAOlJREFUSMft0MmOwjAQhOGCMAkzntjZyMa+9fs/IsECjIWSqITEif9Y0teHRgw2vWXFSjJSTEQyWkgNvyp0zf0WiRUq9kUq/S078UqiATHthCOM6AgrZJazQoLPipQW5W1aR482alAURmyJm9rZoEB7sFPolp8RgXzNCgSaFWgUK1DRAqXMSYHEsKKod5SwfcWYaApWbBJWRFLSQipaqIYVogNWyCRnhezbEfF08iQ2UwyL9P+RuU89or8FLcK3hGLFeckKxIoQjhDCkSn0+HcdscL8PffrdYRfbcUORNlVABxZgWyrwRZfAOrTnmyCT1ScAAAAAElFTkSuQmCC
