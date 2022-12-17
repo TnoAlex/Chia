@@ -58,7 +58,7 @@
         where r.type != pr.type
           and r.csp_id = #{cid}
     </select>
-    <select id="queryWrongTypeNumber" resultMap="java.lang.Long">
+    <select id="queryWrongTypeNumber" resultType="java.lang.Long">
         SELECT count(s.id)
         from registration as r
                  left join pre_registration as pr on r.csp_id = pr.csp_id
