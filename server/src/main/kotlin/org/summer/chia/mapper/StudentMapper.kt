@@ -5,4 +5,6 @@ import org.apache.ibatis.annotations.Mapper
 import org.summer.chia.pojo.dto.Student
 
 @Mapper
-interface StudentMapper : BaseMapper<Student>
+interface StudentMapper : BaseMapper<Student> {
+    fun queryRegisterList(sid: String): List<String>
+}

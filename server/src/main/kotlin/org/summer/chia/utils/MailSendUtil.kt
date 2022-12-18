@@ -29,7 +29,7 @@ class MailSendUtil {
             for (i in dataMap.keys) {
                 context.setVariable(i, dataMap[i])
             }
-            val  templateContent = templateEngine.process(emailTemplate, context)
+            val templateContent = templateEngine.process(emailTemplate, context)
             val message = javaMailSender.createMimeMessage()
             val helper = MimeMessageHelper(message, true)
             helper.setFrom(mailFrom)
@@ -37,8 +37,8 @@ class MailSendUtil {
             helper.setSubject(subject)
             helper.setText(templateContent, true)
             javaMailSender.send(message)
-        }catch (_ :Exception){
-            throw MailSendException("Mail Send Failure",this::sendTemplateMail.name)
+        } catch (e: Exception) {
+            throw MailSendException("Mail Send Failure" + e.message, this::sendTemplateMail.name)
         }
     }
 }

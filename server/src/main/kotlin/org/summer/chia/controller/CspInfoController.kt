@@ -1,6 +1,8 @@
 package org.summer.chia.controller
 
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.web.bind.annotation.*
 import org.summer.chia.pojo.ao.PublishCsp
 import org.summer.chia.pojo.ao.Result
@@ -14,8 +16,8 @@ class CspInfoController {
     private lateinit var cspInfoService: CspInfoService
 
     @GetMapping("/csp_info/pre")
-    fun allPreRegistrationInfo(): Result {
-        return cspInfoService.getAllPreRegistrationBriefInfo()
+    fun allPreRegistrationInfo(@AuthenticationPrincipal user: UserDetails): Result {
+        return cspInfoService.getAllPreRegistrationBriefInfo(user)
     }
 
     @PostMapping("/teacher/publish/csp")

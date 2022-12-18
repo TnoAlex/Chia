@@ -11,6 +11,7 @@ const userInfo = {
     maxScore: 500,
     email: ''
 }
+let destroyFlag = false
 export default {
     messageBox,
     readFile,
@@ -22,7 +23,8 @@ export default {
     judgeInputIsNumber,
     preFixInteger,
     timeStampToTime,
-    destroyCookie,
+    unloadHandle,
+    beforeunloadHandle,
     exportExcel
 }
 function messageBox(msg, type) {
@@ -88,12 +90,18 @@ function timeStampToTime(timestamp) {
     return Y + M + D + h + m + s;
 }
 
-function destroyCookie(e) {
-    axios({
-        method: 'POST',
-        url: '/logout'
-    })
-    localStorage.clear()
+function unloadHandle() {
+    if (!destroyFlag) {
+        axios({
+            method: 'POST',
+            url: '/logout'
+        })
+        localStorage.clear()
+    }
+}
+
+function beforeunloadHandle() {
+    destroyFlag = true
 }
 
 function exportExcel(exportArray, tableName) {

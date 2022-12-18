@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.summer.chia.mapper.StudentMapper">
+    <select id="queryRegisterList" resultType="java.lang.String">
+        select pr.csp_id
+        from pre_registration as pr
+                 left join student s on pr.student_id = s.id
+        where pr.student_id = #{sid}
+    </select>
+</mapper>

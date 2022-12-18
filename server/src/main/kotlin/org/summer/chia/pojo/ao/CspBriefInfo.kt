@@ -9,5 +9,6 @@ data class CspBriefInfo(
     var startTime: String,
     var endTime: String,
     var personNumber: Int,
-    var freeThreshold: Int
+    var freeThreshold: Int,
+    var registered: Int?
 )

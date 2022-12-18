@@ -157,26 +157,32 @@
                       <div class="dropdown-menu dropdown-menu-end" >
                         <span @click ="editCspOpen(index)" v-show="userInfo.type===1" href="javascript:void(0);" class="dropdown-item"><i class="mdi mdi-pencil me-1"></i>编辑</span>
                         <span @click ="deleteCspInfo(item.id)" v-show="userInfo.type===1" href="javascript:void(0);" class="dropdown-item"><i class="mdi mdi-delete me-1"></i>删除</span>
-                        <span @click="enroll(index)" v-show="userInfo.type===0" href="javascript:void(0);" class="dropdown-item">
+                        <span v-if="item.registered===0" v-show="userInfo.type===0" class="dropdown-item"
+                              href="javascript:void(0);" @click="enroll(index)">
                           <i class="mdi mdi-star-box me-1"></i>报名
                         </span>
-                        <span @click="deleteEnroll(item.id)" v-show="userInfo.type===0" href="javascript:void(0);" class="dropdown-item"><i class="mdi mdi-cancel me-1"></i>取消报名</span>
+                        <span v-if="item.registered===1" v-show="userInfo.type===0" class="dropdown-item"
+                              href="javascript:void(0);" @click="deleteEnroll(item.id)"><i
+                            class="mdi mdi-cancel me-1"></i>取消报名</span>
                       </div>
 
                     </div>
                     <!-- project title-->
                     <h4 class="mt-0">
-                      <a href="" class="text-title">第{{item.name}}次CSP</a>
+                      <a href="" class="text-title">第{{ item.name }}次CSP</a>
                     </h4>
-                    <div class="badge bg-success">{{this.getProcessionStr(item.startTime,item.endTime)}}</div>
-
-
+                    <div :class="proceeClass" class="badge">{{ this.getProcessionStr(item.startTime, item.endTime) }}
+                    </div>
+                    &ensp;
+                    <div :class="item.registered ===1?'bg-success':'bg-warning'" class="badge">
+                      {{ item.registered === 0 ? "未报名" : "已报名" }}
+                    </div>
 
                     <!-- project detail-->
-                    <p class="mb-1">
+                    <p class="mb-1" style="margin-top: 10px">
                                             <span class="pe-2 text-nowrap mb-2 d-inline-block">
                                                 <i class="mdi mdi-human-queue text-muted"></i>
-                                                <b>{{item.personNumber}}</b> 人报名
+                                                <b>{{ item.personNumber }}</b> 人报名
 
                                             </span>
 
@@ -224,43 +230,51 @@ export default {
     LeftNav: leftNav
   },
   data(){
-    return{
+    return {
       util,
-      createCspInfo:{
-        number:'',
-        startTime:'',
-        endTime:'',
-        gtScore:''
+      createCspInfo: {
+        number: '',
+        startTime: '',
+        endTime: '',
+        gtScore: ''
 
       },
-      enrollVisible:false,
-      createCspVisible:false,
-      userInfo:{},
-      cspInfoList:[],
-      currentCspInfo:{},
-      editCspVisible:false,
-      editCspInfo:{
-        number:'',
-        startTime:'',
-        endTime:'',
+      proceeClass: "",
+      enrollVisible: false,
+      createCspVisible: false,
+      userInfo: {},
+      cspInfoList: [],
+      currentCspInfo: {},
+      editCspVisible: false,
+      editCspInfo: {
+        number: '',
+        startTime: '',
+        endTime: '',
         id:'',
         gtScore:''
       },
-      enrollInfo:{
-        options:[{value: 0, label: '自费'},{value: 1, label: '免费'}],
-        freeOrOwn:'',
+      enrollInfo: {
+        options: [],
+        freeOrOwn: '',
         extra: ''
       }
     }
   },
   name: "index.vue",
   mounted() {
-    window.addEventListener('beforeunload', e => util.destroyCookie(e))
+    window.addEventListener('beforeunload', e => util.beforeunloadHandle())
+    window.addEventListener("unload", e => util.unloadHandle())
     this.userInfo = this.$cookies.get('userInfo')
+    if (this.userInfo.freeTime === 0) {
+      this.enrollInfo.options.push({value: 0, label: '自费'})
+    } else {
+      this.enrollInfo.options.push({value: 0, label: '自费'}, {value: 1, label: '免费'})
+    }
     this.getCspInfo()
   },
   unmounted() {
-    window.removeEventListener('beforeunload', e => util.destroyCookie(e))
+    window.removeEventListener('beforeunload', e => util.beforeunloadHandle())
+    window.removeEventListener('unload', e => util.unloadHandle())
   },
   methods: {
 
@@ -383,12 +397,15 @@ export default {
       let res = this.getProcessionNum(startTime,endTime)
       if(res<0)
       {
+        this.proceeClass = "bg-dark-lighten"
         return '未开始'
       }
       else if(res>100) {
+        this.proceeClass = "bg-waring"
         return '已结束'
       }
       else{
+        this.proceeClass = "bg-success"
         return '报名中'
       }
     },
@@ -490,7 +507,7 @@ export default {
     },
     async deleteEnroll(pid)
     {
-      let loading = util.loadingWait('取消报名中。。。')
+      let loading = util.loadingWait('取消报名中...')
       await util.delay(50)
       axios({
         method:'POST',

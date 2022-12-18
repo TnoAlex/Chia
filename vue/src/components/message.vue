@@ -491,17 +491,14 @@
         }).then(async (res)=>{
           await util.delay(100)
           loading.close()
-          if(res.data.data.length===0)
-          {
-            util.messageBox('暂无系统消息','success')
-          }
-          else
-          {
+          if (res.data.data.length === 0) {
+            util.messageBox('暂无系统消息', 'success')
+          } else {
             this.messagesTableList = res.data.data
             this.totalDataNum = res.data.data[0].totalSize
-            util.messageBox('获取系统消息成功','success')
+            util.messageBox('获取系统消息成功', 'success')
           }
-        }).catch(async (err)=>{
+        }).catch(async () => {
           await util.delay(100)
           loading.close()
           util.messageBox('获取系统消息失败', 'error')
@@ -510,12 +507,14 @@
 
     },
     mounted() {
-      window.addEventListener('beforeunload', e => util.destroyCookie(e))
+      window.addEventListener('beforeunload', e => util.beforeunloadHandle())
+      window.addEventListener("unload", e => util.unloadHandle())
       this.getInitMessages(1, 5)
       this.getInitTeacherList()
     },
     unmounted() {
-      window.removeEventListener('beforeunload', e => util.destroyCookie(e))
+      window.removeEventListener('beforeunload', e => util.beforeunloadHandle())
+      window.removeEventListener('unload', e => util.unloadHandle())
     }
   }
   </script>

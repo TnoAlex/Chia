@@ -3,14 +3,20 @@ package org.summer.chia.service.imp
 import com.baomidou.mybatisplus.extension.kotlin.KtQueryWrapper
 import com.baomidou.mybatisplus.extension.kotlin.KtUpdateWrapper
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.summer.chia.adapter.UserDetailsAdapter
 import org.summer.chia.exception.SqlException
 import org.summer.chia.mapper.CspInfoMapper
+import org.summer.chia.mapper.StudentMapper
 import org.summer.chia.pojo.ao.CspBriefInfo
 import org.summer.chia.pojo.ao.PublishCsp
 import org.summer.chia.pojo.ao.Result
 import org.summer.chia.pojo.dto.CspInfo
+import org.summer.chia.pojo.dto.Student
+import org.summer.chia.pojo.dto.Teacher
 import org.summer.chia.service.CspInfoService
 import org.summer.chia.utils.Log
 import java.sql.Timestamp
@@ -20,23 +26,54 @@ import java.util.*
 @Service
 class CspInfoServiceImp : ServiceImpl<CspInfoMapper, CspInfo>(), CspInfoService {
 
-    override fun getAllPreRegistrationBriefInfo(): Result {
+    @Autowired
+    private lateinit var studentMapper: StudentMapper
+
+    override fun getAllPreRegistrationBriefInfo(user: UserDetails): Result {
         try {
             val pattern = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
             val res = ArrayList<CspBriefInfo>()
-            baseMapper.selectList(KtQueryWrapper(CspInfo::class.java).orderByDesc(CspInfo::startTime)).forEach {
-                val startTime = pattern.format(it.startTime)
-                val endTime = pattern.format(it.endTime)
-                res.add(
-                    CspBriefInfo(
-                        it.id!!,
-                        it.name.toString(),
-                        startTime,
-                        endTime,
-                        it.preQuantity!!,
-                        it.freeThreshold
-                    )
-                )
+            val infos = baseMapper.selectList(KtQueryWrapper(CspInfo::class.java).orderByDesc(CspInfo::startTime))
+            when ((user as UserDetailsAdapter).getPayLoad()) {
+                is Teacher -> {
+                    infos.forEach {
+                        val startTime = pattern.format(it.startTime)
+                        val endTime = pattern.format(it.endTime)
+                        res.add(
+                            CspBriefInfo(
+                                it.id!!,
+                                it.name.toString(),
+                                startTime,
+                                endTime,
+                                it.preQuantity!!,
+                                it.freeThreshold,
+                                null
+                            )
+                        )
+                    }
+                }
+
+                is Student -> {
+                    val register = studentMapper.queryRegisterList(user.getPayLoad().id!!)
+                    infos.forEach {
+                        val startTime = pattern.format(it.startTime)
+                        val endTime = pattern.format(it.endTime)
+                        var tmp = 0
+                        if (register.contains(it.id))
+                            tmp = 1
+                        res.add(
+                            CspBriefInfo(
+                                it.id!!,
+                                it.name.toString(),
+                                startTime,
+                                endTime,
+                                it.preQuantity!!,
+                                it.freeThreshold,
+                                tmp
+                            )
+                        )
+                    }
+                }
             }
             return Result.success(res)
         } catch (e: Exception) {

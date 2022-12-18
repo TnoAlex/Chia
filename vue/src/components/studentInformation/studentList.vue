@@ -20,7 +20,7 @@
                   </ol>
                 </div>
 
-                <h4 class="page-title">学生报名信息管理</h4>
+                <h4 class="page-title">学生管理</h4>
 
               </div>
             </div>
@@ -319,19 +319,19 @@ export default {
         for(let i = 0;i<res.data.data.length;i++)
         {
           exportArray.push({
-            '学号':res.data.data[i]['studentNumber'],
-            '姓名':res.data.data[i]['name'],
-            '年级':res.data.data[i]['grade'],
-            '最高分':res.data.data[i]['maxScore'],
-            '免费次数':res.data.data[i]['freeTime']
+            '学号': res.data.data[i]['studentNumber'],
+            '姓名': res.data.data[i]['name'],
+            '年级': res.data.data[i]['grade'],
+            '最高分': res.data.data[i]['maxScore'],
+            '免费次数': res.data.data[i]['freeTime']
           })
         }
         util.exportExcel(exportArray)
-        util.messageBox('导出成功','success')
-      }).catch(async (err)=>{
+        util.messageBox('导出成功', 'success')
+      }).catch(async () => {
         await util.delay(100)
         loading.close()
-        util.messageBox('拉取数据失败，导出失败','error')
+        util.messageBox('拉取数据失败，导出失败', 'error')
       })
     },
     async singleDelete(uidList)
@@ -376,9 +376,8 @@ export default {
       let filter = this.searchInfo.scoreFilter===''?null:this.searchInfo.scoreFilter
       let grade = (this.searchInfo.grade===''?null:this.searchInfo.grade+'-09-01')
       let freeTime= this.searchInfo.freeTime===''?null:this.searchInfo.freeTime-1
-      let url  =`teacher/filter/${score}/${filter}/${grade}/${freeTime}/`
       //${1}/${this.pageSize}`
-      return url
+      return `teacher/filter/${score}/${filter}/${grade}/${freeTime}/`
     },
     async bulkDeletion()
     {
@@ -774,7 +773,6 @@ export default {
   },
  mounted() {
     this.getInitTableData(1,5)
-
   }
 }
 </script>

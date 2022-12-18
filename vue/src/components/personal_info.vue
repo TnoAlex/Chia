@@ -26,27 +26,27 @@
               </div>
             </div>
           </div>
-          <!-- end page title -->
-
           <div class="row">
 
             <div class="col-xl-8 col-lg-7">
               <div class="card">
                 <div class="card-body">
                   <ul class="nav nav-pills bg-nav-pills nav-justified mb-3">
-                    <li class="nav-item">
-                      <a href="#aboutme" data-bs-toggle="tab" aria-expanded="false" class="nav-link rounded-0 active">
+                    <li v-if="this.userInfo.type === 0" class="nav-item">
+                      <a ref="about" aria-expanded="false" class="nav-link rounded-0 active" data-bs-toggle="tab"
+                         href="#aboutme">
                         个人信息
                       </a>
                     </li>
                     <li class="nav-item">
-                      <a href="#settings" data-bs-toggle="tab" aria-expanded="false" class="nav-link rounded-0">
+                      <a ref="setting" aria-expanded="false" class="nav-link rounded-0" data-bs-toggle="tab"
+                         href="#settings">
                         修改信息
                       </a>
                     </li>
                   </ul>
                   <div class="tab-content">
-                    <div class="tab-pane show active" id="aboutme">
+                    <div v-if="userInfo.type === 0" id="aboutme" class="tab-pane show active">
 
                       <h5 class="text-uppercase"><i class="mdi mdi-briefcase me-1"></i>
                         主要信息</h5>
@@ -55,7 +55,7 @@
                           <i class="mdi mdi-circle bg-info-lighten text-info timeline-icon"></i>
                           <div class="timeline-item-info">
                             <h5 class="mt-0 mb-1">姓名</h5>
-                            <p class="text-muted mt-2 mb-0 pb-3">{{userInfo.userName}}</p>
+                            <p class="text-muted mt-2 mb-0 pb-3">{{ userInfo.userName }}</p>
                           </div>
                         </div>
 
@@ -102,12 +102,8 @@
                       </div>
                       <!-- end timeline -->
                     </div> <!-- end tab-pane -->
-                    <!-- end about me section content -->
-                    <!-- end timeline content-->
-
                     <div class="tab-pane" id="settings">
                       <form>
-
                         <div class="row">
                           <div class="col-md-6">
                             <div class="mb-3">
@@ -115,7 +111,6 @@
                               <input type="text" class="form-control" id="password" v-model="passwordChangeInfo.newPassword" placeholder="输入密码">
                             </div>
                           </div> <!-- end col -->
-
                         </div> <!-- end row -->
                         <div class="row">
                           <div class="col-md-6" style="margin-left: 0!important; ">
@@ -130,24 +125,9 @@
 
                             </div>
                           </div> <!-- end col -->
-
-
-
-
-
                         </div> <!-- end row -->
-
-
-
-
-
-
                         <div class="text-end">
-
-
-
                         </div>
-
                         <div class="text-end">
                           <span type="submit" class="btn btn-success mt-2" @click="checkCode()"><i class="mdi mdi-content-save"></i>保存并提交
                           </span>
@@ -221,8 +201,8 @@ export default {
       let loading = util.loadingWait('验证码验证中。。。','success')
       await util.delay(100)
       const _this = this
-      this.$axios.post('/verify/reset_code/validate/'+this.passwordChangeInfo.code)
-          .then(async (res) => {
+      this.$axios.post('/verify/reset_code/validate/' + this.passwordChangeInfo.code)
+          .then(async () => {
             await util.delay(100)
             loading.close()
             let deepLoading = util.loadingWait('验证码正确，正在修改中。。。')
@@ -234,31 +214,29 @@ export default {
                   "type": this.userInfo.type,
                   "newPassword": _this.passwordChangeInfo.newPassword
                 })
-                .then(async (res) =>
-                {
+                .then(async () => {
                   await util.delay(100)
                   deepLoading.close()
-                  util.messageBox('密码修改成功','success')
-                  _this.passwordChangeInfo.newPassword=''
-                  _this.passwordChangeInfo.code=''
-                  if(_this.timeCount>0&&_this.timeCount<60)
-                  {
-                    _this.timeCount=''
+                  util.messageBox('密码修改成功', 'success')
+                  _this.passwordChangeInfo.newPassword = ''
+                  _this.passwordChangeInfo.code = ''
+                  if (_this.timeCount > 0 && _this.timeCount < 60) {
+                    _this.timeCount = ''
                     clearInterval(this.timerCount)
                     _this.timerCount = null
                     _this.getCodeFlag = false
                   }
 
-                }).catch(async ()=>{
-                  await util.delay(100)
-                  deepLoading.close()
-                  util.messageBox('密码修改失败','error')
+                }).catch(async () => {
+              await util.delay(100)
+              deepLoading.close()
+              util.messageBox('密码修改失败', 'error')
             })
 
-          }).catch(async (err)=>{
-              await util.delay(100)
-              loading.close()
-              util.messageBox('验证失败','error')
+          }).catch(async () => {
+        await util.delay(100)
+        loading.close()
+        util.messageBox('验证失败', 'error')
       })
 
     },
@@ -272,14 +250,14 @@ export default {
       let sending = util.loadingWait('发送验证码中')
       await util.delay(100)
       await this.$axios.get('/verify/reset_code')
-          .then(async (res) => {
+          .then(async () => {
             await util.delay(100)
             sending.close()
-            util.messageBox('发送成功','success')
-          }).catch(async (err)=>{
+            util.messageBox('发送成功', 'success')
+          }).catch(async () => {
             await util.delay(100)
             sending.close()
-            util.messageBox('发送失败','error')
+            util.messageBox('发送失败', 'error')
           })
     },
     timeReverse()
@@ -310,10 +288,17 @@ export default {
 
   },
   mounted() {
-    window.addEventListener('beforeunload', e => util.destroyCookie(e))
+    window.addEventListener('beforeunload', e => util.beforeunloadHandle())
+    window.addEventListener("unload", e => util.unloadHandle())
+    if (this.userInfo.type === 0) {
+      this.$refs.about.click()
+    } else {
+      this.$refs.setting.click()
+    }
   },
   unmounted() {
-    window.removeEventListener('beforeunload', e => util.destroyCookie(e))
+    window.removeEventListener('beforeunload', e => util.beforeunloadHandle())
+    window.removeEventListener('unload', e => util.unloadHandle())
   }
 
 }

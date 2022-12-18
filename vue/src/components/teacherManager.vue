@@ -264,10 +264,12 @@ export default {
   },
   mounted() {
     this.getInitTableData(1, 5)
-    window.addEventListener('beforeunload', e => util.destroyCookie(e))
+    window.addEventListener('beforeunload', e => util.beforeunloadHandle())
+    window.addEventListener("unload", e => util.unloadHandle())
   },
   unmounted() {
-    window.removeEventListener('beforeunload', e => util.destroyCookie(e))
+    window.removeEventListener('beforeunload', e => util.beforeunloadHandle())
+    window.removeEventListener('unload', e => util.unloadHandle())
   }
 }
 </script>
