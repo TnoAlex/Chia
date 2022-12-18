@@ -23,7 +23,13 @@
         <result property="studentNumber" column="student_number"/>
     </resultMap>
     <select id=" queryList" resultMap="studentListItem">
-        select s.id, s.name, s.student_number, s.max_score, s.free_times, concat(YEAR(s.enrollment_time), '级') AS grade
+        select s.id,
+               s.name,
+               s.student_number,
+               s.max_score,
+               s.free_times,
+               concat(YEAR(s.enrollment_time), '级') AS grade,
+               pre_registration.extra
         from pre_registration
                  left join student s on pre_registration.student_id = s.id
         where pre_registration.csp_id = #{cid}
@@ -41,5 +47,6 @@
         <result property="maxScore" column="max_score"/>
         <result property="freeTime" column="free_time"/>
         <result property="grade" column="grade"/>
+        <result property="extra" column="extra"/>
     </resultMap>
 </mapper>
