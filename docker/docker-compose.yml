@@ -43,10 +43,8 @@ services:
     volumes:
       - ./data/serve/config:/usr/chia/config
       - ./data/serve/logs:/usr/chia/logs
-    environment:
-      IN: test
-      IP: 123456
-      IE: test@123.com
+    env_file:
+      - serve_dev.env
     healthcheck:
       test: [ "CMD", "curl","http://localhost:8086/login" ]
       interval: 3s
@@ -87,5 +85,4 @@ services:
 networks:
   chia-network:
     driver: bridge
-
 

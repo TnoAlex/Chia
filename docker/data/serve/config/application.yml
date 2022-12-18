@@ -30,22 +30,21 @@ spring:
       content-type: text/html
   mail:
     default-encoding: utf-8
-    host: smtp.163.com
-    username: tommills@163.com
-    password: QCWALYFSSZANWCAY
+    host: None
+    username: None
+    password: None
     protocol: smtp
     test-connection: false
     properties:
       mail:
         smtp:
           auth: true
-
   mvc:
     static-path-pattern: /static/**
   datasource:
     druid:
       driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://chia_mysql:3306/chia?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+      url: jdbc:mysql://chia_mysql:3306/chia?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true&useAffectedRows=true
       username: chia
       password: Chia
       initial-size: 5
@@ -56,7 +55,6 @@ spring:
   web:
     resources:
       static-locations: classpath:/static/
-
 mybatis-plus:
   configuration:
     map-underscore-to-camel-case: true
