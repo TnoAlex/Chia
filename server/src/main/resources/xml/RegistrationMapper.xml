@@ -53,7 +53,7 @@
                s.free_times,
                s.max_score
         from registration as r
-                 left join pre_registration as pr on r.csp_id = pr.csp_id
+                 left join pre_registration as pr on r.csp_id = pr.csp_id AND r.student_id = pr.student_id
                  left join student s on r.student_id = s.id
         where r.type != pr.type
           and r.csp_id = #{cid}
@@ -61,7 +61,7 @@
     <select id="queryWrongTypeNumber" resultType="java.lang.Long">
         SELECT count(s.id)
         from registration as r
-                 left join pre_registration as pr on r.csp_id = pr.csp_id
+                 left join pre_registration as pr on r.csp_id = pr.csp_id AND r.student_id = pr.student_id
                  left join student s on r.student_id = s.id
         where r.type != pr.type
           and r.csp_id = #{cid}
@@ -74,7 +74,7 @@
                s.free_times,
                s.max_score
         from registration as r
-                 left join pre_registration as pr on r.csp_id = pr.csp_id
+                 left join pre_registration as pr on r.csp_id = pr.csp_id AND pr.student_id = r.student_id
                  left join student s on r.student_id = s.id
         where r.type = pr.type
           and r.csp_id = #{cid}
@@ -82,7 +82,7 @@
     <select id="queryOfficialNumber" resultType="java.lang.Long">
         SELECT count(s.id)
         from registration as r
-                 left join pre_registration as pr on r.csp_id = pr.csp_id
+                 left join pre_registration as pr on r.csp_id = pr.csp_id AND pr.student_id = r.student_id
                  left join student s on r.student_id = s.id
         where r.type = pr.type
           and r.csp_id = #{cid}

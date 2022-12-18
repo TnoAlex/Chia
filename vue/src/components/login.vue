@@ -17,7 +17,8 @@
           <div class="input-field">
             <i class="fas fa-lock">
             </i>
-            <input id="student_passwd" v-model="loginObject.password" placeholder="密码" type="password">
+            <input id="student_passwd" v-model="loginObject.password" autocomplete="off" placeholder="密码"
+                   type="password">
           </div>
           <router-link :to="{path:'/forget_password',query:this.loginObject.type}" class="atag"
                        style="display: block;text-align: right">忘记密码
@@ -32,7 +33,8 @@
           </div>
           <div class="input-field">
             <i class="fas fa-lock"></i>
-            <input id="teacher_passwd" v-model="loginObject.password" placeholder="密码" type="password">
+            <input id="teacher_passwd" v-model="loginObject.password" autocomplete="off" placeholder="密码"
+                   type="password">
           </div>
           <router-link :to="{path:'/forget_password',query:this.loginObject.type}" class="atag"
                        style="display: block;text-align: right">忘记密码

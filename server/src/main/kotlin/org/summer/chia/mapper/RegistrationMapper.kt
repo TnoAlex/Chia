@@ -13,7 +13,7 @@ interface RegistrationMapper : BaseMapper<Registration> {
     fun absentOfficialRegistrationNumber(cid: String): Long
     fun absentExam(page: Page<StudentListItem>, cid: String): Page<StudentListItem>
     fun absentExamNumber(cid: String): Long
-    fun insertRegistrationInfo(@Param("obj") obj: Registration)
+    fun insertRegistrationInfo(@Param("obj") obj: Registration): Int
 
     fun queryWrongType(page: Page<StudentListItem>, cid: String): Page<StudentListItem>
     fun queryWrongTypeNumber(cid: String): Long

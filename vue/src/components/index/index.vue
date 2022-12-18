@@ -447,7 +447,7 @@ export default {
         loading.close()
         if(res.data.code===403)
         {
-          util.messageBox('您已经报名成功，请勿多次报名，','warning')
+          util.messageBox(res.data.msg, 'warning')
         } else {
           util.messageBox('报名成功', 'success')
           this.enrollInfo.extra = ''
@@ -457,10 +457,10 @@ export default {
         }
         this.enrollInfo.extra = ''
         this.enrollInfo.freeOrOwn = ''
-      }).catch(async () => {
+      }).catch(async (err) => {
         await util.delay(100)
         loading.close()
-        util.messageBox('报名失败', 'error')
+        util.messageBox(err.data.msg, 'error')
       })
     },
     async getCspInfo(){

@@ -10,6 +10,7 @@ import org.springframework.scheduling.annotation.Async
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.transaction.interceptor.TransactionAspectSupport
 import org.summer.chia.adapter.UserDetailsAdapter
 import org.summer.chia.exception.SqlException
 import org.summer.chia.mapper.CspInfoMapper
@@ -46,20 +47,32 @@ class RegistrationServiceImp : ServiceImpl<RegistrationMapper, Registration>(), 
 
     @Transactional
     override fun registrationList(objList: List<RegistrationListItem>): Result {
+        var transactionalPoint = TransactionAspectSupport.currentTransactionStatus().createSavepoint()
         val studentId = studentMapper.selectList(
             KtQueryWrapper(Student::class.java).`in`(
                 Student::studentNumber,
                 objList.map { it.studentIdNumber })
-        ).associate { it.studentNumber to it.id }
+        ).associateBy { it.studentNumber }
+        val errors = ArrayList<String>()
         try {
             objList.forEach {
                 studentId[it.studentIdNumber]?.let { p ->
-                    baseMapper.insertRegistrationInfo(Registration(null, it.cspId, p, null, it.type, null))
-                    if (it.type == 1)
-                        studentMapper.update(
-                            null,
-                            KtUpdateWrapper(Student::class.java).eq(Student::id, p).setSql("free_time = free_time - 1")
-                        )
+                    val row =
+                        baseMapper.insertRegistrationInfo(Registration(null, it.cspId, p.id!!, null, it.type, null))
+                    if (row != 0) {
+                        if (it.type == 1 && p.freeTimes > 0) {
+                            studentMapper.update(
+                                null,
+                                KtUpdateWrapper(Student::class.java).eq(Student::id, p.id!!).set(Student::freeTimes, 0)
+                            )
+                        }
+                        if (it.type == 1 && p.freeTimes == 0) {
+                            errors.add(p.name)
+                            TransactionAspectSupport.currentTransactionStatus().rollbackToSavepoint(transactionalPoint)
+                            return@let
+                        }
+                    }
+                    transactionalPoint = TransactionAspectSupport.currentTransactionStatus().createSavepoint()
                 }
             }
             val cspId = objList.map { it.cspId }.toSet()
@@ -73,7 +86,17 @@ class RegistrationServiceImp : ServiceImpl<RegistrationMapper, Registration>(), 
             Log.error(this.javaClass, this::registrationList.name + "-> Insert Exception: " + e.message, e.stackTrace)
             throw SqlException("Insert Exception", this::registrationList.name)
         }
-        return Result.success()
+        if (errors.isEmpty()) {
+            return Result.success()
+        } else {
+            val messasge = StringBuilder()
+            errors.forEach {
+                messasge.append(it).append(",")
+            }
+            messasge.replace(messasge.lastIndex, messasge.length, "这(几)位同学免费次数已用尽，却报名免费团")
+            return Result.error(messasge.toString())
+        }
+
     }
 
     @Transactional
@@ -82,7 +105,7 @@ class RegistrationServiceImp : ServiceImpl<RegistrationMapper, Registration>(), 
             KtQueryWrapper(Student::class.java).`in`(
                 Student::studentNumber,
                 objList.map { it.studentIdNumber })
-        ).associate { it.studentNumber to it.id }
+        ).associateBy { it.studentNumber }
         try {
             val cspId = objList.map { it.cspId }.toSet()
             val cspInfo = cspInfoMapper.selectList(KtQueryWrapper(CspInfo::class.java).`in`(CspInfo::id, cspId))
@@ -94,16 +117,16 @@ class RegistrationServiceImp : ServiceImpl<RegistrationMapper, Registration>(), 
                 )
             }
             objList.forEach {
-                studentId[it.studentIdNumber]?.let { id ->
+                studentId[it.studentIdNumber]?.let { p ->
                     if (it.socre!! >= cspInfo[it.cspId]!!)
                         studentMapper.update(
                             null,
-                            KtUpdateWrapper(Student::class.java).eq(Student::id, id).setSql("free_time = free_time +1")
+                            KtUpdateWrapper(Student::class.java).eq(Student::id, p.id!!).set(Student::freeTimes, 1)
                         )
                     baseMapper.update(
                         null,
                         KtUpdateWrapper(Registration::class.java).eq(Registration::cspId, it.cspId)
-                            .eq(Registration::studentId, id)
+                            .eq(Registration::studentId, p.id!!)
                             .set(Registration::miss, 0)
                             .set(Registration::score, it.socre!!)
                     )

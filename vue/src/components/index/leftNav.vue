@@ -37,12 +37,12 @@
 
           <router-link :to="{path:'/studentList'}" class="side-nav-link">
             <i class="bi bi-person-video2"></i>
-            <span> 学生信息表 </span>
+            <span> 学生信息 </span>
           </router-link>
 
           <router-link :to="{path:'/officialEnroll'}" class="side-nav-link">
             <i class="bi bi-calendar3-week"></i>
-            <span> 正式报名比对</span>
+            <span> 报名管理</span>
           </router-link>
         </li>
       </ul>

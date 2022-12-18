@@ -148,7 +148,8 @@ class StudentServiceImp : ServiceImpl<StudentMapper, Student>(), StudentService 
                         it.maxScore,
                         it.freeTimes,
                         calendar.get(Calendar.YEAR).toString() + "级",
-                        totalSize
+                        totalSize,
+                        null
                     )
                 )
             }
@@ -212,7 +213,8 @@ class StudentServiceImp : ServiceImpl<StudentMapper, Student>(), StudentService 
                             it.maxScore,
                             it.freeTimes,
                             calendar.get(Calendar.YEAR).toString() + "级",
-                            totalSize
+                            totalSize,
+                            null
                         )
                     )
                 }
@@ -254,7 +256,8 @@ class StudentServiceImp : ServiceImpl<StudentMapper, Student>(), StudentService 
                         user.maxScore,
                         user.freeTimes,
                         calendar.get(Calendar.YEAR).toString() + "级",
-                        totalSize
+                        totalSize,
+                        null
                     )
                 }
             )

@@ -32,6 +32,9 @@ class PreRegistrationServiceImp : ServiceImpl<PreRegistrationMapper, PreRegistra
             ) {
                 Result.error("已经报名此次CSP认证，无法重复报名")
             } else {
+                if (account.freeTimes == 0 && obj.type == 1) {
+                    return Result.error("已无免费次数，请自费报名")
+                }
                 baseMapper.insert(obj)
                 Result.success()
             }
@@ -78,7 +81,7 @@ class PreRegistrationServiceImp : ServiceImpl<PreRegistrationMapper, PreRegistra
         } catch (e: Exception) {
             Log.error(
                 this.javaClass,
-                this::doQueryList.name + "-> An Exception Occurs during query or delete: " + e.message,
+                this::doQueryList.name + "-> An Exception Occurs during query : " + e.message,
                 e.stackTrace
             )
             throw SqlException("An Exception Occurs during query", this::doQueryList.name)

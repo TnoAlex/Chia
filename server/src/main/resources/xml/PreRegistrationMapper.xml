@@ -22,7 +22,7 @@
         <result property="studentName" column="studentName"/>
         <result property="studentNumber" column="student_number"/>
     </resultMap>
-    <select id=" queryList" resultMap="studentListItem">
+    <select id="queryList" resultMap="studentListItem">
         select s.id,
                s.name,
                s.student_number,

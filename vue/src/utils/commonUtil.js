@@ -1,6 +1,5 @@
 import {ElLoading, ElMessage} from "element-plus";
 import axios from "axios";
-import xlsx from "xlsx";
 
 const userInfo = {
     type: 0,
@@ -96,11 +95,11 @@ function destroyCookie(e) {
     })
     localStorage.clear()
 }
-function exportExcel(exportArray)
-{
+
+function exportExcel(exportArray, tableName) {
     let xlsx = require("xlsx")
     let sheet = xlsx.utils.json_to_sheet(exportArray)
     let book = xlsx.utils.book_new()
-    xlsx.utils.book_append_sheet(book,sheet,"sheet1")
-    xlsx.writeFile(book,'导出学生数据表.xlsx')
+    xlsx.utils.book_append_sheet(book, sheet, "sheet1")
+    xlsx.writeFile(book, tableName + '.xlsx')
 }

@@ -174,3 +174,39 @@ create table if not exists teacher
     email    varchar(32)  not null
 );
 
+create definer = root@localhost event if not exists captcha_auto_delete on schedule
+    every '20' SECOND
+        starts '2022-11-30 11:41:44'
+    enable
+    do
+    DELETE
+    FROM captcha
+    WHERE TIMESTAMPDIFF(SECOND, captcha.create_time, NOW()) > 420;
+
+create definer = root@localhost event if not exists captcha_auto_lapse on schedule
+    every '20' SECOND
+        starts '2022-11-27 20:22:52'
+    enable
+    do
+    UPDATE captcha
+    SET captcha.status = -1
+    WHERE TIMESTAMPDIFF(SECOND, captcha.create_time, NOW()) > 300;
+
+create definer = root@localhost event if not exists csp_auto_end on schedule
+    every '1' MINUTE
+        starts '2022-12-04 17:41:58'
+    enable
+    do
+    UPDATE csp_info
+    SET csp_info.state= -1
+    WHERE TIMESTAMPDIFF(DAY, NOW(), csp_info.end_time) <= 0;
+
+create definer = root@localhost event if not exists csp_auto_start on schedule
+    every '1' MINUTE
+        starts '2022-12-04 17:40:55'
+    enable
+    do
+    UPDATE csp_info
+    SET csp_info.state = 1
+    WHERE TIMESTAMPDIFF(SECOND, NOW(), csp_info.start_time) <= 0;
+
