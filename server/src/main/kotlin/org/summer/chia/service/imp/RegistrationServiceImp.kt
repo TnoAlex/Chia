@@ -13,21 +13,17 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.transaction.interceptor.TransactionAspectSupport
 import org.summer.chia.adapter.UserDetailsAdapter
 import org.summer.chia.exception.SqlException
-import org.summer.chia.mapper.CspInfoMapper
-import org.summer.chia.mapper.MessageMapper
-import org.summer.chia.mapper.RegistrationMapper
-import org.summer.chia.mapper.StudentMapper
+import org.summer.chia.mapper.*
 import org.summer.chia.pojo.ao.RegistrationListItem
 import org.summer.chia.pojo.ao.Result
 import org.summer.chia.pojo.ao.StudentListItem
-import org.summer.chia.pojo.dto.CspInfo
-import org.summer.chia.pojo.dto.Message
-import org.summer.chia.pojo.dto.Registration
-import org.summer.chia.pojo.dto.Student
+import org.summer.chia.pojo.ao.WrongTypeReg
+import org.summer.chia.pojo.dto.*
 import org.summer.chia.service.RegistrationService
 import org.summer.chia.utils.Log
 import org.summer.chia.utils.MailSendUtil
 import java.sql.Timestamp
+import java.text.SimpleDateFormat
 
 @Service
 @EnableAspectJAutoProxy(exposeProxy = true)
@@ -45,6 +41,9 @@ class RegistrationServiceImp : ServiceImpl<RegistrationMapper, Registration>(), 
     @Autowired
     private lateinit var messageMapper: MessageMapper
 
+    @Autowired
+    private lateinit var preRegistrationMapper: PreRegistrationMapper
+
     @Transactional
     override fun registrationList(objList: List<RegistrationListItem>): Result {
         var transactionalPoint = TransactionAspectSupport.currentTransactionStatus().createSavepoint()
@@ -53,7 +52,15 @@ class RegistrationServiceImp : ServiceImpl<RegistrationMapper, Registration>(), 
                 Student::studentNumber,
                 objList.map { it.studentIdNumber })
         ).associateBy { it.studentNumber }
-        val errors = ArrayList<String>()
+        val preReg = preRegistrationMapper.selectList(
+            KtQueryWrapper(PreRegistration::class.java).eq(
+                PreRegistration::cspId,
+                objList[0].cspId
+            )
+                .`in`(PreRegistration::studentId, studentId.values.map { it.id!! })
+        ).associate { it.studentId to it.type }
+        val format = SimpleDateFormat("yyyy")
+        val errors = ArrayList<WrongTypeReg>()
         try {
             objList.forEach {
                 studentId[it.studentIdNumber]?.let { p ->
@@ -67,7 +74,26 @@ class RegistrationServiceImp : ServiceImpl<RegistrationMapper, Registration>(), 
                             )
                         }
                         if (it.type == 1 && p.freeTimes == 0) {
-                            errors.add(p.name)
+                            errors.add(
+                                WrongTypeReg(
+                                    p.name,
+                                    p.studentNumber,
+                                    format.format(p.enrollmentTime),
+                                    "自费团错报免费团"
+                                )
+                            )
+                            TransactionAspectSupport.currentTransactionStatus().rollbackToSavepoint(transactionalPoint)
+                            return@let
+                        }
+                        if (it.type != preReg[p.id]) {
+                            errors.add(
+                                WrongTypeReg(
+                                    p.name,
+                                    p.studentNumber,
+                                    format.format(p.enrollmentTime),
+                                    "免费团错报自费团"
+                                )
+                            )
                             TransactionAspectSupport.currentTransactionStatus().rollbackToSavepoint(transactionalPoint)
                             return@let
                         }
@@ -86,17 +112,7 @@ class RegistrationServiceImp : ServiceImpl<RegistrationMapper, Registration>(), 
             Log.error(this.javaClass, this::registrationList.name + "-> Insert Exception: " + e.message, e.stackTrace)
             throw SqlException("Insert Exception", this::registrationList.name)
         }
-        if (errors.isEmpty()) {
-            return Result.success()
-        } else {
-            val messasge = StringBuilder()
-            errors.forEach {
-                messasge.append(it).append(",")
-            }
-            messasge.replace(messasge.lastIndex, messasge.length, "这(几)位同学免费次数已用尽，却报名免费团")
-            return Result.error(messasge.toString())
-        }
-
+        return Result.success(errors)
     }
 
     @Transactional
@@ -118,7 +134,7 @@ class RegistrationServiceImp : ServiceImpl<RegistrationMapper, Registration>(), 
             }
             objList.forEach {
                 studentId[it.studentIdNumber]?.let { p ->
-                    if (it.socre!! >= cspInfo[it.cspId]!!)
+                    if (it.score!! >= cspInfo[it.cspId]!!)
                         studentMapper.update(
                             null,
                             KtUpdateWrapper(Student::class.java).eq(Student::id, p.id!!).set(Student::freeTimes, 1)
@@ -128,7 +144,7 @@ class RegistrationServiceImp : ServiceImpl<RegistrationMapper, Registration>(), 
                         KtUpdateWrapper(Registration::class.java).eq(Registration::cspId, it.cspId)
                             .eq(Registration::studentId, p.id!!)
                             .set(Registration::miss, 0)
-                            .set(Registration::score, it.socre!!)
+                            .set(Registration::score, it.score!!)
                     )
                 }
             }
@@ -229,20 +245,6 @@ class RegistrationServiceImp : ServiceImpl<RegistrationMapper, Registration>(), 
         }
     }
 
-    override fun queryWrongType(cid: String, pageNum: String, pageSize: String): Result {
-        try {
-            val page = Page<StudentListItem>(pageNum.toLong(), pageSize.toLong())
-            val res = baseMapper.queryWrongType(page, cid)
-            val total = baseMapper.queryWrongTypeNumber(cid)
-            res.records.forEach {
-                it.totalSize = total
-            }
-            return Result.success(res.records)
-        } catch (e: Exception) {
-            Log.error(javaClass, this::queryWrongType.name + "-> Query Exception: " + e.message, e.stackTrace)
-            throw SqlException("Query Exception", this::queryWrongType.name)
-        }
-    }
 
     override fun queryOfficialList(cid: String, pageNum: String, pageSize: String): Result {
         try {

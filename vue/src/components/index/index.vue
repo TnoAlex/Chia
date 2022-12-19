@@ -174,7 +174,8 @@
                     <div :class="proceeClass" class="badge">{{ this.getProcessionStr(item.startTime, item.endTime) }}
                     </div>
                     &ensp;
-                    <div :class="item.registered ===1?'bg-success':'bg-warning'" class="badge">
+                    <div v-if="userInfo.type === 0" :class="item.registered ===1?'bg-success':'bg-warning'"
+                         class="badge">
                       {{ item.registered === 0 ? "未报名" : "已报名" }}
                     </div>
 

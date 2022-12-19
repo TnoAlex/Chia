@@ -177,10 +177,9 @@ export default {
       Edit,
       exportList: [
         {value: 4, label: '预报名名单'},
-        {value: 0, label: '未有正式报名'},
-        {value: 1, label: '缺席考试名单'},
-        {value: 2, label: '正式报名错误'},
-        {value: 3, label: '正式报名正确'}
+        {value: 0, label: '未正式报名名单'},
+        {value: 1, label: '缺考试名单'},
+        {value: 3, label: '正式报名名单'}
       ],
       currentExportUrl: '',
       nowExportSelect: '',
@@ -268,11 +267,6 @@ export default {
         this.tableName = "缺考表"
         await this.getTableData(url, pageNum, pageSize)
         this.currentExportUrl = `teacher/query/absent/exam/${cid}/${0}/${this.tableDataNum}`
-      } else if (this.nowExportSelect === 2) {
-        url = `teacher/query/wrong/${cid}/${pageNum}/${pageSize}`
-        this.tableName = "错报团表"
-        await this.getTableData(url, pageNum, pageSize)
-        this.currentExportUrl = `teacher/query/wrong/${cid}/${0}/${this.tableDataNum}`
       } else if (this.nowExportSelect === 3) {
         url = `teacher/query/official/${cid}/${pageNum}/${pageSize}`
         this.tableName = "正式报名表"
@@ -427,7 +421,7 @@ export default {
       await this.uploadScoreExcelInfo(dataArray)
     },
     async uploadScoreExcelInfo(dataArray) {
-      let loading = util.loadingWait('上传中。。。', 'table_studentList')
+      let loading = util.loadingWait('上传中...', 'table_studentList')
       await util.delay(100)
       await axios({
         method: 'POST',
@@ -445,9 +439,8 @@ export default {
       })
     },
     async uploadExcelInfo(dataArray) {
-      let loading = util.loadingWait('上传信息中。。。')
+      let loading = util.loadingWait('上传信息中...')
       await util.delay(50)
-      let upFlag = 1
       await axios({
         headers: {'content-type': 'application/json'},
         method: 'post',
@@ -457,19 +450,32 @@ export default {
         if (res.data.code === 403) {
           util.messageBox(res.data.msg, "error")
           return 0
+        } else {
+          if (res.data.data.length === 0)
+            util.messageBox('上传正式报名表格成功', 'success')
+          else {
+            util.messageBox('上传正式报名表格成功，报错团名单即将导出', 'warning')
+            let array = []
+            res.data.data.forEach((item) => {
+              array.push({
+                '姓名': item.name,
+                '学号': item.studentNumber,
+                '年级': item.grade,
+                '类型': item.type
+              })
+            })
+            util.exportExcel(array, "第" + this.cspNameSelectList[this.nowCspSelect].label + "届报错团名单")
+            util.messageBox('名单已导出', 'success')
+          }
+          return 1
         }
+
       }).catch(() => {
-        upFlag = 0
+        util.messageBox('上传正式报名表格失败', 'error')
+        return 0
       })
       await util.delay(100)
       loading.close()
-      if (upFlag === 0) {
-        util.messageBox('上传正式报名表格失败', 'error')
-        return 0
-      } else {
-        util.messageBox('上传正式报名表格成功', 'success')
-        return 1
-      }
     },
     async sendMessageToAllAbsence() {
       if (this.nowCspSelect === '') {
@@ -494,7 +500,7 @@ export default {
 
     },
     async getCspInfo() {
-      let loading = util.loadingWait('拉取CSP届次中。。。')
+      let loading = util.loadingWait('拉取CSP届次中...')
       await util.delay(200)
       await this.$axios.get('csp_info/pre')
           .then(async (res) => {

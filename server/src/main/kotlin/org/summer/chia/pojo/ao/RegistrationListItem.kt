@@ -7,5 +7,5 @@ data class RegistrationListItem(
     var cspId: String,
     var studentIdNumber: String,
     var type: Int,
-    var socre: Int?
+    var score: Int?
 )

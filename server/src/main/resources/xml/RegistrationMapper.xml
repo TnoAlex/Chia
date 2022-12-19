@@ -30,13 +30,15 @@
         select s.id, s.student_number, s.name, concat(YEAR(s.enrollment_time), '级') as grade, s.free_times, s.max_score
         from registration as r
                  left join student s on s.id = r.student_id
-        where r.miss = 0
+        where r.miss = 1
+          and r.csp_id = #{cid}
     </select>
     <select id="absentExamNumber" resultType="java.lang.Long">
         select count(s.id)
         from registration as r
                  left join student s on s.id = r.student_id
-        where r.miss = 0
+        where r.miss = 1
+          and r.csp_id = #{cid}
     </select>
     <insert id="insertRegistrationInfo" keyColumn="id">
         insert into registration(id, csp_id, student_id, type)
@@ -45,27 +47,6 @@
                                 student_id = values(student_id),
                                 type       = values(type)
     </insert>
-    <select id="queryWrongType" resultMap="studentListItem">
-        SELECT s.id,
-               s.student_number,
-               s.name,
-               concat(YEAR(s.enrollment_time), '级') AS grade,
-               s.free_times,
-               s.max_score
-        from registration as r
-                 left join pre_registration as pr on r.csp_id = pr.csp_id AND r.student_id = pr.student_id
-                 left join student s on r.student_id = s.id
-        where r.type != pr.type
-          and r.csp_id = #{cid}
-    </select>
-    <select id="queryWrongTypeNumber" resultType="java.lang.Long">
-        SELECT count(s.id)
-        from registration as r
-                 left join pre_registration as pr on r.csp_id = pr.csp_id AND r.student_id = pr.student_id
-                 left join student s on r.student_id = s.id
-        where r.type != pr.type
-          and r.csp_id = #{cid}
-    </select>
     <select id="queryOfficialList" resultMap="studentListItem">
         SELECT s.id,
                s.student_number,
