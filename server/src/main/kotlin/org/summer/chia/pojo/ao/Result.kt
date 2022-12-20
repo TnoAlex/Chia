@@ -1,11 +1,15 @@
 package org.summer.chia.pojo.ao
 
+import io.swagger.v3.oas.annotations.media.Schema
 import org.summer.chia.annotation.NoArg
 
 @NoArg
 data class Result(
+    @Schema(description = "返回数据")
     var data: Any?,
+    @Schema(description = "返回消息")
     var msg: String?,
+    @Schema(description = "返回状态")
     var code: Int
 ) {
     companion object {

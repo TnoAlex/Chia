@@ -1,0 +1,1416 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Chia Apis",
+    "description": "系统开放开放API",
+    "version": "1.0.1"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8086",
+      "description": "Generated server url"
+    }
+  ],
+  "paths": {
+    "/user/reset/password": {
+      "post": {
+        "tags": [
+          "用户模块"
+        ],
+        "summary": "用户重置密码",
+        "operationId": "resetPassword",
+        "parameters": [
+          {
+            "name": "obj",
+            "in": "query",
+            "description": "重置密码实体",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/RestPassword"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RestPassword"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/teacher/upload/transcripts": {
+      "post": {
+        "tags": [
+          "CSP正式报名模块"
+        ],
+        "summary": "上传成绩单",
+        "operationId": "uploadTranscripts",
+        "parameters": [
+          {
+            "in": "query",
+            "description": "成绩单列表",
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/RegistrationListItem"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/teacher/upload/regList": {
+      "post": {
+        "tags": [
+          "CSP正式报名模块"
+        ],
+        "summary": "上传正式报名名单",
+        "operationId": "uploadRegistrationList",
+        "parameters": [
+          {
+            "in": "query",
+            "description": "正式报名名单",
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/RegistrationListItem"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/teacher/publish/modify": {
+      "post": {
+        "tags": [
+          "CSP信息接口"
+        ],
+        "summary": "教师修改CSP预报名信息",
+        "operationId": "modifyCspRegistration",
+        "parameters": [
+          {
+            "in": "query",
+            "description": "其中只需要保留需要修改的部分",
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PublishCsp"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/teacher/publish/delete/{pid}": {
+      "post": {
+        "tags": [
+          "CSP信息接口"
+        ],
+        "summary": "教师删除CSP预报名信息",
+        "operationId": "deleteCspRegistration",
+        "parameters": [
+          {
+            "name": "pid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "description": "CSP ID",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/teacher/publish/csp": {
+      "post": {
+        "tags": [
+          "CSP信息接口"
+        ],
+        "summary": "教师发布CSP预报名",
+        "operationId": "publishCspRegistration",
+        "parameters": [
+          {
+            "in": "query",
+            "description": "CSP发布信息",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/PublishCsp"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PublishCsp"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/teacher/notice/official/{cid}": {
+      "post": {
+        "tags": [
+          "CSP正式报名模块"
+        ],
+        "summary": "提醒学生进行正式报名",
+        "operationId": "noticeStudent",
+        "parameters": [
+          {
+            "name": "cid",
+            "in": "path",
+            "description": "查询的CSP ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/teacher/import/freshman": {
+      "post": {
+        "tags": [
+          "用户模块"
+        ],
+        "summary": "导入学生名单",
+        "operationId": "importFreshManInfo",
+        "parameters": [
+          {
+            "name": "infoList",
+            "in": "query",
+            "description": "导入学生名单",
+            "schema": {
+              "$ref": "#/components/schemas/FreshmanInfo"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FreshmanInfo"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/teacher/filter/{score}/{score_filter}/{grade}/{free_time}": {
+      "post": {
+        "tags": [
+          "用户模块"
+        ],
+        "summary": "过滤学生列表",
+        "operationId": "filterStudentDelete",
+        "parameters": [
+          {
+            "name": "score",
+            "in": "path",
+            "description": "成绩",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "score_filter",
+            "in": "path",
+            "description": "成绩条件 1 大于,2 小于,4 等于,5 大于等于,6 小于等于",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": 1
+          },
+          {
+            "name": "grade",
+            "in": "path",
+            "description": "年级",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "2020-9-1"
+          },
+          {
+            "name": "free_time",
+            "in": "path",
+            "description": "免费次数",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "学生列表",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StudentListItem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/teacher/delete/teacher/{tid}": {
+      "post": {
+        "tags": [
+          "用户模块"
+        ],
+        "summary": "删除老师",
+        "operationId": "deleteTeacher",
+        "parameters": [
+          {
+            "name": "tid",
+            "in": "path",
+            "description": "要删除的老师id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/teacher/admin/remove": {
+      "post": {
+        "tags": [
+          "用户模块"
+        ],
+        "summary": "移除学生",
+        "operationId": "removeStudent",
+        "parameters": [
+          {
+            "in": "query",
+            "description": "需要移除的学生的ID列表",
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/teacher/add/teacher": {
+      "post": {
+        "tags": [
+          "用户模块"
+        ],
+        "summary": "添加老师",
+        "operationId": "addTeacher",
+        "parameters": [
+          {
+            "name": "obj",
+            "in": "query",
+            "description": "老师实体",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Teacher"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "obj": {
+                    "$ref": "#/components/schemas/Teacher"
+                  },
+                  "user": {
+                    "$ref": "#/components/schemas/UserDetails"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/student/verify/activate_account/{code}": {
+      "post": {
+        "tags": [
+          "验证相关接口"
+        ],
+        "summary": "激活用户账号",
+        "operationId": "activateStudentAccount",
+        "parameters": [
+          {
+            "name": "code",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "description": "发送到用户指定邮箱的验证码",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/student/enable/{mail}": {
+      "post": {
+        "tags": [
+          "用户模块"
+        ],
+        "summary": "激活账号",
+        "operationId": "enableAccount",
+        "parameters": [
+          {
+            "name": "mail",
+            "in": "path",
+            "description": "绑定的邮箱",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "老师姓名",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/teacher/query/official/{cid}/{pageNum}/{pageSize}": {
+      "get": {
+        "tags": [
+          "CSP正式报名模块"
+        ],
+        "summary": "获取正式名列表",
+        "operationId": "queryOfficialList",
+        "parameters": [
+          {
+            "name": "cid",
+            "in": "path",
+            "description": "查询的CSP ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageNum",
+            "in": "path",
+            "description": "查询当前页面索引",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "path",
+            "description": "最大页面大小",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/teacher/query/list": {
+      "get": {
+        "tags": [
+          "用户模块"
+        ],
+        "summary": "获取老师列表",
+        "operationId": "queryTeacherList",
+        "responses": {
+          "200": {
+            "description": "老师列表",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommunicativeTarget"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/teacher/query/absent/official/{cid}/{pageNum}/{pageSize}": {
+      "get": {
+        "tags": [
+          "CSP正式报名模块"
+        ],
+        "summary": "获取未正式报名列表",
+        "operationId": "queryAbsentOfficialRegistration",
+        "parameters": [
+          {
+            "name": "cid",
+            "in": "path",
+            "description": "查询的CSP ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageNum",
+            "in": "path",
+            "description": "查询当前页面索引",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "path",
+            "description": "最大页面大小",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/teacher/query/absent/exam/{cid}/{pageNum}/{pageSize}": {
+      "get": {
+        "tags": [
+          "CSP正式报名模块"
+        ],
+        "summary": "获取缺席考试列表",
+        "operationId": "queryAbsentExam",
+        "parameters": [
+          {
+            "name": "cid",
+            "in": "path",
+            "description": "查询的CSP ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageNum",
+            "in": "path",
+            "description": "查询当前页面索引",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "path",
+            "description": "最大页面大小",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/teacher/message/list/{pageNum}/{pageSize}": {
+      "get": {
+        "tags": [
+          "消息模块"
+        ],
+        "summary": "获取缺系统消息列表",
+        "operationId": "querySystemMessage",
+        "parameters": [
+          {
+            "name": "pageNum",
+            "in": "path",
+            "description": "查询当前页面索引",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "path",
+            "description": "最大页面大小",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "user",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/UserDetails"
+            }
+          },
+          {
+            "name": "cid",
+            "in": "path",
+            "description": "查询的CSP ID",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/teacher/list/{pageNum}/{pageSize}": {
+      "get": {
+        "tags": [
+          "用户模块"
+        ],
+        "summary": "获取学生列表",
+        "operationId": "queryStudentList",
+        "parameters": [
+          {
+            "name": "pageNum",
+            "in": "path",
+            "description": "查询当前页面索引",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "path",
+            "description": "最大页面大小",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "学生列表",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StudentListItem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/teacher/list/total": {
+      "get": {
+        "tags": [
+          "用户模块"
+        ],
+        "operationId": "queryStudentTotalNum",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        },
+        "deprecated": true
+      }
+    },
+    "/teacher/filter/{score}/{score_filter}/{grade}/{free_time}/{pageNum}/{pageSize}": {
+      "get": {
+        "tags": [
+          "用户模块"
+        ],
+        "summary": "获取学生列表",
+        "operationId": "filterStudentList",
+        "parameters": [
+          {
+            "name": "score",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "score_filter",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "grade",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "free_time",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageNum",
+            "in": "path",
+            "description": "查询当前页面索引",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "path",
+            "description": "最大页面大小",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/teacher/filter/{name}/{number}": {
+      "get": {
+        "tags": [
+          "用户模块"
+        ],
+        "summary": "按照姓名或学号查找",
+        "operationId": "queryStudentByNameOrNumber",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "description": "姓名",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "number",
+            "in": "path",
+            "description": "学号",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "学生列表",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StudentListItem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/teacher/brief_info": {
+      "get": {
+        "tags": [
+          "用户模块"
+        ],
+        "summary": "老师简要信息",
+        "operationId": "teacherInfo",
+        "parameters": [
+          {
+            "name": "user",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/UserDetails"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "老师姓名",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/student/query/details": {
+      "get": {
+        "tags": [
+          "用户模块"
+        ],
+        "summary": "查询学生详细信息",
+        "operationId": "queryStudentDetails",
+        "parameters": [
+          {
+            "name": "user",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/UserDetails"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "学生详细",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StudentDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/student/brief_info": {
+      "get": {
+        "tags": [
+          "用户模块"
+        ],
+        "summary": "学生简要信息",
+        "operationId": "studentBriefInfo",
+        "parameters": [
+          {
+            "name": "user",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/UserDetails"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "学生简要信息",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StudentBriefInfo"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "RestPassword": {
+        "required": [
+          "code",
+          "newPassword",
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "newPassword": {
+            "type": "string",
+            "description": "新密码"
+          },
+          "code": {
+            "type": "string",
+            "description": "重置密码验证码"
+          },
+          "type": {
+            "type": "integer",
+            "description": "账号类型",
+            "format": "int32",
+            "example": 1
+          }
+        }
+      },
+      "Result": {
+        "required": [
+          "code"
+        ],
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "description": "返回数据"
+          },
+          "msg": {
+            "type": "string",
+            "description": "返回消息"
+          },
+          "code": {
+            "type": "integer",
+            "description": "返回状态",
+            "format": "int32"
+          }
+        }
+      },
+      "RegistrationListItem": {
+        "required": [
+          "cspId",
+          "studentIdNumber",
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "cspId": {
+            "type": "string",
+            "description": "CSP ID"
+          },
+          "studentIdNumber": {
+            "type": "string",
+            "description": "学生学号"
+          },
+          "type": {
+            "type": "integer",
+            "description": "报名类型",
+            "format": "int32"
+          },
+          "score": {
+            "type": "integer",
+            "description": "CSP 成绩",
+            "format": "int32"
+          }
+        }
+      },
+      "PublishCsp": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "CSP ID"
+          },
+          "name": {
+            "type": "integer",
+            "description": "CSP 届次",
+            "format": "int32"
+          },
+          "startTime": {
+            "type": "string",
+            "description": "CSP 预报名开始时间",
+            "example": "2022-10-19 9:00:10"
+          },
+          "endTime": {
+            "type": "string",
+            "description": "CSP 预报名结束时间",
+            "example": "2022-10-19 9:00:10"
+          },
+          "freeThreshold": {
+            "type": "integer",
+            "description": "CSP 获取免费次数最低分数",
+            "format": "int32"
+          }
+        },
+        "description": "CSP 发布与修改"
+      },
+      "FreshmanInfo": {
+        "required": [
+          "enrollmentTime",
+          "freeTime",
+          "idNumber",
+          "name",
+          "studentNumber"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "学生姓名"
+          },
+          "studentNumber": {
+            "type": "string",
+            "description": "学生学号"
+          },
+          "idNumber": {
+            "type": "string",
+            "description": "学生身份证号"
+          },
+          "freeTime": {
+            "type": "integer",
+            "description": "免费参加CSP的次数",
+            "format": "int32"
+          },
+          "enrollmentTime": {
+            "type": "string",
+            "description": "入学时间",
+            "example": "2022-10-11"
+          }
+        }
+      },
+      "StudentListItem": {
+        "required": [
+          "freeTime",
+          "grade",
+          "id",
+          "maxScore",
+          "name",
+          "studentNumber"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "学生ID"
+          },
+          "name": {
+            "type": "string",
+            "description": "学生姓名"
+          },
+          "studentNumber": {
+            "type": "string",
+            "description": "学生学号"
+          },
+          "maxScore": {
+            "type": "integer",
+            "description": "学生最高CSP成绩",
+            "format": "int32"
+          },
+          "freeTime": {
+            "type": "integer",
+            "description": "CSP免费次数",
+            "format": "int32"
+          },
+          "grade": {
+            "type": "string",
+            "description": "学生年级"
+          },
+          "totalSize": {
+            "type": "integer",
+            "description": "学生总数",
+            "format": "int64"
+          },
+          "extra": {
+            "type": "string",
+            "description": "预报名附加消息"
+          }
+        }
+      },
+      "Teacher": {
+        "required": [
+          "name",
+          "password"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          }
+        }
+      },
+      "GrantedAuthority": {
+        "type": "object",
+        "properties": {
+          "authority": {
+            "type": "string"
+          }
+        }
+      },
+      "UserDetails": {
+        "type": "object",
+        "properties": {
+          "password": {
+            "type": "string"
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "username": {
+            "type": "string"
+          },
+          "authorities": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GrantedAuthority"
+            }
+          },
+          "accountNonLocked": {
+            "type": "boolean"
+          },
+          "credentialsNonExpired": {
+            "type": "boolean"
+          },
+          "accountNonExpired": {
+            "type": "boolean"
+          }
+        }
+      },
+      "CommunicativeTarget": {
+        "required": [
+          "id",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "老师id"
+          },
+          "name": {
+            "type": "string",
+            "description": "老师姓名"
+          }
+        }
+      },
+      "StudentDetails": {
+        "required": [
+          "email",
+          "freeTime",
+          "idNumber",
+          "maxScore",
+          "name",
+          "status",
+          "studentID"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "学生姓名"
+          },
+          "studentID": {
+            "type": "string",
+            "description": "学生学号"
+          },
+          "idNumber": {
+            "type": "string",
+            "description": "学生身份证号"
+          },
+          "maxScore": {
+            "type": "integer",
+            "description": "学生最高CSP成绩",
+            "format": "int32"
+          },
+          "freeTime": {
+            "type": "integer",
+            "description": "免费次数",
+            "format": "int32"
+          },
+          "status": {
+            "type": "integer",
+            "description": "账号状态",
+            "format": "int32"
+          },
+          "email": {
+            "type": "string",
+            "description": "学生邮箱"
+          }
+        }
+      },
+      "StudentBriefInfo": {
+        "required": [
+          "freeTime",
+          "maxScore",
+          "name",
+          "status",
+          "studentNum"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "学生姓名"
+          },
+          "studentNum": {
+            "type": "string",
+            "description": "学生学号"
+          },
+          "maxScore": {
+            "type": "integer",
+            "description": "最高CSP成绩",
+            "format": "int32"
+          },
+          "freeTime": {
+            "type": "integer",
+            "description": "CSP免费次数",
+            "format": "int32"
+          },
+          "status": {
+            "type": "integer",
+            "description": "账号状态",
+            "format": "int32"
+          }
+        }
+      }
+    }
+  }
+}

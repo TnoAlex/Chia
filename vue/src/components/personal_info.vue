@@ -198,14 +198,14 @@ export default {
         util.messageBox('请填写验证码','warning')
         return
       }
-      let loading = util.loadingWait('验证码验证中。。。','success')
+      let loading = util.loadingWait('验证码验证中...', 'success')
       await util.delay(100)
       const _this = this
       this.$axios.post('/verify/reset_code/validate/' + this.passwordChangeInfo.code)
           .then(async () => {
             await util.delay(100)
             loading.close()
-            let deepLoading = util.loadingWait('验证码正确，正在修改中。。。')
+            let deepLoading = util.loadingWait('验证码正确，正在修改中...')
             await util.delay(100)
             this.$axios.post(
                 '/user/reset/password',

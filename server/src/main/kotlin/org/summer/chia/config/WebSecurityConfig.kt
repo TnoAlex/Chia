@@ -1,6 +1,7 @@
 package org.summer.chia.config
 
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration
@@ -42,6 +43,9 @@ class WebSecurityConfig {
     @Autowired
     private lateinit var logoutSuccessHandler: LogoutSuccessHandler
 
+    @Value("\${springdoc.api-docs.enabled}")
+    private var docEnable: Boolean = false
+
 
     @Bean
     fun authenticationManager(config: AuthenticationConfiguration): AuthenticationManager = config.authenticationManager
@@ -59,13 +63,24 @@ class WebSecurityConfig {
                     .antMatchers("/verify/**").permitAll()
                     .antMatchers("/forget/**").permitAll()
                     .antMatchers("/teacher/**").hasRole("Teacher")
-                    .anyRequest().authenticated()
             }
             .addFilterAt(authenticationProcessingFilter, UsernamePasswordAuthenticationFilter::class.java)
             .addFilterBefore(authenticationFilter, AnonymousAuthenticationFilter::class.java)
             .userDetailsService(userDetails)
             .authenticationProvider(authenticationProvider)
             .logout().logoutSuccessHandler(logoutSuccessHandler)
+        if (docEnable) {
+            httpSecurity.authorizeRequests {
+                it.antMatchers("/swagger-ui/**").permitAll()
+                    .antMatchers("/swagger-ui.html").permitAll()
+                    .antMatchers("/v3/**").permitAll()
+                    .anyRequest().authenticated()
+            }
+        } else {
+            httpSecurity.authorizeRequests {
+                it.anyRequest().authenticated()
+            }
+        }
         return httpSecurity.build()
     }
 }

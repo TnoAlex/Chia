@@ -112,7 +112,7 @@ export default {
         if (tmp <= 0) {
           clearInterval(button.timer)
           button.duration = 60
-          button.text = "下一步"
+          button.innerText = "下一步"
           button.disabled = false
         }
       },1000)
@@ -120,18 +120,17 @@ export default {
           .then((res) => {
             clearInterval(button.timer)
             button.duration = 60
-            button.text = "下一步"
+            button.innerText = "下一步"
             button.disabled = false
+            this.$refs.next.style.visibility = "hidden"
+            this.$refs.next.style.display = "none"
+            this.$refs.submit_code.style.visibility = "visible"
+            this.$refs.submit_code.style.display = "flex"
+            this.$refs.mail_address_input.disabled = true
+            this.$refs.code_input.style.visibility = "visible"
+            this.$refs.code_input.style.display = "flex"
             if (res.data.code === 403) {
               util.messageBox(res.data.msg, "error")
-            } else {
-              this.$refs.next.style.visibility = "hidden"
-              this.$refs.next.style.display = "none"
-              this.$refs.submit_code.style.visibility = "visible"
-              this.$refs.submit_code.style.display = "flex"
-              this.$refs.mail_address_input.disabled = true
-              this.$refs.code_input.style.visibility = "visible"
-              this.$refs.code_input.style.display = "flex"
             }
           }).catch(err=>{
             util.messageBox(err.data.msg, "error")
@@ -161,8 +160,10 @@ export default {
           })
     },
     async submitPassword() {
-      if (this.newPassword !== this.repeatPassword)
+      if (this.newPassword !== this.repeatPassword) {
         util.messageBox("两次输入不匹配！", "error")
+        return
+      }
       await this.$axios.post(
           "/forget/password/rest",
           {

@@ -1,6 +1,7 @@
 package org.summer.chia.filter
 
 import com.google.gson.Gson
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
@@ -13,11 +14,20 @@ import javax.servlet.http.HttpServletResponse
 @Component
 class AuthenticationFilter : OncePerRequestFilter() {
 
+    @Value("\${springdoc.api-docs.enabled}")
+    private var docEnable: Boolean = false
+
     override fun doFilterInternal(
         request: HttpServletRequest,
         response: HttpServletResponse,
         chain: FilterChain
     ) {
+        if (docEnable) {
+            if (request.servletPath.contains("/swagger-ui") || request.servletPath.contains("/v3")) {
+                chain.doFilter(request, response)
+                return
+            }
+        }
         if (request.servletPath.contains("/forget") || request.servletPath.contains("/verify")) {
             chain.doFilter(request, response)
             return

@@ -1,0 +1,99 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Chia Apis",
+    "description": "系统开放开放API",
+    "version": "1.0.1"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8086",
+      "description": "Generated server url"
+    }
+  ],
+  "paths": {
+    "/csp_info/pre": {
+      "get": {
+        "tags": [
+          "CSP信息接口"
+        ],
+        "summary": "进行CSP预报名",
+        "operationId": "allPreRegistrationInfo",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "GrantedAuthority": {
+        "type": "object",
+        "properties": {
+          "authority": {
+            "type": "string"
+          }
+        }
+      },
+      "UserDetails": {
+        "type": "object",
+        "properties": {
+          "password": {
+            "type": "string"
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "username": {
+            "type": "string"
+          },
+          "authorities": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GrantedAuthority"
+            }
+          },
+          "accountNonLocked": {
+            "type": "boolean"
+          },
+          "credentialsNonExpired": {
+            "type": "boolean"
+          },
+          "accountNonExpired": {
+            "type": "boolean"
+          }
+        }
+      },
+      "Result": {
+        "required": [
+          "code"
+        ],
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "description": "返回数据"
+          },
+          "msg": {
+            "type": "string",
+            "description": "返回消息"
+          },
+          "code": {
+            "type": "integer",
+            "description": "返回状态",
+            "format": "int32"
+          }
+        }
+      }
+    }
+  }
+}

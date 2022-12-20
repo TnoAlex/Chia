@@ -1,0 +1,314 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Chia Apis",
+    "description": "系统开放开放API",
+    "version": "1.0.1"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8086",
+      "description": "Generated server url"
+    }
+  ],
+  "paths": {
+    "/message/read": {
+      "post": {
+        "tags": [
+          "消息模块"
+        ],
+        "summary": "标记已读",
+        "operationId": "readMessage",
+        "parameters": [
+          {
+            "name": "list",
+            "in": "query",
+            "description": "已读消息的id列表",
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "description": "已读消息的id列表",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/message/post": {
+      "post": {
+        "tags": [
+          "消息模块"
+        ],
+        "summary": "发送消息",
+        "operationId": "postMessage",
+        "parameters": [
+          {
+            "name": "message",
+            "in": "query",
+            "description": "消息实体",
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MessageObject"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/message/delete": {
+      "post": {
+        "tags": [
+          "消息模块"
+        ],
+        "summary": "删除消息",
+        "operationId": "deleteMessage",
+        "parameters": [
+          {
+            "name": "list",
+            "in": "query",
+            "description": "删除消息的id列表",
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "description": "删除消息的id列表",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/message/query/list/{pageNum}/{pageSize}": {
+      "get": {
+        "tags": [
+          "消息模块"
+        ],
+        "summary": "获取消息列表",
+        "operationId": "queryMessageList",
+        "parameters": [
+          {
+            "name": "pageSize",
+            "in": "path",
+            "description": "最大页面大小",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageNum",
+            "in": "path",
+            "description": "查询当前页面索引",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "user",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/UserDetails"
+            }
+          },
+          {
+            "name": "cid",
+            "in": "path",
+            "description": "查询的CSP ID",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/message/query/communicative": {
+      "get": {
+        "tags": [
+          "消息模块"
+        ],
+        "summary": "获取老师列表",
+        "operationId": "queryCommunicative",
+        "responses": {
+          "200": {
+            "description": "老师列表",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommunicativeTarget"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Result": {
+        "required": [
+          "code"
+        ],
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "description": "返回数据"
+          },
+          "msg": {
+            "type": "string",
+            "description": "返回消息"
+          },
+          "code": {
+            "type": "integer",
+            "description": "返回状态",
+            "format": "int32"
+          }
+        }
+      },
+      "MessageObject": {
+        "required": [
+          "content",
+          "reciId"
+        ],
+        "type": "object",
+        "properties": {
+          "reciId": {
+            "type": "string",
+            "description": "消息接收方ID"
+          },
+          "content": {
+            "type": "string",
+            "description": "消息内容"
+          }
+        },
+        "description": "消息实体"
+      },
+      "GrantedAuthority": {
+        "type": "object",
+        "properties": {
+          "authority": {
+            "type": "string"
+          }
+        }
+      },
+      "UserDetails": {
+        "type": "object",
+        "properties": {
+          "password": {
+            "type": "string"
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "username": {
+            "type": "string"
+          },
+          "authorities": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GrantedAuthority"
+            }
+          },
+          "accountNonLocked": {
+            "type": "boolean"
+          },
+          "credentialsNonExpired": {
+            "type": "boolean"
+          },
+          "accountNonExpired": {
+            "type": "boolean"
+          }
+        }
+      },
+      "CommunicativeTarget": {
+        "required": [
+          "id",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "老师id"
+          },
+          "name": {
+            "type": "string",
+            "description": "老师姓名"
+          }
+        }
+      }
+    }
+  }
+}

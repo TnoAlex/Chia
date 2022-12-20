@@ -11,7 +11,7 @@ plugins {
 
 
 group = "org.summer"
-version = "1.0.0-beta"
+version = "1.0.1-beta"
 java.sourceCompatibility = JavaVersion.VERSION_11
 
 
@@ -62,6 +62,11 @@ dependencies {
     runtimeOnly("org.aspectj:aspectjrt:1.9.9.1")
 // https://mvnrepository.com/artifact/org.aspectj/aspectjweaver
     runtimeOnly("org.aspectj:aspectjweaver:1.9.9.1")
+    // https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-ui
+    implementation("org.springdoc:springdoc-openapi-ui:1.6.14")
+    implementation("org.springdoc:springdoc-openapi-kotlin:1.6.14")
+    // https://mvnrepository.com/artifact/com.github.xiaoymin/knife4j-springdoc-ui
+    implementation("com.github.xiaoymin:knife4j-springdoc-ui:3.0.3")
 
 
 }

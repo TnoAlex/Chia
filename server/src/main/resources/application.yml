@@ -11,6 +11,7 @@ server:
       force: true
       charset: utf-8
       enabled: true
+
 spring:
   output:
     ansi:
@@ -69,3 +70,10 @@ mybatis-plus:
   mapper-locations: xml/*xml
 logging:
   config: classpath:logback-spring.xml
+
+springdoc:
+  packages-to-scan: org.summer.chia.controller
+  swagger-ui:
+    enabled: true
+  api-docs:
+    enabled: true

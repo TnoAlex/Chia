@@ -1,0 +1,228 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Chia Apis",
+    "description": "系统开放开放API",
+    "version": "1.0.1"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8086",
+      "description": "Generated server url"
+    }
+  ],
+  "paths": {
+    "/verify/reset_code/validate/{code}": {
+      "post": {
+        "tags": [
+          "验证相关接口"
+        ],
+        "summary": "验证重置密码验证码",
+        "operationId": "validateRestPasswordCode",
+        "parameters": [
+          {
+            "name": "code",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "description": "发送到用户邮箱的验证码",
+            "required": true,
+            "name": "code"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/forget/password/rest": {
+      "post": {
+        "tags": [
+          "验证相关接口"
+        ],
+        "summary": "忘记密码重置密码",
+        "operationId": "resetPassword",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RestPassword"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/forget/password/email/{email}": {
+      "post": {
+        "tags": [
+          "验证相关接口"
+        ],
+        "summary": "获取忘记密码验证码",
+        "operationId": "forgetPassword",
+        "parameters": [
+          {
+            "name": "email",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "description": "用户事先绑定的邮箱地址",
+            "required": true,
+            "name": "email"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/verify/reset_code": {
+      "get": {
+        "tags": [
+          "验证相关接口"
+        ],
+        "summary": "获取重置密码验证码",
+        "operationId": "getRestPasswordCode",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Result": {
+        "required": [
+          "code"
+        ],
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "description": "返回数据"
+          },
+          "msg": {
+            "type": "string",
+            "description": "返回消息"
+          },
+          "code": {
+            "type": "integer",
+            "description": "返回状态",
+            "format": "int32"
+          }
+        }
+      },
+      "RestPassword": {
+        "required": [
+          "code",
+          "newPassword",
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "newPassword": {
+            "type": "string",
+            "description": "新密码"
+          },
+          "code": {
+            "type": "string",
+            "description": "重置密码验证码"
+          },
+          "type": {
+            "type": "integer",
+            "description": "账号类型",
+            "format": "int32",
+            "example": 1
+          }
+        }
+      },
+      "GrantedAuthority": {
+        "type": "object",
+        "properties": {
+          "authority": {
+            "type": "string"
+          }
+        }
+      },
+      "UserDetails": {
+        "type": "object",
+        "properties": {
+          "password": {
+            "type": "string"
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "username": {
+            "type": "string"
+          },
+          "authorities": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GrantedAuthority"
+            }
+          },
+          "accountNonLocked": {
+            "type": "boolean"
+          },
+          "credentialsNonExpired": {
+            "type": "boolean"
+          },
+          "accountNonExpired": {
+            "type": "boolean"
+          }
+        }
+      }
+    }
+  }
+}

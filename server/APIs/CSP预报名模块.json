@@ -1,0 +1,250 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Chia Apis",
+    "description": "系统开放开放API",
+    "version": "1.0.1"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8086",
+      "description": "Generated server url"
+    }
+  ],
+  "paths": {
+    "/pre/reg": {
+      "post": {
+        "tags": [
+          "CSP预报名模块"
+        ],
+        "summary": "学生预报名",
+        "operationId": "preRegistration",
+        "parameters": [
+          {
+            "name": "preRegistratio",
+            "in": "query",
+            "description": "预报名实体",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/PreRegistration"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PreRegistration"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/pre/reg/cancel/{cid}": {
+      "post": {
+        "tags": [
+          "CSP预报名模块"
+        ],
+        "summary": "取消预报名",
+        "operationId": "cancelPreRegistration",
+        "parameters": [
+          {
+            "name": "cid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "description": "要取消的CSP ID",
+            "required": true,
+            "name": "cid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/pre/reg/list/{cid}/{pageNum}/{pageSzie}": {
+      "get": {
+        "tags": [
+          "CSP预报名模块"
+        ],
+        "summary": "获取预报名列表",
+        "operationId": "queryPreRegistrationList",
+        "parameters": [
+          {
+            "name": "cid",
+            "in": "path",
+            "description": "查询的CSP ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageNum",
+            "in": "path",
+            "description": "查询当前页面索引",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageSzie",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "path",
+            "description": "最大页面大小",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "预报名的学生列表",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StudentListItem"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "PreRegistration": {
+        "required": [
+          "cspId",
+          "extra",
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "cspId": {
+            "type": "string",
+            "description": "CSP ID"
+          },
+          "studentId": {
+            "type": "string",
+            "description": "报名学生ID"
+          },
+          "type": {
+            "type": "integer",
+            "description": "报名类型",
+            "format": "int32"
+          },
+          "extra": {
+            "type": "string",
+            "description": "报名额外提交信息"
+          }
+        }
+      },
+      "Result": {
+        "required": [
+          "code"
+        ],
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "description": "返回数据"
+          },
+          "msg": {
+            "type": "string",
+            "description": "返回消息"
+          },
+          "code": {
+            "type": "integer",
+            "description": "返回状态",
+            "format": "int32"
+          }
+        }
+      },
+      "StudentListItem": {
+        "required": [
+          "freeTime",
+          "grade",
+          "id",
+          "maxScore",
+          "name",
+          "studentNumber"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "学生ID"
+          },
+          "name": {
+            "type": "string",
+            "description": "学生姓名"
+          },
+          "studentNumber": {
+            "type": "string",
+            "description": "学生学号"
+          },
+          "maxScore": {
+            "type": "integer",
+            "description": "学生最高CSP成绩",
+            "format": "int32"
+          },
+          "freeTime": {
+            "type": "integer",
+            "description": "CSP免费次数",
+            "format": "int32"
+          },
+          "grade": {
+            "type": "string",
+            "description": "学生年级"
+          },
+          "totalSize": {
+            "type": "integer",
+            "description": "学生总数",
+            "format": "int64"
+          },
+          "extra": {
+            "type": "string",
+            "description": "预报名附加消息"
+          }
+        }
+      }
+    }
+  }
+}

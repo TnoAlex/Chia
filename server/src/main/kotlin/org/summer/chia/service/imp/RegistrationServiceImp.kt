@@ -47,6 +47,10 @@ class RegistrationServiceImp : ServiceImpl<RegistrationMapper, Registration>(), 
     @Transactional
     override fun registrationList(objList: List<RegistrationListItem>): Result {
         var transactionalPoint = TransactionAspectSupport.currentTransactionStatus().createSavepoint()
+
+        if (objList.isEmpty()) {
+            return Result.error("报名表为空！")
+        }
         val studentId = studentMapper.selectList(
             KtQueryWrapper(Student::class.java).`in`(
                 Student::studentNumber,
@@ -56,8 +60,7 @@ class RegistrationServiceImp : ServiceImpl<RegistrationMapper, Registration>(), 
             KtQueryWrapper(PreRegistration::class.java).eq(
                 PreRegistration::cspId,
                 objList[0].cspId
-            )
-                .`in`(PreRegistration::studentId, studentId.values.map { it.id!! })
+            ).`in`(PreRegistration::studentId, studentId.values.map { it.id!! })
         ).associate { it.studentId to it.type }
         val format = SimpleDateFormat("yyyy")
         val errors = ArrayList<WrongTypeReg>()
@@ -117,6 +120,9 @@ class RegistrationServiceImp : ServiceImpl<RegistrationMapper, Registration>(), 
 
     @Transactional
     override fun transcriptsList(objList: List<RegistrationListItem>): Result {
+        if (objList.isEmpty()) {
+            return Result.error("名单为空！")
+        }
         val studentId = studentMapper.selectList(
             KtQueryWrapper(Student::class.java).`in`(
                 Student::studentNumber,

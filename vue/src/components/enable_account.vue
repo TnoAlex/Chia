@@ -93,26 +93,34 @@ export default {
         if (tmp <= 0) {
           clearInterval(button.timer)
           button.duration = 60
-          button.text = "下一步"
+          button.innerText = "下一步"
           button.disabled = false
         }
       }, 1000)
+      let reg = /^([a-zA-Z]|[0-9])(\\w|\\-)+@[a-zA-Z0-9]+\\.([a-zA-Z]{2,4})$/
+      if (!reg.test(this.emailAddress)) {
+        clearInterval(button.timer)
+        button.duration = 60
+        button.innerText = "下一步"
+        button.disabled = false
+        util.messageBox("邮箱格式错误", "error")
+        return
+      }
       await this.$axios.post("/student/enable/" + toBase64(this.emailAddress))
           .then((res) => {
             clearInterval(button.timer)
             button.duration = 60
-            button.text = "下一步"
+            button.innerText = "下一步"
             button.disabled = false
+            this.$refs.next.style.visibility = "hidden"
+            this.$refs.next.style.display = "none"
+            this.$refs.submit_code.style.visibility = "visible"
+            this.$refs.submit_code.style.display = "flex"
+            this.$refs.mail_address_input.disabled = true
+            this.$refs.code_input.style.visibility = "visible"
+            this.$refs.code_input.style.display = "flex"
             if (res.data.code === 403) {
               util.messageBox(res.data.msg, "error")
-            } else {
-              this.$refs.next.style.visibility = "hidden"
-              this.$refs.next.style.display = "none"
-              this.$refs.submit_code.style.visibility = "visible"
-              this.$refs.submit_code.style.display = "flex"
-              this.$refs.mail_address_input.disabled = true
-              this.$refs.code_input.style.visibility = "visible"
-              this.$refs.code_input.style.display = "flex"
             }
           }).catch(err => {
             util.messageBox(err.data.msg, "error")
