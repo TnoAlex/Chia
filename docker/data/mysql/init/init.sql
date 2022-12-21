@@ -1,5 +1,3 @@
-create database if not exists chia default charset utf8 collate utf8_general_ci;
-use chia;
 create table if not exists captcha
 (
     id          varchar(128) not null
@@ -211,5 +209,4 @@ create definer = root@localhost event if not exists csp_auto_start on schedule
     UPDATE csp_info
     SET csp_info.state = 1
     WHERE TIMESTAMPDIFF(SECOND, NOW(), csp_info.start_time) <= 0;
-
 

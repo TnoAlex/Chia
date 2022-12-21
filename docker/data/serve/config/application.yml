@@ -67,3 +67,9 @@ mybatis-plus:
   mapper-locations: xml/*xml
 logging:
   config: classpath:logback-spring.xml
+
+springdoc:
+  swagger-ui:
+    enabled: false
+  api-docs:
+    enabled: false
