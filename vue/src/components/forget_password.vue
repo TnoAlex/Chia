@@ -115,7 +115,16 @@ export default {
           button.innerText = "下一步"
           button.disabled = false
         }
-      },1000)
+      }, 1000)
+      let reg = /^([a-zA-Z\d][\w-]{2,})@(\w{2,})\.([a-z]{2,})(\.[a-z]{2,})?$/
+      if (!reg.test(this.emailAddress)) {
+        clearInterval(button.timer)
+        button.duration = 60
+        button.innerText = "下一步"
+        button.disabled = false
+        util.messageBox("邮箱格式错误", "error")
+        return
+      }
       await this.$axios.post("/forget/password/email/" + toBase64(this.emailAddress))
           .then((res) => {
             clearInterval(button.timer)

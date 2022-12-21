@@ -97,7 +97,7 @@ export default {
           button.disabled = false
         }
       }, 1000)
-      let reg = /^([a-zA-Z]|[0-9])(\\w|\\-)+@[a-zA-Z0-9]+\\.([a-zA-Z]{2,4})$/
+      let reg = /^([a-zA-Z\d][\w-]{2,})@(\w{2,})\.([a-z]{2,})(\.[a-z]{2,})?$/
       if (!reg.test(this.emailAddress)) {
         clearInterval(button.timer)
         button.duration = 60
