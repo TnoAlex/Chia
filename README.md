@@ -1,4 +1,4 @@
-#  ![logo](https://s1.ax1x.com/2022/12/17/zHLNuQ.png) NiceCSP  ![framework:Spring boot](https://img.shields.io/badge/framework-spring%20boot-brightgreen) ![framework: vue.js (shields.io)](https://img.shields.io/badge/framework-vue.js-brightgreen) ![build: Gradle (shields.io)](https://img.shields.io/badge/build-Gradle-blue) ![language: Kotlin (shields.io)](https://img.shields.io/badge/language-Kotlin-blueviolet)
+#  ![logo](https://s1.ax1x.com/2022/12/17/zHLNuQ.png) NiceCSP  ![framework:Spring boot](https://img.shields.io/badge/framework-spring%20boot-brightgreen) ![framework: vue.js (shields.io)](https://img.shields.io/badge/framework-vue.js-brightgreen) ![build: Gradle (shields.io)](https://img.shields.io/badge/build-Gradle-blue) ![language: Kotlin (shields.io)](https://img.shields.io/badge/language-Kotlin-blueviolet) ![license](https://img.shields.io/github/license/TnoAlex/Chia)
 
 ------
 
