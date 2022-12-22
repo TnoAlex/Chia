@@ -11,7 +11,6 @@ server:
       force: true
       charset: utf-8
       enabled: true
-
 spring:
   output:
     ansi:
@@ -31,16 +30,15 @@ spring:
       content-type: text/html
   mail:
     default-encoding: utf-8
-    host: None
-    username: None
-    password: None
+    host: smtp.163.com
+    username: tommills@163.com
+    password: QCWALYFSSZANWCAY
     protocol: smtp
     test-connection: false
     properties:
       mail:
         smtp:
           auth: true
-
   mvc:
     static-path-pattern: /static/**
   datasource:
@@ -57,7 +55,6 @@ spring:
   web:
     resources:
       static-locations: classpath:/static/
-
 mybatis-plus:
   configuration:
     map-underscore-to-camel-case: true
@@ -70,8 +67,6 @@ mybatis-plus:
   mapper-locations: xml/*xml
 logging:
   config: classpath:logback-spring.xml
-
-
 springdoc:
   swagger-ui:
     enabled: false

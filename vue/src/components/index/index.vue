@@ -402,7 +402,7 @@ export default {
         return '未开始'
       }
       else if(res>100) {
-        this.proceeClass = "bg-waring"
+        this.proceeClass = "bg-warning"
         return '已结束'
       }
       else{
