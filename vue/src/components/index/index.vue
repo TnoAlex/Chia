@@ -171,8 +171,9 @@
                     <h4 class="mt-0">
                       <a href="" class="text-title">第{{ item.name }}次CSP</a>
                     </h4>
-                    <div :class="proceeClass" class="badge">{{ this.getProcessionStr(item.startTime, item.endTime) }}
-                    </div>
+                    <div class="badge bg-success" v-if="(getProcessionStr(item.startTime, item.endTime)==='报名中')">报名中</div>
+                    <div class="badge bg-dark-lighten" v-if="(getProcessionStr(item.startTime, item.endTime)==='未开始')">未开始</div>
+                    <div class="badge bg-warning" v-if="(getProcessionStr(item.startTime, item.endTime)==='已结束')">已结束</div>
                     &ensp;
                     <div v-if="userInfo.type === 0" :class="item.registered ===1?'bg-success':'bg-warning'"
                          class="badge">
@@ -240,7 +241,6 @@ export default {
         gtScore: ''
 
       },
-      proceeClass: "",
       enrollVisible: false,
       createCspVisible: false,
       userInfo: {},
@@ -398,15 +398,12 @@ export default {
       let res = this.getProcessionNum(startTime,endTime)
       if(res<0)
       {
-        this.proceeClass = "bg-dark-lighten"
         return '未开始'
       }
       else if(res>100) {
-        this.proceeClass = "bg-warning"
         return '已结束'
       }
       else{
-        this.proceeClass = "bg-success"
         return '报名中'
       }
     },
