@@ -40,6 +40,11 @@ spring:
       mail:
         smtp:
           auth: true
+          ssl:
+            enable: true
+          socketFactory:
+            class: javax.net.ssl.SSLSocketFactory
+    port: 465
 
   mvc:
     static-path-pattern: /static/**

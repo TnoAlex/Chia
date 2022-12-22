@@ -214,12 +214,17 @@ class RegistrationServiceImp : ServiceImpl<RegistrationMapper, Registration>(), 
         return try {
             list.forEach {
                 val student = studentMapper.selectOne(KtQueryWrapper(Student::class.java).eq(Student::id, it))
-                try {
-                    mailSendUtil.sendTemplateMail(student.email!!, "正式报名提醒", "notice", data)
-                    successNumber += 1
-                } catch (e: Exception) {
+                if (student.email == null) {
                     errorStudentName.add(student.name)
+                } else {
+                    try {
+                        mailSendUtil.sendTemplateMail(student.email!!, "正式报名提醒", "notice", data)
+                        successNumber += 1
+                    } catch (e: Exception) {
+                        errorStudentName.add(student.name)
+                    }
                 }
+
             }
             if (errorStudentName.isNotEmpty()) {
                 messageMapper.insert(
