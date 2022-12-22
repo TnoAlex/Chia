@@ -45,7 +45,7 @@
         <result property="name" column="name"/>
         <result property="studentNumber" column="student_number"/>
         <result property="maxScore" column="max_score"/>
-        <result property="freeTime" column="free_time"/>
+        <result property="freeTime" column="free_times"/>
         <result property="grade" column="grade"/>
         <result property="extra" column="extra"/>
     </resultMap>
